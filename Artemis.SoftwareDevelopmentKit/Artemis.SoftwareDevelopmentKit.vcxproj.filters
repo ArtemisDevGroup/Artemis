@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="C">
+      <UniqueIdentifier>{d95fa545-a71e-4c06-b6cd-36105a1ce7fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C++">
+      <UniqueIdentifier>{cb55f0be-4d3c-4ed9-bd6c-a25bc767169d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C++\Exceptions">
+      <UniqueIdentifier>{0924b110-576d-4615-80d6-13d851cde201}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Definitions">
+      <UniqueIdentifier>{f57d78db-0203-477a-8346-727cc0406ed5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C++\Events">
+      <UniqueIdentifier>{5810441e-7d7e-4bba-8754-86a2c1fafbef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C++\Memory">
+      <UniqueIdentifier>{96d2803a-d5fa-4974-af40-35ccec49d3d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C++\Collections">
+      <UniqueIdentifier>{b735cc89-c3dc-49d2-afd1-ae9a0325d3b6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Artemis.SoftwareDevelopmentKit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C++\Exceptions.cpp">
+      <Filter>C++\Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="C++\Memory.cpp">
+      <Filter>C++\Memory</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="H\Definitions.h">
+      <Filter>Header Files\Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="C++\Events.h">
+      <Filter>C++\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="C++\Exceptions.h">
+      <Filter>C++\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="C++\Memory.h">
+      <Filter>C++\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="C++\MemoryDefinitions.h">
+      <Filter>C++\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="C++\Matrix.h">
+      <Filter>C++\Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="C++\Vector.h">
+      <Filter>C++\Collections</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

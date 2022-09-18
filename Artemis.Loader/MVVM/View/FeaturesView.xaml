@@ -1,0 +1,113 @@
+﻿<UserControl x:Class="Artemis.Loader.MVVM.View.FeaturesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Artemis.Loader.MVVM.View"
+             xmlns:viewModel="clr-namespace:Artemis.Loader.MVVM.ViewModel"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="810">
+    <UserControl.DataContext>
+        <viewModel:FeaturesViewModel/>
+    </UserControl.DataContext>
+    
+    <Grid>
+        <Image Source="pack://application:,,,/Imagez/BlurredFull.jpg"
+               Width="1200"
+               HorizontalAlignment="Center"/>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Border Background="#1A1A1A"
+                    CornerRadius="10"
+                    Margin="30">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Artemis"
+                               Foreground="White"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               FontFamily="{StaticResource ArtemisFont}"
+                               FontSize="27"
+                               Margin="10,-7,0,0"/>
+                    
+                    <TextBlock Text="Loader"
+                               Foreground="White"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center"
+                               FontSize="27"
+                               Margin="0,0,10,0"/>
+
+                    <StackPanel Grid.Row="1">
+                        <TextBlock Text="Launch Game"
+                                   Style="{StaticResource ListTheme}"/>
+                        <TextBlock Text="Inject Tool"
+                                   Style="{StaticResource ListTheme}"/>
+                        <TextBlock Text="Discord Rich Presence"
+                                   Style="{StaticResource ListTheme}"/>
+                        <TextBlock Text="Change In-Game Username"
+                                   Style="{StaticResource ListTheme}"/>
+                        <TextBlock Text="Hide and Show Window with"
+                                   Height="22"
+                                   Style="{StaticResource ListTheme}"/>
+                        <TextBlock Text="System Tray Icon"
+                                   Style="{StaticResource ListTheme}"/>
+                        <TextBlock Text="Looking Sexy as Fuck"
+                                   Style="{StaticResource ListTheme}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Background="#1A1A1A"
+                    CornerRadius="10"
+                    Margin="30">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="100"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Image Source="pack://application:,,,/Imagez/logo.png"
+                           Margin="5"/>
+
+                    <TextBlock Grid.Column="1"
+                               Text="Artemis"
+                               Foreground="White"
+                               FontFamily="{StaticResource ArtemisFont}"
+                               FontSize="80"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Margin="0,-25,0,0"/>
+
+                    <StackPanel Grid.Row="1">
+                        <RadioButton Content="Terrorist"
+                                     IsChecked="True"
+                                     Foreground="White"
+                                     Height="40"
+                                     FontSize="14"
+                                     Style="{StaticResource FeaturesButtonTheme}"
+                                     Command="{Binding TerroristViewCommand}"/>
+                    </StackPanel>
+
+                    <ContentControl Grid.Row="1"
+                                    Grid.Column="1"
+                                    Content="{Binding CurrentFeaturesView}"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

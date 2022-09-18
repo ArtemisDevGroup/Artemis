@@ -1,0 +1,125 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Icons\logo.ico</ApplicationIcon>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>False</Optimize>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Optimize>False</Optimize>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Images\**" />
+    <EmbeddedResource Remove="Images\**" />
+    <None Remove="Images\**" />
+    <Page Remove="Images\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Fonts\Blanka-Regular.otf" />
+    <None Remove="Imagez\BlurredFull.jpg" />
+    <None Remove="Imagez\Cats\Bandit.png" />
+    <None Remove="Imagez\Cats\Blitz.png" />
+    <None Remove="Imagez\Cats\Caveria.png" />
+    <None Remove="Imagez\Cats\Dokkaebi.png" />
+    <None Remove="Imagez\Cats\Echo.png" />
+    <None Remove="Imagez\Cats\Ela.png" />
+    <None Remove="Imagez\Cats\Frost.png" />
+    <None Remove="Imagez\Cats\Fuze.png" />
+    <None Remove="Imagez\Cats\Hibana.png" />
+    <None Remove="Imagez\Cats\IQ.png" />
+    <None Remove="Imagez\Cats\Jager.png" />
+    <None Remove="Imagez\Cats\Kapkan.png" />
+    <None Remove="Imagez\Cats\Lesion.png" />
+    <None Remove="Imagez\Cats\Rook.png" />
+    <None Remove="Imagez\Cats\Tachanka.png" />
+    <None Remove="Imagez\Cats\Thatcher.png" />
+    <None Remove="Imagez\Cats\Twitch.png" />
+    <None Remove="Imagez\Cats\Valkryie.png" />
+    <None Remove="Imagez\Cats\Vigil.png" />
+    <None Remove="Imagez\Cats\Ying.png" />
+    <None Remove="Imagez\Cats\Zofia.png" />
+    <None Remove="Imagez\logo.png" />
+    <None Remove="Imagez\LogoSmallerText.png" />
+    <None Remove="Imagez\NoBlur.jpg" />
+    <None Remove="Imagez\PartialBlur.png" />
+    <None Remove="Imagez\PartialBlurWithLogo.jpg" />
+    <None Remove="Imagez\PartialBlurWithLogo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Icons\logo.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Imagez\Cats\Bandit.png" />
+    <Resource Include="Imagez\Cats\Blitz.png" />
+    <Resource Include="Imagez\Cats\Caveria.png" />
+    <Resource Include="Imagez\Cats\Dokkaebi.png" />
+    <Resource Include="Imagez\Cats\Echo.png" />
+    <Resource Include="Imagez\Cats\Ela.png" />
+    <Resource Include="Imagez\Cats\Frost.png" />
+    <Resource Include="Imagez\Cats\Fuze.png" />
+    <Resource Include="Imagez\Cats\Hibana.png" />
+    <Resource Include="Imagez\Cats\IQ.png" />
+    <Resource Include="Imagez\Cats\Jager.png" />
+    <Resource Include="Imagez\Cats\Kapkan.png" />
+    <Resource Include="Imagez\Cats\Lesion.png" />
+    <Resource Include="Imagez\Cats\Rook.png" />
+    <Resource Include="Imagez\Cats\Tachanka.png" />
+    <Resource Include="Imagez\Cats\Thatcher.png" />
+    <Resource Include="Imagez\Cats\Twitch.png" />
+    <Resource Include="Imagez\Cats\Valkryie.png" />
+    <Resource Include="Imagez\Cats\Vigil.png" />
+    <Resource Include="Imagez\Cats\Ying.png" />
+    <Resource Include="Imagez\Cats\Zofia.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="MVVM\Model\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Artemis.Loader.Helper\Artemis.Loader.Helper.vcxproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms">
+      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\Framework64\v2.0.50727\System.Windows.Forms.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Fonts\Blanka-Regular.otf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Imagez\BlurredFull.jpg" />
+    <Resource Include="Imagez\logo.png" />
+    <Resource Include="Imagez\LogoSmallerText.png" />
+    <Resource Include="Imagez\PartialBlurWithLogo.jpg" />
+  </ItemGroup>
+	
+</Project>

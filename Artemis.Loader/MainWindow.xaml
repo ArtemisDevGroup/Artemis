@@ -1,0 +1,131 @@
+﻿<Window x:Class="Artemis.Loader.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Artemis.Loader"
+        xmlns:viewModel="clr-namespace:Artemis.Loader.MVVM.ViewModel"
+        mc:Ignorable="d"
+        Height="540"
+        Width="960"
+        Title="Artemis"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Background="Transparent"
+        AllowsTransparency="True">
+    <!--
+        Background = #2A2A2A
+        Sub-Background = #1A1A1A
+    -->
+    <Window.DataContext>
+        <viewModel:MainViewModel/>
+    </Window.DataContext>
+
+    <Border Background="#2A2A2A">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Border Background="#1A1A1A"
+                    MouseDown="TopBorder_OnMouseDown">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="20"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="1"
+                            Name="btnmin"
+                            Click="OnClick_Minimize"
+                            Content="⎯"
+                            Margin="0,-2,2,0"
+                            Style="{StaticResource ExitButtonTheme}"/>
+
+                    <Button Grid.Column="2"
+                            Name="btnexit"
+                            Click="OnClick_Exit"
+                            Content="✕"
+                            Margin="0,-1,0,0"
+                            Style="{StaticResource ExitButtonTheme}"/>
+
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Image Source="pack://application:,,,/Imagez/logo.png"
+                       Height="30"
+                       HorizontalAlignment="Left"
+                       Margin="5,0,0,0"/>
+
+                <TextBlock Text="Artemis"
+                           FontFamily="{StaticResource ArtemisFont}"
+                           Foreground="White"
+                           VerticalAlignment="Center"
+                           Margin="40,-9,0,0"
+                           FontSize="22"/>
+
+                <StackPanel Grid.Row="1">
+                    <RadioButton Content="Home"
+                                 Height="40"
+                                 Foreground="White"
+                                 FontSize="14"
+                                 Style="{StaticResource MenuButtonTheme}"
+                                 IsChecked="True"
+                                 Command="{Binding HomeViewCommand}"/>
+
+                    <RadioButton Content="Settings"
+                                 Height="40"
+                                 Foreground="White"
+                                 FontSize="14"
+                                 Style="{StaticResource MenuButtonTheme}"
+                                 Command="{Binding SettingsViewCommand}"/>
+
+                    <RadioButton Content="Features"
+                                 Height="40"
+                                 Foreground="White"
+                                 FontSize="14"
+                                 Style="{StaticResource MenuButtonTheme}"
+                                 Command="{Binding FeaturesViewCommand}"/>
+
+                    <RadioButton Content="Change log"
+                                 Height="40"
+                                 Foreground="White"
+                                 FontSize="14"
+                                 Style="{StaticResource MenuButtonTheme}"
+                                 Command="{Binding ChangeLogViewCommand}"/>
+
+                    <RadioButton Content="About"
+                                 Height="40"
+                                 Foreground="White"
+                                 FontSize="14"
+                                 Style="{StaticResource MenuButtonTheme}"
+                                 Command="{Binding AboutViewCommand}"/>
+                    
+                    <RadioButton Content="Credits"
+                                 Height="40"
+                                 Foreground="White"
+                                 FontSize="14"
+                                 Style="{StaticResource MenuButtonTheme}"
+                                 Command="{Binding CreditsViewCommand}"/>
+                </StackPanel>
+
+                <ContentControl Grid.Row="1"
+                                Grid.Column="1"
+                                Content="{Binding CurrentView}"/>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

@@ -1,0 +1,54 @@
+﻿<Application x:Class="Artemis.Loader.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Artemis.Loader"
+             xmlns:viewModel="clr-namespace:Artemis.Loader.MVVM.ViewModel"
+             xmlns:view="clr-namespace:Artemis.Loader.MVVM.View"
+             xmlns:featuresViewModel="clr-namespace:Artemis.Loader.MVVM.ViewModel.FeatuesSubViewModel"
+             xmlns:featuresView="clr-namespace:Artemis.Loader.MVVM.View.FeaturesSubView"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Theme/FeaturesButtonTheme.xaml"/>
+                <ResourceDictionary Source="Theme/TextBlockListTheme.xaml"/>
+                <ResourceDictionary Source="Theme/MenuButtonTheme.xaml"/>
+                <ResourceDictionary Source="Theme/TextBoxTheme.xaml"/>
+                <ResourceDictionary Source="Theme/StartButtonTheme.xaml"/>
+                <ResourceDictionary Source="Theme/TopRightBarButtonTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type viewModel:HomeViewModel}">
+                <view:HomeView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModel:SettingsViewModel}">
+                <view:SettingsView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModel:FeaturesViewModel}">
+                <view:FeaturesView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModel:ChangeLogViewModel}">
+                <view:ChangeLogView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModel:AboutViewModel}">
+                <view:AboutView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModel:CreditsViewModel}">
+                <view:CreditsView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type featuresViewModel:TerroristViewModel}">
+                <featuresView:TerroristView/>
+            </DataTemplate>
+
+            <FontFamily x:Key="ArtemisFont">pack://application:,,,/Fonts/#Blanka</FontFamily>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
