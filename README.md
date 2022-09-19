@@ -1,8 +1,4 @@
-<p align="center">
-  <img src="https://github.com/ArtemisDevGroup/Artemis-Resources/blob/main/Logos/Logo256x.png" width="256" height="256"/>
-</p>
-
-![Artemis](https://github.com/ArtemisDevGroup/Artemis-Resources/blob/main/Text/Artemis.png)
+![Artemis](https://github.com/ArtemisDevGroup/Artemis-Resources/blob/main/Text/ArtemisWithLogo.png)
 An internal cheat for Rainbow Six: Siege - Shadow Legacy. Developed by Sigma, Monke and Tavreth.
 
 # Projects
