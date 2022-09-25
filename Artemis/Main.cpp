@@ -16,3 +16,5 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
 	FreeLibraryAndExitThread(hModule, 0);
 	return 0;
 }
+
+// Funny
