@@ -1,0 +1,24 @@
+#ifndef __PRESENT_HOOK_H__
+#define __PRESENT_HOOK_H__
+
+#include <dxgi.h>
+#include <d3d11.h>
+
+#pragma comment(lib,"d3d11.lib")
+
+#include "..\Definitions.h"
+#include "..\MemoryHook.h"
+#include "..\Exceptions.h"
+
+namespace Artemis {
+	_Check_return_ _Ret_maybenull_ HWND GetTopLevelWnd();
+	_Check_return_ _Ret_maybenull_ LPVOID GetPresentFnPtr(_In_ HWND hGameWnd);
+
+	HRESULT APIENTRY hkPresent(
+		_In_ IDXGISwapChain* pSwapChain,
+		_In_ UINT SyncInterval,
+		_In_ UINT Flags
+	);
+}
+
+#endif // !__PRESENT_HOOK_H__

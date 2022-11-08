@@ -14,308 +14,212 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="SDK">
-      <UniqueIdentifier>{0450f8e0-7262-4aa7-8269-8bdf91bae07e}</UniqueIdentifier>
+      <UniqueIdentifier>{97da9c87-66d5-4e9e-a7f4-aca15adc32aa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SDK\ImGui">
-      <UniqueIdentifier>{6df1bed9-fa28-4ad3-8858-a39ff22099af}</UniqueIdentifier>
+    <Filter Include="SDK\Header Files">
+      <UniqueIdentifier>{86378f59-e9df-44cc-b538-9b8b046c9589}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SDK\PresentHook">
-      <UniqueIdentifier>{8d78ca48-d3af-4430-b60c-dac27c39fe6e}</UniqueIdentifier>
+    <Filter Include="SDK\Source Files">
+      <UniqueIdentifier>{3b106490-b6a8-4940-bebb-8dc81851e70c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SDK\Console">
-      <UniqueIdentifier>{4a764555-53b7-4957-b7d1-2ec3e3241433}</UniqueIdentifier>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{433fe6d0-8694-41bf-84ef-fc2116aceebb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SDK\GenericLibraries">
-      <UniqueIdentifier>{102b3df0-0329-4479-a44c-3655c6db1fa8}</UniqueIdentifier>
+    <Filter Include="ImGui\Header Files">
+      <UniqueIdentifier>{e7db4afe-209e-45ee-a767-63902094c11b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SDK\GenericLibraries\API">
-      <UniqueIdentifier>{b18e3b39-4d05-4311-b985-d94773ba050b}</UniqueIdentifier>
+    <Filter Include="ImGui\Source Files">
+      <UniqueIdentifier>{e9e2eade-a575-4c7d-9b8c-6149ddee90a6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SDK\GenericLibraries\Collections">
-      <UniqueIdentifier>{8b1b3c2d-7aeb-47b5-9308-cc60ec8b3b2e}</UniqueIdentifier>
+    <Filter Include="MinHook">
+      <UniqueIdentifier>{c2b73ba2-db7b-48b9-9442-804e2a33ea13}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SDK\GenericLibraries\Logger">
-      <UniqueIdentifier>{bf75167b-61ad-4763-bca7-99071d07c925}</UniqueIdentifier>
+    <Filter Include="MinHook\Header Files">
+      <UniqueIdentifier>{57da793d-ef38-4464-959b-e13769ec9456}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SDK\GenericLibraries\Def">
-      <UniqueIdentifier>{0faef2a8-0b58-40ce-bc55-35619e9694d4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SDK\GenericLibraries\API\ErrorApi">
-      <UniqueIdentifier>{e72ab058-7ca7-47b0-996b-60a4474ad181}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SDK\GenericLibraries\API\MemApi">
-      <UniqueIdentifier>{0750a9ed-a367-45b6-a73f-8e4ee441e433}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SDK\GenericLibraries\API\FileApi">
-      <UniqueIdentifier>{59e63ef5-2175-4e3f-a60d-a5ea729f36d5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SDK\GenericLibraries\API\ThreadApi">
-      <UniqueIdentifier>{379e9e61-bcf6-4866-bacd-3739dfcac508}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SDK\GenericLibraries\API\MemShApi">
-      <UniqueIdentifier>{ed83ba89-498e-4cb0-a391-007cee42f1c0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SDK\GenericLibraries\API\PipeApi">
-      <UniqueIdentifier>{a370f892-943e-4536-b8f3-d43cbc978509}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SDK\ImGui\Headers">
-      <UniqueIdentifier>{68a4e13f-1c60-4655-8f5f-c041e2dcba00}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SDK\ImGui\Source">
-      <UniqueIdentifier>{b7a50ac0-6636-41de-a819-c0455a429f8f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SDK\GenericLibraries\API\MemApi\Info">
-      <UniqueIdentifier>{d4bcb078-f66b-4c93-96ea-95876f602bb0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SDK\GenericLibraries\API\MemApi\Function">
-      <UniqueIdentifier>{2a2cec7f-461a-49a4-b087-9dbea324ea19}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SDK\GenericLibraries\API\MemApi\Hook">
-      <UniqueIdentifier>{9616fe11-f1e3-4a20-af27-41e532a22410}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SDK\GenericLibraries\API\MemApi\Scan">
-      <UniqueIdentifier>{df46167e-b203-4a7b-9695-87e895795e21}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SDK\GenericLibraries\API\MemApi\Virtual">
-      <UniqueIdentifier>{cb258715-ef8d-40b5-9144-ac80e892785f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SDK\GenericLibraries\API\MemApi\Write">
-      <UniqueIdentifier>{37cf5803-43e3-44c4-a8c2-9be110039abb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SDK\GenericLibraries\API\MemApi\Read">
-      <UniqueIdentifier>{d0d08462-301b-45dd-ac12-60f86ee47f98}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SDK\Extensions">
-      <UniqueIdentifier>{68903d40-790e-48d3-91cf-7252f919d0d1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Windows">
-      <UniqueIdentifier>{5b6b0aca-e89c-4895-9ba0-e3e5c778911f}</UniqueIdentifier>
+    <Filter Include="MinHook\Source Files">
+      <UniqueIdentifier>{c7a355d4-6189-46ee-8b1e-5b67598fb36c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PresentHook.cpp">
-      <Filter>SDK\PresentHook</Filter>
+    <ClCompile Include="DateTime.cpp">
+      <Filter>SDK\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Exceptions.cpp">
+      <Filter>SDK\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Initialization.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Logger.cpp">
+      <Filter>SDK\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Console.cpp">
-      <Filter>SDK\Console</Filter>
+    <ClCompile Include="Memory.cpp">
+      <Filter>SDK\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SDK\ErrorApi.c">
-      <Filter>SDK\GenericLibraries\API\ErrorApi</Filter>
+    <ClCompile Include="MemoryAllocation.cpp">
+      <Filter>SDK\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SDK\FileApi.c">
-      <Filter>SDK\GenericLibraries\API\FileApi</Filter>
+    <ClCompile Include="MemoryHook.cpp">
+      <Filter>SDK\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SDK\Logger.cpp">
-      <Filter>SDK\GenericLibraries\Logger</Filter>
+    <ClCompile Include="MemoryInjection.cpp">
+      <Filter>SDK\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SDK\MemShApi.c">
-      <Filter>SDK\GenericLibraries\API\MemShApi</Filter>
-    </ClCompile>
-    <ClCompile Include="SDK\PipeApi.c">
-      <Filter>SDK\GenericLibraries\API\PipeApi</Filter>
-    </ClCompile>
-    <ClCompile Include="SDK\SafeMemory.cpp">
-      <Filter>SDK\GenericLibraries\Collections</Filter>
-    </ClCompile>
-    <ClCompile Include="SDK\String.cpp">
-      <Filter>SDK\GenericLibraries\Collections</Filter>
+    <ClCompile Include="MemoryScanner.cpp">
+      <Filter>SDK\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ImGui\imgui.cpp">
-      <Filter>SDK\ImGui\Source</Filter>
+      <Filter>ImGui\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ImGui\imgui_demo.cpp">
-      <Filter>SDK\ImGui\Source</Filter>
+      <Filter>ImGui\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ImGui\imgui_draw.cpp">
-      <Filter>SDK\ImGui\Source</Filter>
+      <Filter>ImGui\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ImGui\imgui_impl_dx11.cpp">
-      <Filter>SDK\ImGui\Source</Filter>
+      <Filter>ImGui\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ImGui\imgui_impl_win32.cpp">
-      <Filter>SDK\ImGui\Source</Filter>
+      <Filter>ImGui\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ImGui\imgui_widgets.cpp">
-      <Filter>SDK\ImGui\Source</Filter>
+      <Filter>ImGui\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SDK\MemApi_Hook.c">
-      <Filter>SDK\GenericLibraries\API\MemApi\Hook</Filter>
-    </ClCompile>
-    <ClCompile Include="SDK\MemApi_Hook_Buffer.c">
-      <Filter>SDK\GenericLibraries\API\MemApi\Hook</Filter>
-    </ClCompile>
-    <ClCompile Include="SDK\MemApi_Hook_HDE.c">
-      <Filter>SDK\GenericLibraries\API\MemApi\Hook</Filter>
-    </ClCompile>
-    <ClCompile Include="SDK\MemApi_Hook_Trampoline.c">
-      <Filter>SDK\GenericLibraries\API\MemApi\Hook</Filter>
-    </ClCompile>
-    <ClCompile Include="SDK\MemApi_Info.c">
-      <Filter>SDK\GenericLibraries\API\MemApi\Info</Filter>
-    </ClCompile>
-    <ClCompile Include="SDK\MemApi_Read.c">
-      <Filter>SDK\GenericLibraries\API\MemApi\Read</Filter>
-    </ClCompile>
-    <ClCompile Include="SDK\MemApi_Scan.c">
-      <Filter>SDK\GenericLibraries\API\MemApi\Scan</Filter>
-    </ClCompile>
-    <ClCompile Include="SDK\MemApi_Virtual.c">
-      <Filter>SDK\GenericLibraries\API\MemApi\Virtual</Filter>
-    </ClCompile>
-    <ClCompile Include="SDK\MemApi_Write.c">
-      <Filter>SDK\GenericLibraries\API\MemApi\Write</Filter>
-    </ClCompile>
-    <ClCompile Include="Helpers.cpp">
+    <ClCompile Include="ArtemisSpecific\Console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hkPresent.cpp">
+    <ClCompile Include="ArtemisSpecific\Midnight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ToggleBytePatch.cpp">
-      <Filter>SDK\Extensions</Filter>
-    </ClCompile>
-    <ClCompile Include="MainWindow.cpp">
-      <Filter>Source Files\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Globals.cpp">
+    <ClCompile Include="ArtemisSpecific\PresentHook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Decryptions.cpp">
-      <Filter>SDK\Extensions</Filter>
+    <ClCompile Include="ArtemisSpecific\WindowManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MinHook\buffer.c">
+      <Filter>MinHook\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MinHook\hook.c">
+      <Filter>MinHook\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MinHook\trampoline.c">
+      <Filter>MinHook\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MinHook\hde\hde32.c">
+      <Filter>MinHook\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MinHook\hde\hde64.c">
+      <Filter>MinHook\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FunctionDecl.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Array.h">
+      <Filter>SDK\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Console.h">
-      <Filter>SDK\Console</Filter>
+    <ClInclude Include="DateTime.h">
+      <Filter>SDK\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDK\Def.h">
-      <Filter>SDK\GenericLibraries\Def</Filter>
+    <ClInclude Include="Definitions.h">
+      <Filter>SDK\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDK\Collections.h">
-      <Filter>SDK\GenericLibraries\Collections</Filter>
+    <ClInclude Include="Events.h">
+      <Filter>SDK\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDK\ErrorApi.h">
-      <Filter>SDK\GenericLibraries\API\ErrorApi</Filter>
+    <ClInclude Include="Exceptions.h">
+      <Filter>SDK\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDK\Event.h">
-      <Filter>SDK\GenericLibraries\Collections</Filter>
+    <ClInclude Include="Interfaces.h">
+      <Filter>SDK\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDK\Logger.h">
-      <Filter>SDK\GenericLibraries\Logger</Filter>
+    <ClInclude Include="Logger.h">
+      <Filter>SDK\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDK\FileApi.h">
-      <Filter>SDK\GenericLibraries\API\FileApi</Filter>
+    <ClInclude Include="Matrix.h">
+      <Filter>SDK\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDK\MemApi.h">
-      <Filter>SDK\GenericLibraries\API\MemApi</Filter>
+    <ClInclude Include="Memory.h">
+      <Filter>SDK\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDK\MemShApi.h">
-      <Filter>SDK\GenericLibraries\API\MemShApi</Filter>
+    <ClInclude Include="MemoryAllocation.h">
+      <Filter>SDK\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDK\PipeApi.h">
-      <Filter>SDK\GenericLibraries\API\PipeApi</Filter>
+    <ClInclude Include="MemoryDefinitions.h">
+      <Filter>SDK\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDK\ThreadApi.h">
-      <Filter>SDK\GenericLibraries\API\ThreadApi</Filter>
+    <ClInclude Include="MemoryHook.h">
+      <Filter>SDK\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDK\SafeMemory.h">
-      <Filter>SDK\GenericLibraries\Collections</Filter>
+    <ClInclude Include="MemoryInjection.h">
+      <Filter>SDK\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDK\String.h">
-      <Filter>SDK\GenericLibraries\Collections</Filter>
+    <ClInclude Include="MemoryScanner.h">
+      <Filter>SDK\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDK\Vector.h">
-      <Filter>SDK\GenericLibraries\Collections</Filter>
-    </ClInclude>
-    <ClInclude Include="SDK\Vector_Operator.h">
-      <Filter>SDK\GenericLibraries\Collections</Filter>
+    <ClInclude Include="Vector.h">
+      <Filter>SDK\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImGui\imconfig.h">
-      <Filter>SDK\ImGui\Headers</Filter>
+      <Filter>ImGui\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImGui\imgui.h">
-      <Filter>SDK\ImGui\Headers</Filter>
+      <Filter>ImGui\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImGui\imgui_impl_dx11.h">
-      <Filter>SDK\ImGui\Headers</Filter>
+      <Filter>ImGui\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImGui\imgui_impl_win32.h">
-      <Filter>SDK\ImGui\Headers</Filter>
+      <Filter>ImGui\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImGui\imgui_internal.h">
-      <Filter>SDK\ImGui\Headers</Filter>
+      <Filter>ImGui\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImGui\imstb_rectpack.h">
-      <Filter>SDK\ImGui\Headers</Filter>
+      <Filter>ImGui\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImGui\imstb_textedit.h">
-      <Filter>SDK\ImGui\Headers</Filter>
+      <Filter>ImGui\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImGui\imstb_truetype.h">
-      <Filter>SDK\ImGui\Headers</Filter>
+      <Filter>ImGui\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDK\MemApi_Function.h">
-      <Filter>SDK\GenericLibraries\API\MemApi\Function</Filter>
-    </ClInclude>
-    <ClInclude Include="SDK\MemApi_Hook.h">
-      <Filter>SDK\GenericLibraries\API\MemApi\Hook</Filter>
-    </ClInclude>
-    <ClInclude Include="SDK\MemApi_Hook_Buffer.h">
-      <Filter>SDK\GenericLibraries\API\MemApi\Hook</Filter>
-    </ClInclude>
-    <ClInclude Include="SDK\MemApi_Hook_HDE.h">
-      <Filter>SDK\GenericLibraries\API\MemApi\Hook</Filter>
-    </ClInclude>
-    <ClInclude Include="SDK\MemApi_Hook_Table.h">
-      <Filter>SDK\GenericLibraries\API\MemApi\Hook</Filter>
-    </ClInclude>
-    <ClInclude Include="SDK\MemApi_Hook_Trampoline.h">
-      <Filter>SDK\GenericLibraries\API\MemApi\Hook</Filter>
-    </ClInclude>
-    <ClInclude Include="SDK\MemApi_Info.h">
-      <Filter>SDK\GenericLibraries\API\MemApi\Info</Filter>
-    </ClInclude>
-    <ClInclude Include="SDK\MemApi_Read.h">
-      <Filter>SDK\GenericLibraries\API\MemApi\Read</Filter>
-    </ClInclude>
-    <ClInclude Include="SDK\MemApi_Scan.h">
-      <Filter>SDK\GenericLibraries\API\MemApi\Scan</Filter>
-    </ClInclude>
-    <ClInclude Include="SDK\MemApi_Virtual.h">
-      <Filter>SDK\GenericLibraries\API\MemApi\Virtual</Filter>
-    </ClInclude>
-    <ClInclude Include="SDK\MemApi_Write.h">
-      <Filter>SDK\GenericLibraries\API\MemApi\Write</Filter>
-    </ClInclude>
-    <ClInclude Include="PresentHook.h">
-      <Filter>SDK\PresentHook</Filter>
-    </ClInclude>
-    <ClInclude Include="Offsets.h">
+    <ClInclude Include="ArtemisSpecific\Console.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ToggleBytePatch.h">
-      <Filter>SDK\Extensions</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowDecl.h">
+    <ClInclude Include="ArtemisSpecific\Midnight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Globals.h">
+    <ClInclude Include="ArtemisSpecific\PresentHook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Decryptions.h">
-      <Filter>SDK\Extensions</Filter>
+    <ClInclude Include="ArtemisSpecific\WindowManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\buffer.h">
+      <Filter>MinHook\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\MinHook.h">
+      <Filter>MinHook\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\trampoline.h">
+      <Filter>MinHook\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\hde\hde32.h">
+      <Filter>MinHook\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\hde\hde64.h">
+      <Filter>MinHook\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\hde\pstdint.h">
+      <Filter>MinHook\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\hde\table32.h">
+      <Filter>MinHook\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\hde\table64.h">
+      <Filter>MinHook\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
