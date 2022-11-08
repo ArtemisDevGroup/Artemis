@@ -177,6 +177,7 @@ namespace Artemis {
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
+		Midnight::GetInst()->ImGuiDrawManager.InvokeDraw(ImGui::GetForegroundDrawList());
 		Midnight::GetInst()->ImGuiWndManager.InvokeWnd();
 
 		ImGui::EndFrame();

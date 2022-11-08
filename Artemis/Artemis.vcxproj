@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ArtemisSpecific\Console.cpp" />
+    <ClCompile Include="ArtemisSpecific\DrawManager.cpp" />
     <ClCompile Include="ArtemisSpecific\Midnight.cpp" />
     <ClCompile Include="ArtemisSpecific\PresentHook.cpp" />
     <ClCompile Include="ArtemisSpecific\WindowManager.cpp" />
@@ -167,6 +168,7 @@
   <ItemGroup>
     <ClInclude Include="Array.h" />
     <ClInclude Include="ArtemisSpecific\Console.h" />
+    <ClInclude Include="ArtemisSpecific\DrawManager.h" />
     <ClInclude Include="ArtemisSpecific\Midnight.h" />
     <ClInclude Include="ArtemisSpecific\PresentHook.h" />
     <ClInclude Include="ArtemisSpecific\WindowManager.h" />

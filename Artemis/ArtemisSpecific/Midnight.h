@@ -6,6 +6,7 @@
 #include "..\Logger.h"
 #include "..\Interfaces.h"
 #include "WindowManager.h"
+#include "DrawManager.h"
 #include "Console.h"
 #include "PresentHook.h"
 
@@ -24,7 +25,8 @@ namespace Artemis {
 		Midnight();
 
 		Memory m;						// The main memory instance.
-		WindowManager ImGuiWndManager;	// The main ImGui window manager instanced used in the present hook.
+		WindowManager ImGuiWndManager;	// The main ImGui window manager instance used in the present hook.
+		DrawManager ImGuiDrawManager;	// The main ImGui draw manager instance used in the present hook.
 		Hook PresentHook;				// The present hook.
 		Logger Log;						// The main logger instance.
 		Console ConInst;				// The main console instance.

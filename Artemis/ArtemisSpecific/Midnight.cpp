@@ -11,6 +11,10 @@ namespace Artemis {
 	void Midnight::Initialize() {
 		ConInst.Allocate();
 
+#ifdef _DEBUG
+		ConInst.Show();
+#endif
+
 		Log.LogInfo(__FUNCTION__, "Attempting to hook Present...");
 
 		HWND hWnd = GetTopLevelWnd();
@@ -65,6 +69,15 @@ namespace Artemis {
 
 	void Midnight::Release() {
 		Log.LogInfo(__FUNCTION__, "Attempting to release hook...");
+
+		try {
+			PresentHook.Disable();
+			Log.LogSuccess(__FUNCTION__, "Successfully disabled hook.");
+		}
+		catch (HookException& e) {
+			Log.LogError(__FUNCTION__, "Failed to disable hook. Message: %s", e.GetExceptionMessage());
+			return;
+		}
 
 		try {
 			PresentHook.Release();

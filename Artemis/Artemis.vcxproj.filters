@@ -114,6 +114,9 @@
     <ClCompile Include="MinHook\hde\hde64.c">
       <Filter>MinHook\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ArtemisSpecific\DrawManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Array.h">
@@ -220,6 +223,9 @@
     </ClInclude>
     <ClInclude Include="MinHook\hde\table64.h">
       <Filter>MinHook\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ArtemisSpecific\DrawManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

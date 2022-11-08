@@ -25,7 +25,7 @@ namespace Artemis {
 		/// </summary>
 		BOOL bShow;
 		LPCSTR lpWndName;		// The name of the window instance.
-		DWORD dwWndId;			// The unique window identifier.
+		const DWORD dwWndId;	// The unique window identifier.
 
 		/// <summary>
 		/// A purely virtual function that handles the window widgets.

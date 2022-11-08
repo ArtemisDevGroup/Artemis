@@ -40,6 +40,7 @@ namespace Artemis {
 
 	template<typename T = float>
 	class Vector3 {
+	public:
 		T szVector[3];
 
 		inline Vector3() : szVector() {}
@@ -85,6 +86,7 @@ namespace Artemis {
 
 	template<typename T = float>
 	class Vector4 {
+	public:
 		T szVector[4];
 
 		inline Vector4() : szVector() {}
