@@ -4,37 +4,37 @@
 
 using namespace Artemis;
 
-//------------------------>
-// NOTE:
-// This is a very early test of the system. MOST if not ALL files in this project are outdated.
-// The latest files are found at the SDK GitHub reposititory. (https://github.com/ArtemisDevGroup/Artemis-SoftwareDevelopmentKit)
-//------------------------>
+//---------------------------------------------------------------------------------------------------------------------------------->
+// NOTE:                                                                                                                            |
+// This is a very early test of the system. MOST if not ALL files in this project are or will be outdated.                          |
+// The latest files are found at the SDK GitHub reposititory. (https://github.com/ArtemisDevGroup/Artemis-SoftwareDevelopmentKit)   |
+//---------------------------------------------------------------------------------------------------------------------------------->
 
-class MainWindow : public IWindow {
+class ExitKeybind : public IKeybind {
 public:
-    MainWindow() : IWindow("Main", 1) {}
+    ExitKeybind() : IKeybind(VK_DELETE) {}
 
-    void Window() {
-        ImGui::Text("This is my main window!");
+    void WhenPressed() {
+        Midnight::GetInst()->bRun = FALSE;
+        Sleep(500);
     }
 };
 
 DWORD APIENTRY Main(_In_ HMODULE hModule) {
-    Midnight* pInst = Midnight::GetInst();
-    pInst->Initialize();            // Initializes every Midnight sub-class and member field.
+    Midnight* pInst = Midnight::GetInst();              // Gets a pointer to the core Midnight instance.
+    WindowManager* pWndMgr = &pInst->ImGuiWndManager;   // Gets a pointer to the window manager.
+    DrawManager* pDrawMgr = &pInst->ImGuiDrawManager;   // Gets a pointer to the draw manager.
+    KeybindManager* pBindMgr = &pInst->BindManager;     // Gets a pointer to the bind manager.
 
-    WindowManager* pWndMgr = &pInst->ImGuiWndManager; // Gets a pointer to the wnd manager.
-    pWndMgr->RegisterWnd(new MainWindow());           // Reigsters the main window.
+    pInst->Initialize();                                // Initializes every Midnight sub-class and member field.
+    pBindMgr->RegisterKeybind(new ExitKeybind());       // Registers the exit keybind.
 
-    while (pInst->bRun) {
-        if (GetAsyncKeyState(VK_DELETE) & 1) {
-            pInst->bRun = FALSE;
-            Sleep(500);
-        }
-    }
+    while (pInst->bRun) pBindMgr->InvokeKeybinds();
 
-    pWndMgr->FreeWndBuffer();       // Frees the window buffer and releases all memory related to it.
-    pInst->Release();               // Releases the Midnight instance and everything related to it.
+    pWndMgr->Release();                                 // Frees the window buffer and releases all memory related to it.
+    pDrawMgr->Release();                                // Frees the draw buffer and releases all memory related to it.
+    pBindMgr->Release();                                // Frees the keybind buffer and releases all memory related to it.
+    pInst->Release();                                   // Releases the Midnight instance and everything related to it.
 
     FreeLibraryAndExitThread(hModule, 0);
     return 0;

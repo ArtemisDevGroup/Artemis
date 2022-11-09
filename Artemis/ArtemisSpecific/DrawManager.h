@@ -1,3 +1,6 @@
+#ifndef __DRAW_MANAGER_H__
+#define __DRAW_MANAGER_H__
+
 #include "..\Definitions.h"
 #include "..\Exceptions.h"
 #include "..\Vector.h"
@@ -218,6 +221,9 @@ namespace Artemis {
 		void Present(_In_ ImDrawList* pDrawList);
 	};
 
+	/// <summary>
+	/// A class for adding draw requests to the ImGui foreground draw list.
+	/// </summary>
 	class DrawManager {
 		IDraw* lpszDrawArray[MAX_INVOKE];
 
@@ -244,7 +250,7 @@ namespace Artemis {
 		/// <summary>
 		/// Deletes all memory pointed to by the registered pointers.
 		/// </summary>
-		void FreeDrawBuffer();
+		void Release();
 
 		/// <summary>
 		/// Invokes all registered draw operations.
@@ -259,3 +265,5 @@ namespace Artemis {
 		_Check_return_ _Ret_maybenull_ IDraw* GetDrawById(_In_ DWORD dwWndId);
 	};
 }
+
+#endif // !__DRAW_MANAGER_H__

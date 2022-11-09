@@ -60,7 +60,7 @@ namespace Artemis {
 		CONTEXT_END;
 	}
 	//-------------------------------------//
-	void WindowManager::FreeWndBuffer() {
+	void WindowManager::Release() {
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (lpszWndArray[i]) {
 				delete lpszWndArray[i];

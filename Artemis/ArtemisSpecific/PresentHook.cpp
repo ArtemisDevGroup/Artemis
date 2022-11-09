@@ -1,5 +1,6 @@
 #include "PresentHook.h"
 #include "Midnight.h"
+#include "DrawManager.h"
 
 #include "..\ImGui\imgui.h"
 #include "..\ImGui\imgui_impl_dx11.h"

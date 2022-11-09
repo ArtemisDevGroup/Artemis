@@ -67,7 +67,7 @@ namespace Artemis {
 		/// <summary>
 		/// Deletes all memory pointed to by the registered pointers.
 		/// </summary>
-		void FreeWndBuffer();
+		void Release();
 
 		/// <summary>
 		/// Invokes all registered windows.

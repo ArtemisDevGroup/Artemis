@@ -117,6 +117,9 @@
     <ClCompile Include="ArtemisSpecific\DrawManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ArtemisSpecific\KeybindManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Array.h">
@@ -225,6 +228,9 @@
       <Filter>MinHook\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ArtemisSpecific\DrawManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ArtemisSpecific\KeybindManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -7,6 +7,7 @@
 #include "..\Interfaces.h"
 #include "WindowManager.h"
 #include "DrawManager.h"
+#include "KeybindManager.h"
 #include "Console.h"
 #include "PresentHook.h"
 
@@ -27,6 +28,7 @@ namespace Artemis {
 		Memory m;						// The main memory instance.
 		WindowManager ImGuiWndManager;	// The main ImGui window manager instance used in the present hook.
 		DrawManager ImGuiDrawManager;	// The main ImGui draw manager instance used in the present hook.
+		KeybindManager BindManager;		// The main keybind manager instance used in the main loop.
 		Hook PresentHook;				// The present hook.
 		Logger Log;						// The main logger instance.
 		Console ConInst;				// The main console instance.

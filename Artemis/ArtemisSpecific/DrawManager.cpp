@@ -284,7 +284,7 @@ namespace Artemis {
 	void DrawManager::RegisterDraw(_In_ IDraw* lpDrawInst) {
 		CONTEXT_BEGIN;
 
-		if (!lpDrawInst) throw ParameterException("lpWndInst");
+		if (!lpDrawInst) throw ParameterException("lpDrawInst");
 
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (lpszDrawArray[i])
@@ -320,7 +320,7 @@ namespace Artemis {
 		CONTEXT_END;
 	}
 
-	void DrawManager::FreeDrawBuffer() {
+	void DrawManager::Release() {
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (lpszDrawArray[i]) {
 				delete lpszDrawArray[i];
