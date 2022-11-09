@@ -6,15 +6,9 @@ namespace Artemis {
 	Midnight g_CoreInst;
 	Midnight* Midnight::GetInst() { return &g_CoreInst; }
 
-	Midnight::Midnight() : m(Memory(nullptr)), ImGuiWndManager(), Log(Logger(TRUE, TRUE)), ConInst(), bRun(FALSE) {}
+	Midnight::Midnight() : Mem(Memory(nullptr)), ImGuiWndManager(), Log(Logger(TRUE, TRUE)), ConInst(), bRun(FALSE) {}
 
 	void Midnight::Initialize() {
-		ConInst.Allocate();
-
-#ifdef _DEBUG
-		ConInst.Show();
-#endif
-
 		Log.LogInfo(__FUNCTION__, "Attempting to hook Present...");
 
 		HWND hWnd = GetTopLevelWnd();
@@ -97,7 +91,5 @@ namespace Artemis {
 			Log.LogError(__FUNCTION__, "Failed to release hooking library. Message: %s", e.GetExceptionMessage());
 			return;
 		}
-
-		ConInst.Release();
 	}
 }

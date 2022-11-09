@@ -25,7 +25,7 @@ namespace Artemis {
 
 		Midnight();
 
-		Memory m;						// The main memory instance.
+		Memory Mem;						// The main memory instance.
 		WindowManager ImGuiWndManager;	// The main ImGui window manager instance used in the present hook.
 		DrawManager ImGuiDrawManager;	// The main ImGui draw manager instance used in the present hook.
 		KeybindManager BindManager;		// The main keybind manager instance used in the main loop.
@@ -35,6 +35,8 @@ namespace Artemis {
 
 		BOOL bRun;						// A bool that if set to false will shut the module down and release its resources.
 		LPVOID lpPresent;				// A pointer to the original present function.
+		WNDPROC oWndProc;				// A pointer to the original window proceidure.
+		HWND hWnd;						// A handle to the main window.
 
 		/// <summary>
 		/// Initializes the Midnight instance.

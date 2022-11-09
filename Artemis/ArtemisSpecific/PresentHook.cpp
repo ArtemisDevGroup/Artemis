@@ -127,19 +127,17 @@ namespace Artemis {
 	}
 	
 	typedef HRESULT(APIENTRY* tPresent)(IDXGISwapChain*, UINT, UINT);
-
 	tPresent oPresent;
-	WNDPROC oWndProc;
-	HWND hWnd;
 	BOOL bInit = FALSE;
 
-	ID3D11Device* pDevice = nullptr;
 	ID3D11DeviceContext* pContext = nullptr;
 	ID3D11RenderTargetView* pMainRenderTargetView = nullptr;
 
+	Midnight* pInst;
+
 	LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		if (true && ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) return true;
-		return CallWindowProc(oWndProc, hWnd, uMsg, wParam, lParam);
+		return CallWindowProc(Midnight::GetInst()->oWndProc, hWnd, uMsg, wParam, lParam);
 	}
 
 	HRESULT APIENTRY hkPresent(
@@ -148,25 +146,28 @@ namespace Artemis {
 		_In_ UINT Flags
 	) {
 		if (!bInit) {
-			oPresent = (tPresent)Midnight::GetInst()->lpPresent;
+			pInst = Midnight::GetInst();
+			oPresent = (tPresent)pInst->lpPresent;
+
+			ID3D11Device* pDevice = nullptr;
 
 			if (SUCCEEDED(pSwapChain->GetDevice(__uuidof(ID3D11Device), (void**)&pDevice))) {
 				pDevice->GetImmediateContext(&pContext);
 				DXGI_SWAP_CHAIN_DESC sd;
 				pSwapChain->GetDesc(&sd);
-				hWnd = sd.OutputWindow;
+				pInst->hWnd = sd.OutputWindow;
 				ID3D11Texture2D* pBackBuffer;
 				pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
 				pDevice->CreateRenderTargetView(pBackBuffer, NULL, &pMainRenderTargetView);
 				pBackBuffer->Release();
-				oWndProc = (WNDPROC)SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
+				pInst->oWndProc = (WNDPROC)SetWindowLongPtr(pInst->hWnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
 				ImGui::CreateContext();
 				ImGuiIO& io = ImGui::GetIO();
 				io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
 
 				ImGui_SetStyle();
 
-				ImGui_ImplWin32_Init(hWnd);
+				ImGui_ImplWin32_Init(pInst->hWnd);
 				ImGui_ImplDX11_Init(pDevice, pContext);
 
 				bInit = TRUE;
@@ -178,19 +179,15 @@ namespace Artemis {
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
-		Midnight::GetInst()->ImGuiDrawManager.InvokeDraw(ImGui::GetForegroundDrawList());
-		Midnight::GetInst()->ImGuiWndManager.InvokeWnd();
+		pInst->ImGuiDrawManager.InvokeDraw(ImGui::GetForegroundDrawList());
+		pInst->ImGuiWndManager.InvokeWnd();
 
 		ImGui::EndFrame();
 		ImGui::Render();
 		pContext->OMSetRenderTargets(1, &pMainRenderTargetView, NULL);
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-		if (!Midnight::GetInst()->bRun) {
-			oWndProc = (WNDPROC)SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)(oWndProc));
-			return 0;
-		}
-
+		if (!pInst->bRun) return 0;
 		return oPresent(pSwapChain, SyncInterval, Flags);
 	}
 }
