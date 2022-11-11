@@ -176,11 +176,13 @@
     <ClInclude Include="ArtemisSpecific\Midnight.h" />
     <ClInclude Include="ArtemisSpecific\PresentHook.h" />
     <ClInclude Include="ArtemisSpecific\WindowManager.h" />
+    <ClInclude Include="ClassNames.h" />
     <ClInclude Include="DateTime.h" />
     <ClInclude Include="Definitions.h" />
     <ClInclude Include="Drawing.h" />
     <ClInclude Include="Events.h" />
     <ClInclude Include="Exceptions.h" />
+    <ClInclude Include="Hashes.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_impl_dx11.h" />

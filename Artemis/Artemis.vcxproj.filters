@@ -257,5 +257,11 @@
     <ClInclude Include="Drawing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Hashes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ClassNames.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

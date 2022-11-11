@@ -12,4 +12,10 @@ public:
     void Window();
 };
 
+class HashWindow : public IWindow {
+public:
+    HashWindow();
+    void Window();
+};
+
 #endif // !__WINDOW_H__
