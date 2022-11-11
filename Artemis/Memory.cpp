@@ -261,6 +261,20 @@ namespace Artemis {
 		return uAddress;
 	}
 	//-------------------------------------//
+	ADDRESS Memory::ReadPtrAddress(
+		_In_ ADDRESS uAddress,
+		_In_ const List<ADDRESS>& Offsets
+	) {
+		CONTEXT_BEGIN;
+
+		for (UINT i = 0; i < Offsets.GetCount(); i++) {
+			uAddress = Read<ADDRESS>(uAddress) + Offsets[i];
+		}
+
+		CONTEXT_END;
+		return uAddress;
+	}
+	//-------------------------------------//
 	void Memory::ReadStringA(
 		_In_ ADDRESS uAddress,
 		_Out_writes_z_(uCount) LPSTR lpBuffer,

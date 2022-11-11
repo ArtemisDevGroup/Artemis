@@ -2,24 +2,11 @@
 
 #include "ArtemisSpecific/Midnight.h"
 
+#include "Keybinds.h"
+#include "Window.h"
+#include "Drawing.h"
+
 using namespace Artemis;
-
-//---------------------------------------------------------------------------------------------------------------------------------->
-// NOTE:                                                                                                                            |
-// This is a very early test of the system. MOST if not ALL files in this project are or will be outdated.                          |
-// The latest files are found at the SDK GitHub reposititory. (https://github.com/ArtemisDevGroup/Artemis-SoftwareDevelopmentKit)   |
-//---------------------------------------------------------------------------------------------------------------------------------->
-
-class ExitKeybind : public IKeybind {
-public:
-    ExitKeybind() : IKeybind(VK_DELETE) {}
-
-    void WhenPressed() {
-        Midnight* pInst = Midnight::GetInst();
-        pInst->bRun = FALSE;
-        SetWindowLongPtr(pInst->hWnd, GWLP_WNDPROC, (LONG_PTR)pInst->oWndProc);
-    }
-};
 
 DWORD APIENTRY Main(_In_ HMODULE hModule) {
     Midnight* pInst = Midnight::GetInst();              // Gets a pointer to the core Midnight instance.
@@ -44,7 +31,11 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
     pLog->LogInfo(__FUNCTION__, "Module size: %lu", pMem->GetModuleSize());
 
     pInst->Initialize();                                // Initializes and runs the present hook.
-    pBindMgr->RegisterKeybind(new ExitKeybind());       // Registers the exit keybind.
+
+    pWndMgr->RegisterWnd(new MainWindow());
+
+    pBindMgr->RegisterKeybind(new ExitKeybind());
+    pBindMgr->RegisterKeybind(new HideAllKeybind());
 
     while (pInst->bRun) pBindMgr->InvokeKeybinds();
 
@@ -84,4 +75,3 @@ BOOL APIENTRY DllMain(
     }
     return TRUE;
 }
-

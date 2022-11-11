@@ -40,6 +40,15 @@
     <Filter Include="MinHook\Source Files">
       <UniqueIdentifier>{c7a355d4-6189-46ee-8b1e-5b67598fb36c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Artemis-Specific">
+      <UniqueIdentifier>{6855d042-1fa4-4417-a51a-f2db4ef74e5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Artemis-Specific\Header Files">
+      <UniqueIdentifier>{7ed922f7-c539-49f5-8d49-08a2643aeb2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Artemis-Specific\Source Files">
+      <UniqueIdentifier>{292e1e8f-8449-43f0-b1f1-b1c4319c562f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -87,18 +96,6 @@
     <ClCompile Include="ImGui\imgui_widgets.cpp">
       <Filter>ImGui\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ArtemisSpecific\Console.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ArtemisSpecific\Midnight.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ArtemisSpecific\PresentHook.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ArtemisSpecific\WindowManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MinHook\buffer.c">
       <Filter>MinHook\Source Files</Filter>
     </ClCompile>
@@ -114,10 +111,28 @@
     <ClCompile Include="MinHook\hde\hde64.c">
       <Filter>MinHook\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ArtemisSpecific\Console.cpp">
+      <Filter>Artemis-Specific\Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="ArtemisSpecific\DrawManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Artemis-Specific\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ArtemisSpecific\KeybindManager.cpp">
+      <Filter>Artemis-Specific\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ArtemisSpecific\Midnight.cpp">
+      <Filter>Artemis-Specific\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ArtemisSpecific\PresentHook.cpp">
+      <Filter>Artemis-Specific\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ArtemisSpecific\WindowManager.cpp">
+      <Filter>Artemis-Specific\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Keybinds.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -191,18 +206,6 @@
     <ClInclude Include="ImGui\imstb_truetype.h">
       <Filter>ImGui\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ArtemisSpecific\Console.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ArtemisSpecific\Midnight.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ArtemisSpecific\PresentHook.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ArtemisSpecific\WindowManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MinHook\buffer.h">
       <Filter>MinHook\Header Files</Filter>
     </ClInclude>
@@ -227,10 +230,31 @@
     <ClInclude Include="MinHook\hde\table64.h">
       <Filter>MinHook\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ArtemisSpecific\Console.h">
+      <Filter>Artemis-Specific\Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="ArtemisSpecific\DrawManager.h">
-      <Filter>Header Files</Filter>
+      <Filter>Artemis-Specific\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ArtemisSpecific\KeybindManager.h">
+      <Filter>Artemis-Specific\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ArtemisSpecific\Midnight.h">
+      <Filter>Artemis-Specific\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ArtemisSpecific\PresentHook.h">
+      <Filter>Artemis-Specific\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ArtemisSpecific\WindowManager.h">
+      <Filter>Artemis-Specific\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Keybinds.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

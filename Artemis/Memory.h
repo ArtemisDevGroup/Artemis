@@ -4,6 +4,7 @@
 #include "Definitions.h"
 #include "MemoryDefinitions.h"
 #include "Exceptions.h"
+#include "Array.h"
 
 #include "MemoryScanner.h"
 #include "MemoryAllocation.h"
@@ -234,6 +235,22 @@ namespace Artemis {
 		/// <exception cref="WindowsApiException (External)"/>
 		/// <exception cref="InstanceInvalidException"/>
 		ADDRESS ReadPtrAddress(_In_ LPCBASE_POINTER lpPointer);
+
+		/// <summary>
+		/// Reads the address from the end of a pointer.
+		/// </summary>
+		/// <param name="uAddress">- The pointer base address.</param>
+		/// <param name="lpPointer">- A List containing the pointer.</param>
+		/// <returns>The address at the end of the pointer.</returns>
+		/// <exception cref="ParameterException"/>
+		/// <exception cref="Exception"/>
+		/// <exception cref="MemoryAccessViolationException (Internal)"/>
+		/// <exception cref="WindowsApiException (External)"/>
+		/// <exception cref="InstanceInvalidException"/>
+		ADDRESS ReadPtrAddress(
+			_In_ ADDRESS uAddress,
+			_In_ const List<ADDRESS>& Offsets
+		);
 	
 		/// <summary>
 		/// Reads data from a pointer.
@@ -276,6 +293,31 @@ namespace Artemis {
 			CONTEXT_BEGIN;
 
 			T ret = Read<T>(ReadPtrAddress(lpPointer));
+
+			CONTEXT_END;
+			return ret;
+		}
+
+		/// <summary>
+		/// Reads data from a pointer.
+		/// </summary>
+		/// <typeparam name="T">- The datatype to read.</typeparam>
+		/// <param name="uAddress">- The pointer base address.</param>
+		/// <param name="lpPointer">- A List object containig the pointer.</param>
+		/// <returns>The read data.</returns>
+		/// <exception cref="ParameterException"/>
+		/// <exception cref="Exception"/>
+		/// <exception cref="MemoryAccessViolationException (Internal)"/>
+		/// <exception cref="WindowsApiException (External)"/>
+		/// <exception cref="InstanceInvalidException"/>
+		template<typename T>
+		inline T ReadPtr(
+			_In_ ADDRESS uAddress,
+			_In_ const List<ADDRESS>& Offsets
+		) {
+			CONTEXT_BEGIN;
+
+			T ret = Read<T>(ReadPtrAddress(uAddress, Offsets));
 
 			CONTEXT_END;
 			return ret;

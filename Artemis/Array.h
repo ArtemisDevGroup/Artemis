@@ -46,7 +46,7 @@ namespace Artemis {
 	public:
 		inline List() : lpAlloc(nullptr), nCount(0) {}
 
-		inline List(const List<T>& cpy) {
+		inline List(const List<T>& cpy) : lpAlloc(nullptr) {
 			Allocate(cpy.nCount);
 			memcpy(lpAlloc, cpy.lpAlloc, nCount * sizeof(T));
 		}
@@ -59,7 +59,7 @@ namespace Artemis {
 		inline List(
 			_In_ T* lpArray,
 			_In_ INT nCount
-		) {
+		) : lpAlloc(nullptr) {
 			Allocate(nCount);
 			memcpy(lpAlloc, lpArray, nCount * sizeof(T));
 		}
@@ -70,7 +70,7 @@ namespace Artemis {
 		/// <typeparam name="nCount">- The number of elements to copy from the previous array.</typeparam>
 		/// <param name="szArray">- A reference to a previously allocated array of items.</param>
 		template<INT nCount>
-		inline List(_In_ T(&szArray)[nCount]) {
+		inline List(_In_ T(&szArray)[nCount]) : lpAlloc(nullptr) {
 			Allocate(nCount);
 			memcpy(lpAlloc, szArray, nCount * sizeof(T));
 		}
@@ -79,7 +79,7 @@ namespace Artemis {
 		/// Constructs a List object and copies memory from the provided initializer list.
 		/// </summary>
 		/// <param name="InitList">- The initializer list to copy from.</param>
-		inline List(_In_ std::initializer_list<T> InitList) {
+		inline List(_In_ std::initializer_list<T> InitList) : lpAlloc(nullptr) {
 			Allocate(InitList.size());
 			memcpy(lpAlloc, InitList.begin(), InitList.size() * sizeof(T));
 		}
@@ -245,6 +245,7 @@ namespace Artemis {
 		inline ~List() { Release(); }
 
 		inline T& operator[](_In_ INT nIndex) { return lpAlloc[nIndex]; }
+		inline T operator[](_In_ INT nIndex) const { return lpAlloc[nIndex]; }
 	};
 }
 

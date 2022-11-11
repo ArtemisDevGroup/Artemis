@@ -153,14 +153,18 @@ namespace Artemis {
 
 			if (SUCCEEDED(pSwapChain->GetDevice(__uuidof(ID3D11Device), (void**)&pDevice))) {
 				pDevice->GetImmediateContext(&pContext);
+
 				DXGI_SWAP_CHAIN_DESC sd;
 				pSwapChain->GetDesc(&sd);
 				pInst->hWnd = sd.OutputWindow;
+
 				ID3D11Texture2D* pBackBuffer;
 				pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
 				pDevice->CreateRenderTargetView(pBackBuffer, NULL, &pMainRenderTargetView);
 				pBackBuffer->Release();
+
 				pInst->oWndProc = (WNDPROC)SetWindowLongPtr(pInst->hWnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
+
 				ImGui::CreateContext();
 				ImGuiIO& io = ImGui::GetIO();
 				io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
