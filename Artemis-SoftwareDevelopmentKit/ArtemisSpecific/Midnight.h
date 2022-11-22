@@ -8,6 +8,7 @@
 #include "WindowManager.h"
 #include "DrawManager.h"
 #include "KeybindManager.h"
+#include "OnFrameManager.h"
 #include "Console.h"
 #include "PresentHook.h"
 
@@ -30,6 +31,7 @@ namespace Artemis {
 		DrawManager ImGuiDrawManager;	// The main ImGui draw manager instance used in the present hook.
 		DrawManager ESPDrawManager;		// The ESP draw manager instanced used for drawing all the ESP and bones. Is flushed regularily.
 		KeybindManager BindManager;		// The main keybind manager instance used in the main loop.
+		OnFrameManager ActionManager;	// The main OnFrame manager executing before the draw and window operations every frame.
 		Hook PresentHook;				// The present hook.
 		Logger Log;						// The main logger instance.
 		Console ConInst;				// The main console instance.

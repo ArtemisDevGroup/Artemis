@@ -153,6 +153,9 @@
     <ClInclude Include="Vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ArtemisSpecific\OnFrameManager.h">
+      <Filter>Artemis-Specific\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ArtemisSpecific\WindowManager.cpp">
@@ -229,6 +232,9 @@
     </ClCompile>
     <ClCompile Include="MemoryScanner.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ArtemisSpecific\OnFrameManager.cpp">
+      <Filter>Artemis-Specific\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

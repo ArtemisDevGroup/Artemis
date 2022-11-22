@@ -2,6 +2,7 @@
 #define __KEYBIND_MANAGER_H__
 
 #include "..\Definitions.h"
+#include "..\Interfaces.h"
 #include "..\Exceptions.h"
 
 namespace Artemis {
@@ -31,7 +32,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class for binding key presses to operations.
 	/// </summary>
-	class KeybindManager {
+	class KeybindManager : public IDisposable {
 		IKeybind* lpszKeybindArray[MAX_INVOKE];
 
 	public:

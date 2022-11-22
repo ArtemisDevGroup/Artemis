@@ -24,6 +24,7 @@
     <ClInclude Include="ArtemisSpecific\DrawManager.h" />
     <ClInclude Include="ArtemisSpecific\KeybindManager.h" />
     <ClInclude Include="ArtemisSpecific\Midnight.h" />
+    <ClInclude Include="ArtemisSpecific\OnFrameManager.h" />
     <ClInclude Include="ArtemisSpecific\PresentHook.h" />
     <ClInclude Include="ArtemisSpecific\WindowManager.h" />
     <ClInclude Include="DateTime.h" />
@@ -62,6 +63,7 @@
     <ClCompile Include="ArtemisSpecific\DrawManager.cpp" />
     <ClCompile Include="ArtemisSpecific\KeybindManager.cpp" />
     <ClCompile Include="ArtemisSpecific\Midnight.cpp" />
+    <ClCompile Include="ArtemisSpecific\OnFrameManager.cpp" />
     <ClCompile Include="ArtemisSpecific\PresentHook.cpp" />
     <ClCompile Include="ArtemisSpecific\WindowManager.cpp" />
     <ClCompile Include="DateTime.cpp" />

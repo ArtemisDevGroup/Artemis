@@ -2,6 +2,7 @@
 #define __WINDOW_MANAGER_H__
 
 #include "..\Definitions.h"
+#include "..\Interfaces.h"
 #include "..\Events.h"
 #include "..\Exceptions.h"
 #include "..\ImGui\imgui.h"
@@ -41,7 +42,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class for managing the ImGui window instancws presented by project Artemis.
 	/// </summary>
-	class WindowManager {
+	class WindowManager : public IDisposable {
 		IWindow* lpszWndArray[MAX_INVOKE];
 
 	public:

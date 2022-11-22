@@ -2,6 +2,7 @@
 #define __DRAW_MANAGER_H__
 
 #include "..\Definitions.h"
+#include "..\Interfaces.h"
 #include "..\Exceptions.h"
 #include "..\Vector.h"
 #include "..\Array.h"
@@ -224,7 +225,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class for adding draw requests to the ImGui foreground draw list.
 	/// </summary>
-	class DrawManager {
+	class DrawManager : public IDisposable {
 		IDraw* lpszDrawArray[MAX_INVOKE];
 
 	public:
@@ -255,14 +256,15 @@ namespace Artemis {
 		/// <summary>
 		/// Invokes all registered draw operations.
 		/// </summary>
+		/// <param name="pDrawList>- The ImGui draw list to pass to the draw operations.</param>
 		void InvokeDraw(_In_ ImDrawList* pDrawList);
 
 		/// <summary>
 		/// Gets the pointer to a draw instance by its unique identifier.
 		/// </summary>
-		/// <param name="dwDrawId">- The identifier of the window to get.</param>
+		/// <param name="dwDrawId">- The identifier of the deaw instance to get.</param>
 		/// <exception cref="ObjectNotFoundException"/>
-		_Check_return_ _Ret_maybenull_ IDraw* GetDrawById(_In_ DWORD dwWndId);
+		_Check_return_ _Ret_maybenull_ IDraw* GetDrawById(_In_ DWORD dwDrawId);
 	};
 }
 
