@@ -18,4 +18,10 @@ public:
     void Window();
 };
 
+class ESPWindow : public IWindow {
+public:
+    ESPWindow();
+    void Window();
+};
+
 #endif // !__WINDOW_H__

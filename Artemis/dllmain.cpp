@@ -4,7 +4,7 @@
 
 #include "Keybinds.h"
 #include "Window.h"
-#include "Drawing.h"
+#include "Draw.h"
 
 using namespace Artemis;
 
@@ -34,6 +34,7 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
 
     pWndMgr->RegisterWnd(new MainWindow());
     pWndMgr->RegisterWnd(new HashWindow());
+    pWndMgr->RegisterWnd(new ESPWindow());
 
     pBindMgr->RegisterKeybind(new ExitKeybind());
     pBindMgr->RegisterKeybind(new HideAllKeybind());

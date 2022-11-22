@@ -183,6 +183,7 @@ namespace Artemis {
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
+		pInst->ESPDrawManager.InvokeDraw(ImGui::GetForegroundDrawList());
 		pInst->ImGuiDrawManager.InvokeDraw(ImGui::GetForegroundDrawList());
 		pInst->ImGuiWndManager.InvokeWnd();
 

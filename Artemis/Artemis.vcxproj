@@ -147,6 +147,7 @@
     <ClCompile Include="ArtemisSpecific\WindowManager.cpp" />
     <ClCompile Include="DateTime.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Draw.cpp" />
     <ClCompile Include="Exceptions.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
@@ -179,7 +180,7 @@
     <ClInclude Include="ClassNames.h" />
     <ClInclude Include="DateTime.h" />
     <ClInclude Include="Definitions.h" />
-    <ClInclude Include="Drawing.h" />
+    <ClInclude Include="Draw.h" />
     <ClInclude Include="Events.h" />
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="Hashes.h" />

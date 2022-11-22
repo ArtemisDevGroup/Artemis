@@ -28,6 +28,7 @@ namespace Artemis {
 		Memory Mem;						// The main memory instance.
 		WindowManager ImGuiWndManager;	// The main ImGui window manager instance used in the present hook.
 		DrawManager ImGuiDrawManager;	// The main ImGui draw manager instance used in the present hook.
+		DrawManager ESPDrawManager;		// The ESP draw manager instanced used for drawing all the ESP and bones. Is flushed regularily.
 		KeybindManager BindManager;		// The main keybind manager instance used in the main loop.
 		Hook PresentHook;				// The present hook.
 		Logger Log;						// The main logger instance.
