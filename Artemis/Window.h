@@ -1,10 +1,9 @@
 #ifndef __WINDOW_H__
 #define __WINDOW_H__
 
-#include "ArtemisSpecific/Midnight.h"
+#include <ArtemisSpecific/Midnight.h>
 
-using Artemis::Midnight;
-using Artemis::IWindow;
+using namespace Artemis;
 
 class MainWindow : public IWindow {
 public:
@@ -21,6 +20,12 @@ public:
 class ESPWindow : public IWindow {
 public:
     ESPWindow();
+    void Window();
+};
+
+class TestWindow : public IWindow {
+public:
+    TestWindow();
     void Window();
 };
 

@@ -3,7 +3,7 @@
 
 #include "Definitions.h"
 
-const DWORD szHashes[6981] = {
+static const DWORD szHashes[6981] = {
 	0xd74fd044,
 	0xaf01aeda,
 	0x16577,

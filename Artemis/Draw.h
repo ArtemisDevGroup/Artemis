@@ -3,17 +3,10 @@
 
 #include <xmmintrin.h>
 
-#include "ArtemisSpecific/Midnight.h"
-#include "Vector.h"
+#include <ArtemisSpecific/Midnight.h>
+#include <Vector.h>
 
-using Artemis::Midnight;
-using Artemis::IDraw;
-using Artemis::Memory;
-using Artemis::ADDRESS;
-using Artemis::Vector2;
-using Artemis::Vector3;
-using Artemis::Vector4;
-using Artemis::List;
+using namespace Artemis;
 
 class BoneAndESPDraw : public IDraw {
 	ADDRESS uEntity;

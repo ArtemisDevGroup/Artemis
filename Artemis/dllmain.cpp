@@ -1,6 +1,6 @@
 #include <Windows.h>
 
-#include "ArtemisSpecific/Midnight.h"
+#include <ArtemisSpecific/Midnight.h>
 
 #include "Keybinds.h"
 #include "Window.h"
@@ -35,6 +35,7 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
     pWndMgr->RegisterWnd(new MainWindow());
     pWndMgr->RegisterWnd(new HashWindow());
     pWndMgr->RegisterWnd(new ESPWindow());
+    pWndMgr->RegisterWnd(new TestWindow());
 
     pBindMgr->RegisterKeybind(new ExitKeybind());
     pBindMgr->RegisterKeybind(new HideAllKeybind());

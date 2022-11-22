@@ -3,7 +3,7 @@
 
 #include "Definitions.h"
 
-LPCSTR lpszClassNames[] = {
+static LPCSTR lpszClassNames[] = {
 	"BaseObject",
 	"Object",
 	"SplashFrequencyTest",
