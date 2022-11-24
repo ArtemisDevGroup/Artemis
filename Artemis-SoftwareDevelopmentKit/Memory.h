@@ -61,6 +61,7 @@ namespace Artemis {
 	
 	public:
 		Memory();
+		Memory(const Memory& cpy);
 	
 		/// <summary>
 		/// Constructs a Memory object targetting a module in the local process' virtual memory region.
@@ -74,32 +75,32 @@ namespace Artemis {
 		/// <param name="lpProcessName">- The name of the process along with it's extension.</param>
 		/// <param name="lpModuleName">- The name of the module to base off of with it's extension. This parameter is optional, nullptr will target the main module of the process.</param>
 		Memory(_In_z_ LPCSTR lpProcessName, _In_opt_z_ LPCSTR lpModuleName);
-	
+
 		~Memory();
 	
 		/// <summary>
 		/// Gets the name of the target process along with it's file extension.
 		/// </summary>
 		/// <returns>The name of the process.</returns>
-		_Check_return_ _Ret_notnull_ LPCSTR GetProcessName() const;
+		_Check_return_ _Ret_z_ LPCSTR GetProcessName() const;
 	
 		/// <summary>
 		/// Gets the full path of the target process.
 		/// </summary>
 		/// <returns>The path of the process.</returns>
-		_Check_return_ _Ret_notnull_ LPCSTR GetProcessPath() const;
+		_Check_return_ _Ret_z_ LPCSTR GetProcessPath() const;
 	
 		/// <summary>
 		/// Gets the name of the target module along with itäs file extension.
 		/// </summary>
 		/// <returns>The name of the module.</returns>
-		_Check_return_ _Ret_notnull_ LPCSTR GetModuleName() const;
+		_Check_return_ _Ret_z_ LPCSTR GetModuleName() const;
 	
 		/// <summary>
 		/// Gets the path of the target module.
 		/// </summary>
 		/// <returns>The path of the module.</returns>
-		_Check_return_ _Ret_notnull_ LPCSTR GetModulePath() const;
+		_Check_return_ _Ret_z_ LPCSTR GetModulePath() const;
 	
 		/// <summary>
 		/// Gets the target process' type.
@@ -111,7 +112,7 @@ namespace Artemis {
 		/// Gets a handle to the target process.
 		/// </summary>
 		/// <returns>A process handle.</returns>
-		_Check_return_ _Ret_maybenull_ HANDLE GetProcessHandle() const;
+		_Check_return_ _Ret_z_ HANDLE GetProcessHandle() const;
 	
 		/// <summary>
 		/// Gets the unique system identifier of the target process.
@@ -123,7 +124,7 @@ namespace Artemis {
 		/// Gets a handle to the target module.
 		/// </summary>
 		/// <returns>A module handle.</returns>
-		_Check_return_ _Ret_maybenull_ HMODULE GetModuleHandle() const;
+		_Check_return_ _Ret_notnull_ HMODULE GetModuleHandle() const;
 	
 		/// <summary>
 		/// Gets the base address of the target module's executable allocation.
@@ -149,7 +150,7 @@ namespace Artemis {
 		/// <exception cref="WindowsApiException (External)"/>
 		/// <exception cref="InstanceInvalidException"/>
 		template<typename T>
-		inline T Read(_In_ ADDRESS uAddress) {
+		inline _Check_return_ T Read(_In_ ADDRESS uAddress) {
 			CONTEXT_BEGIN;
 
 			T n = T();
@@ -174,7 +175,7 @@ namespace Artemis {
 		template<typename T, UINT uSize>
 		inline void ReadArray(
 			_In_ ADDRESS uAddress,
-			_Out_ T(&lpBuffer)[uSize]
+			_Out_writes_(uSize) T(&lpBuffer)[uSize]
 		) {
 			CONTEXT_BEGIN;
 
@@ -198,7 +199,7 @@ namespace Artemis {
 		template<typename T>
 		inline void ReadArray(
 			_In_ ADDRESS uAddress,
-			_Out_ T* lpBuffer,
+			_Out_writes_bytes_(uSize) T* lpBuffer,
 			_In_ UINT uSize
 		) {
 			CONTEXT_BEGIN;
@@ -219,7 +220,7 @@ namespace Artemis {
 		/// <exception cref="MemoryAccessViolationException (Internal)"/>
 		/// <exception cref="WindowsApiException (External)"/>
 		/// <exception cref="InstanceInvalidException"/>
-		ADDRESS ReadPtrAddress(
+		_Check_return_ ADDRESS ReadPtrAddress(
 			_In_ ADDRESS uAddress,
 			_In_ LPCPOINTER lpPointer
 		);
@@ -234,7 +235,7 @@ namespace Artemis {
 		/// <exception cref="MemoryAccessViolationException (Internal)"/>
 		/// <exception cref="WindowsApiException (External)"/>
 		/// <exception cref="InstanceInvalidException"/>
-		ADDRESS ReadPtrAddress(_In_ LPCBASE_POINTER lpPointer);
+		_Check_return_ ADDRESS ReadPtrAddress(_In_ LPCBASE_POINTER lpPointer);
 
 		/// <summary>
 		/// Reads the address from the end of a pointer.
@@ -247,7 +248,7 @@ namespace Artemis {
 		/// <exception cref="MemoryAccessViolationException (Internal)"/>
 		/// <exception cref="WindowsApiException (External)"/>
 		/// <exception cref="InstanceInvalidException"/>
-		ADDRESS ReadPtrAddress(
+		_Check_return_ ADDRESS ReadPtrAddress(
 			_In_ ADDRESS uAddress,
 			_In_ const List<ADDRESS>& Offsets
 		);
@@ -265,7 +266,7 @@ namespace Artemis {
 		/// <exception cref="WindowsApiException (External)"/>
 		/// <exception cref="InstanceInvalidException"/>
 		template<typename T>
-		inline T ReadPtr(
+		inline _Check_return_ T ReadPtr(
 			_In_ ADDRESS uAddress,
 			_In_ LPCPOINTER lpPointer
 		) {
@@ -289,7 +290,7 @@ namespace Artemis {
 		/// <exception cref="WindowsApiException (External)"/>
 		/// <exception cref="InstanceInvalidException"/>
 		template<typename T>
-		inline T ReadPtr(_In_ LPCBASE_POINTER lpPointer) {
+		inline _Check_return_ T ReadPtr(_In_ LPCBASE_POINTER lpPointer) {
 			CONTEXT_BEGIN;
 
 			T ret = Read<T>(ReadPtrAddress(lpPointer));
@@ -311,7 +312,7 @@ namespace Artemis {
 		/// <exception cref="WindowsApiException (External)"/>
 		/// <exception cref="InstanceInvalidException"/>
 		template<typename T>
-		inline T ReadPtr(
+		inline _Check_return_ T ReadPtr(
 			_In_ ADDRESS uAddress,
 			_In_ const List<ADDRESS>& Offsets
 		) {
@@ -599,7 +600,7 @@ namespace Artemis {
 		/// <param name="bScanModule">- Defines wether the scanner should only scan the process allocation or not.</param>
 		/// <returns>An initialized MemoryScanner object.</returns>
 		/// <exception cref="ParameterException"/>
-		MemoryScanner CreateScanner(
+		_Check_return_ MemoryScanner CreateScanner(
 			_In_ LPCSTR lpPattern,
 			_In_z_ LPCSTR lpMask,
 			_In_ BOOL bScanModule = TRUE
@@ -612,7 +613,7 @@ namespace Artemis {
 		/// <param name="bScanModule">- Defines wether the scanner should only scan the process allocation or not.</param>
 		/// <returns>An initialized MemoryScanner object.</returns>
 		/// <exception cref="ParameterException"/>
-		MemoryScanner CreateScanner(
+		_Check_return_ MemoryScanner CreateScanner(
 			_In_z_ LPCSTR lpPattern,
 			_In_ BOOL bScanModule = TRUE
 		);
@@ -625,7 +626,7 @@ namespace Artemis {
 		/// <param name="bScanModule">- Defines wether the scanner should only scan the process allocation or not.</param>
 		/// <returns>An initialized MemoryScanner object.</returns>
 		/// <exception cref="ParameterException"/>
-		MemoryScanner CreateScanner(
+		_Check_return_ MemoryScanner CreateScanner(
 			_In_z_ LPCSTR lpString,
 			_In_ BOOL bCaseSensitive,
 			_In_ BOOL bScanModule = TRUE
@@ -639,7 +640,7 @@ namespace Artemis {
 		/// <param name="bScanModule">- Defines wether the scanner should only scan the process allocation or not.</param>
 		/// <returns>An initialized MemoryScanner object.</returns>
 		/// <exception cref="ParameterException"/>
-		MemoryScanner CreateScanner(
+		_Check_return_ MemoryScanner CreateScanner(
 			_In_z_ LPCWSTR lpString,
 			_In_ BOOL bCaseSensitive,
 			_In_ BOOL bScanModule = TRUE
@@ -653,7 +654,7 @@ namespace Artemis {
 		/// <param name="Type">- The allocation type/method.</param>
 		/// <param name="Protection">- The allocation memory page protection.</param>
 		/// <returns>An initialized VirtualAllocation object.</returns>
-		VirtualAllocation CreateVirtualAllocation(
+		_Check_return_ VirtualAllocation CreateVirtualAllocation(
 			_In_opt_ ADDRESS uAddress = 0,
 			_In_ SIZE_T uSize = 1024,
 			_In_ AllocationType Type = AllocationType::Commit | AllocationType::Reserve,
@@ -696,7 +697,7 @@ namespace Artemis {
 		/// <returns>An initialized hook object.</returns>
 		/// <exception cref="NotImplementedException (Type == External)"/>
 		/// <exception cref="HookException"/>
-		Hook CreateHook(
+		_Check_return_ Hook CreateHook(
 			_In_z_ LPCSTR lpFunction,
 			_In_ LPVOID lpDetour,
 			_Out_opt_ LPVOID* lpOriginal = nullptr
@@ -711,7 +712,7 @@ namespace Artemis {
 		/// <returns>An initialized hook object.</returns>
 		/// <exception cref="NotImplementedException (Type == External)"/>
 		/// <exception cref="HookException"/>
-		Hook CreateHook(
+		_Check_return_ Hook CreateHook(
 			_In_ LPVOID lpTarget,
 			_In_ LPVOID lpDetour,
 			_Out_opt_ LPVOID* lpOriginal = nullptr
@@ -726,7 +727,7 @@ namespace Artemis {
 		/// <returns>An initialized hook object.</returns>
 		/// <exception cref="NotImplementedException (Type == External)"/>
 		/// <exception cref="HookException"/>
-		Hook CreateHook(
+		_Check_return_ Hook CreateHook(
 			_In_ ADDRESS uTarget,
 			_In_ LPVOID lpDetour,
 			_Out_opt_ LPVOID* lpOriginal = nullptr

@@ -1,5 +1,8 @@
 #include "Vector.h"
 
+#ifndef __MATRIX_H__
+#define __MATRIX_H__
+
 namespace Artemis {
 
 	template<typename T = float>
@@ -75,3 +78,5 @@ namespace Artemis {
 	};
 
 }
+
+#endif // !__MATRIX_H__

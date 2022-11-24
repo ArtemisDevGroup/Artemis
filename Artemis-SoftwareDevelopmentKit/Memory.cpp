@@ -75,6 +75,22 @@ namespace Artemis {
 		this->szModulePath[0] = { '\0' };
 	}
 	//-------------------------------------//
+	Memory::Memory(const Memory& cpy) {
+		memcpy(this, &cpy, sizeof(Memory));
+
+		if (TargetType == External) {
+			if (!DuplicateHandle(
+				hProcess,
+				hProcess,
+				GetCurrentProcess(),
+				&hProcess,
+				0,
+				FALSE,
+				DUPLICATE_SAME_ACCESS
+			)) throw WindowsApiException("DuplicateHandle");
+		}
+	}
+	//-------------------------------------//
 	Memory::Memory(_In_opt_z_ LPCSTR lpModuleName) : TargetType(Internal) {
 		CONTEXT_BEGIN;
 
@@ -185,7 +201,7 @@ namespace Artemis {
 
 		if (!this->uModuleBaseAddress) throw ObjectNotFoundException(lpModuleName ? lpModuleName : lpProcessName, "Loaded module in target process.");
 
-		this->hProcess = OpenProcess(PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION | PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION, FALSE, this->dwProcessId);
+		this->hProcess = OpenProcess(PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION | PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION | PROCESS_DUP_HANDLE, FALSE, this->dwProcessId);
 		if (!this->hProcess) throw WindowsApiException("OpenProcess");
 
 		if (!K32GetModuleBaseNameA(
@@ -222,20 +238,20 @@ namespace Artemis {
 	Memory::~Memory() { Release(); }
 	//---------------------------------------------------------------------->
 	// Getters:
-	_Check_return_ _Ret_notnull_ LPCSTR Memory::GetProcessName() const { return this->szProcessName; }
-	_Check_return_ _Ret_notnull_ LPCSTR Memory::GetProcessPath() const { return this->szProcessPath; }
-	_Check_return_ _Ret_notnull_ LPCSTR Memory::GetModuleName() const { return this->szModuleName; }
-	_Check_return_ _Ret_notnull_ LPCSTR Memory::GetModulePath() const { return this->szModulePath; }
+	_Check_return_ _Ret_z_ LPCSTR Memory::GetProcessName() const { return this->szProcessName; }
+	_Check_return_ _Ret_z_ LPCSTR Memory::GetProcessPath() const { return this->szProcessPath; }
+	_Check_return_ _Ret_z_ LPCSTR Memory::GetModuleName() const { return this->szModuleName; }
+	_Check_return_ _Ret_z_ LPCSTR Memory::GetModulePath() const { return this->szModulePath; }
 
 	_Check_return_ Memory::Type Memory::GetTargetType() const { return this->TargetType; }
-	_Check_return_ _Ret_maybenull_ HANDLE Memory::GetProcessHandle() const { return this->hProcess; }
+	_Check_return_ _Ret_z_ HANDLE Memory::GetProcessHandle() const { return this->hProcess; }
 	_Check_return_ DWORD Memory::GetProcessId() const { return this->dwProcessId; }
-	_Check_return_ _Ret_maybenull_ HMODULE Memory::GetModuleHandle() const { return this->hModule; }
+	_Check_return_ _Ret_notnull_ HMODULE Memory::GetModuleHandle() const { return this->hModule; }
 	_Check_return_ ADDRESS Memory::GetModuleBase() const { return this->uModuleBaseAddress; }
 	_Check_return_ DWORD Memory::GetModuleSize() const { return this->dwModuleSize; }
 	//---------------------------------------------------------------------->
 	// Public methods:
-	ADDRESS Memory::ReadPtrAddress(
+	_Check_return_ ADDRESS Memory::ReadPtrAddress(
 		_In_ ADDRESS uAddress,
 		_In_ LPCPOINTER lpPointer
 	) {
@@ -249,7 +265,7 @@ namespace Artemis {
 		return uAddress;
 	}
 	//-------------------------------------//
-	ADDRESS Memory::ReadPtrAddress(_In_ LPCBASE_POINTER lpPointer) {
+	_Check_return_ ADDRESS Memory::ReadPtrAddress(_In_ LPCBASE_POINTER lpPointer) {
 		CONTEXT_BEGIN;
 
 		ADDRESS uAddress = GetModuleBase() + lpPointer->uBaseOffset;
@@ -261,7 +277,7 @@ namespace Artemis {
 		return uAddress;
 	}
 	//-------------------------------------//
-	ADDRESS Memory::ReadPtrAddress(
+	_Check_return_ ADDRESS Memory::ReadPtrAddress(
 		_In_ ADDRESS uAddress,
 		_In_ const List<ADDRESS>& Offsets
 	) {
@@ -350,7 +366,7 @@ namespace Artemis {
 		CONTEXT_END;
 	}
 	//-------------------------------------//
-	MemoryScanner Memory::CreateScanner(_In_ LPCSTR lpPattern, _In_z_ LPCSTR lpMask, _In_ BOOL bScanModule) {
+	_Check_return_ MemoryScanner Memory::CreateScanner(_In_ LPCSTR lpPattern, _In_z_ LPCSTR lpMask, _In_ BOOL bScanModule) {
 		CONTEXT_BEGIN;
 
 		MemoryScanner ms(lpPattern, lpMask);
@@ -365,7 +381,7 @@ namespace Artemis {
 		return ms;
 	}
 	//-------------------------------------//
-	MemoryScanner Memory::CreateScanner(_In_z_ LPCSTR lpPattern, _In_ BOOL bScanModule) {
+	_Check_return_ MemoryScanner Memory::CreateScanner(_In_z_ LPCSTR lpPattern, _In_ BOOL bScanModule) {
 		CONTEXT_BEGIN;
 
 		MemoryScanner ms(lpPattern);
@@ -380,7 +396,7 @@ namespace Artemis {
 		return ms;
 	}
 	//-------------------------------------//
-	MemoryScanner Memory::CreateScanner(_In_z_ LPCSTR lpString, _In_ BOOL bCaseSensitive, _In_ BOOL bScanModule) {
+	_Check_return_ MemoryScanner Memory::CreateScanner(_In_z_ LPCSTR lpString, _In_ BOOL bCaseSensitive, _In_ BOOL bScanModule) {
 		CONTEXT_BEGIN;
 
 		MemoryScanner ms(lpString, bCaseSensitive);
@@ -395,7 +411,7 @@ namespace Artemis {
 		return ms;
 	}
 	//-------------------------------------//
-	MemoryScanner Memory::CreateScanner(_In_z_ LPCWSTR lpString, _In_ BOOL bCaseSensitive, _In_ BOOL bScanModule) {
+	_Check_return_ MemoryScanner Memory::CreateScanner(_In_z_ LPCWSTR lpString, _In_ BOOL bCaseSensitive, _In_ BOOL bScanModule) {
 		CONTEXT_BEGIN;
 
 		MemoryScanner ms(lpString, bCaseSensitive);
@@ -410,7 +426,7 @@ namespace Artemis {
 		return ms;
 	}
 	//-------------------------------------//
-	VirtualAllocation Memory::CreateVirtualAllocation(
+	_Check_return_ VirtualAllocation Memory::CreateVirtualAllocation(
 		_In_opt_ ADDRESS uAddress,
 		_In_ SIZE_T uSize,
 		_In_ AllocationType Type,
@@ -487,7 +503,7 @@ namespace Artemis {
 		CONTEXT_END;
 	}
 	//-------------------------------------//
-	Hook Memory::CreateHook(
+	_Check_return_ Hook Memory::CreateHook(
 		_In_z_ LPCSTR lpFunction,
 		_In_ LPVOID lpDetour,
 		_Out_opt_ LPVOID* lpOriginal
@@ -504,7 +520,7 @@ namespace Artemis {
 		CONTEXT_END;
 	}
 	//-------------------------------------//
-	Hook Memory::CreateHook(
+	_Check_return_ Hook Memory::CreateHook(
 		_In_ LPVOID lpTarget,
 		_In_ LPVOID lpDetour,
 		_Out_opt_ LPVOID* lpOriginal
@@ -521,7 +537,7 @@ namespace Artemis {
 		CONTEXT_END;
 	}
 	//-------------------------------------//
-	Hook Memory::CreateHook(
+	_Check_return_ Hook Memory::CreateHook(
 		_In_ ADDRESS uTarget,
 		_In_ LPVOID lpDetour,
 		_Out_opt_ LPVOID* lpOriginal

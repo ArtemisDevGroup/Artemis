@@ -11,7 +11,11 @@ using namespace Artemis;
 class BoneAndESPDraw : public IDraw {
 	ADDRESS uEntity;
 
-	void TransformsCalculation(__int64 pBones, __m128* ResultPosition, __m128* BoneInfo);
+	void TransformsCalculation(
+		_In_ __int64 pBones,
+		_Out_ __m128* ResultPosition,
+		_In_ __m128* BoneInfo
+	);
 
 	BOOL WorldToScreen(
 		_In_ Vector3<> v3World,
@@ -20,8 +24,8 @@ class BoneAndESPDraw : public IDraw {
 
 	BOOL GetBones(
 		_In_ ADDRESS uEntity,
-		_Out_opt_ UINT8* lpBoneIds = nullptr,
-		_Out_opt_ Vector3<>* lpBonePositions = nullptr
+		_Out_writes_opt_(27) UINT8* lpBoneIds = nullptr,
+		_Out_writes_opt_(27) Vector3<>* lpBonePositions = nullptr
 	);
 
 public:

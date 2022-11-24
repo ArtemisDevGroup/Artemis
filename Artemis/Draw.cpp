@@ -1,6 +1,10 @@
 #include "Draw.h"
 
-void BoneAndESPDraw::TransformsCalculation(__int64 pBones, __m128* ResultPosition, __m128* BoneInfo) {
+void BoneAndESPDraw::TransformsCalculation(
+	_In_ __int64 pBones,
+	_Out_ __m128* ResultPosition,
+	_In_ __m128* BoneInfo
+) {
 	__m128 v5; // xmm2
 	__m128 v6; // xmm3
 	__m128 v7; // xmm0
@@ -79,8 +83,8 @@ BOOL BoneAndESPDraw::WorldToScreen(
 
 BOOL BoneAndESPDraw::GetBones(
 	_In_ ADDRESS uEntity,
-	_Out_opt_ UINT8* lpBoneIds,
-	_Out_opt_ Vector3<>* lpBonePositions
+	_Out_writes_opt_(27) UINT8* lpBoneIds,
+	_Out_writes_opt_(27) Vector3<>* lpBonePositions
 ) {
 	Artemis::DrawManager* pDraw = &Midnight::GetInst()->ESPDrawManager;
 	Memory* pm = &Midnight::GetInst()->Mem;

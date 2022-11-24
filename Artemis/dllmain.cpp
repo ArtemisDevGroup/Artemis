@@ -14,7 +14,9 @@ Console* pCon = &pInst->ConInst;
 Memory* pMem = &pInst->Mem;
 WindowManager* pWndMgr = &pInst->ImGuiWndManager;
 DrawManager* pDrawMgr = &pInst->ImGuiDrawManager;
+DrawManager* pESPDrawMgr = &pInst->ESPDrawManager;
 KeybindManager* pBindMgr = &pInst->BindManager;
+OnFrameManager* pOnFrameMgr = &pInst->ActionManager;
 
 DWORD APIENTRY Main(_In_ HMODULE hModule) {
     pCon->Allocate();
@@ -72,7 +74,9 @@ BOOL APIENTRY DllMain(
     case DLL_PROCESS_DETACH:
         pWndMgr->Release();
         pDrawMgr->Release();
+        pESPDrawMgr->Release();
         pBindMgr->Release();
+        pOnFrameMgr->Release();
         pMem->Release();
         pInst->Release();
         pLog->Release();

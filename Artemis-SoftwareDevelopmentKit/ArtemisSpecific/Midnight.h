@@ -23,7 +23,7 @@ namespace Artemis {
 		/// </summary>
 		/// <returns>A pointer to a Midnight object.</returns>
 		static Midnight* GetInst();
-
+		
 		Midnight();
 
 		Memory Mem;						// The main memory instance.

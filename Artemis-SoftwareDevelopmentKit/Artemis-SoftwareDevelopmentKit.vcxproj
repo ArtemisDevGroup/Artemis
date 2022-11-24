@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Array.h" />
     <ClInclude Include="ArtemisSpecific\Console.h" />
+    <ClInclude Include="ArtemisSpecific\Const.h" />
     <ClInclude Include="ArtemisSpecific\DrawManager.h" />
     <ClInclude Include="ArtemisSpecific\KeybindManager.h" />
     <ClInclude Include="ArtemisSpecific\Midnight.h" />
