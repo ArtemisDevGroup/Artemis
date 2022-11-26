@@ -11,12 +11,6 @@ public:
     void Window();
 };
 
-class HashWindow : public IWindow {
-public:
-    HashWindow();
-    void Window();
-};
-
 class ESPWindow : public IWindow {
 public:
     ESPWindow();

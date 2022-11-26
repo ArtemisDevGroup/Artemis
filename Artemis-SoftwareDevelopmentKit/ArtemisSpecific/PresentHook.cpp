@@ -135,9 +135,9 @@ namespace Artemis {
 
 	Midnight* pInst;
 
-	LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-		if (true && ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) return true;
-		return CallWindowProc(Midnight::GetInst()->oWndProc, hWnd, uMsg, wParam, lParam);
+	LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+		if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) return TRUE;
+		return CallWindowProcW(Midnight::GetInst()->oWndProc, hWnd, uMsg, wParam, lParam);
 	}
 
 	HRESULT APIENTRY hkPresent(
@@ -163,11 +163,13 @@ namespace Artemis {
 				pDevice->CreateRenderTargetView(pBackBuffer, NULL, &pMainRenderTargetView);
 				pBackBuffer->Release();
 
-				pInst->oWndProc = (WNDPROC)SetWindowLongPtr(pInst->hWnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
+				pInst->oWndProc = (WNDPROC)SetWindowLongPtrW(pInst->hWnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
 
 				ImGui::CreateContext();
 				ImGuiIO& io = ImGui::GetIO();
 				io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
+				io.WantCaptureMouse = true;
+				io.WantCaptureKeyboard = true;
 
 				ImGui_SetStyle();
 
