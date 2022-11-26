@@ -154,15 +154,12 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="ESPWindow.cpp" />
-    <ClCompile Include="HashWindow.cpp" />
     <ClCompile Include="Keybinds.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="TestWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ClassNames.h" />
     <ClInclude Include="Draw.h" />
-    <ClInclude Include="Hashes.h" />
     <ClInclude Include="Keybinds.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>

@@ -35,7 +35,6 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
     pInst->Initialize();
 
     pWndMgr->RegisterWnd(new MainWindow());
-    pWndMgr->RegisterWnd(new HashWindow());
     pWndMgr->RegisterWnd(new ESPWindow());
     pWndMgr->RegisterWnd(new TestWindow());
 

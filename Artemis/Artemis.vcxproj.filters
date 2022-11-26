@@ -27,9 +27,6 @@
     <ClCompile Include="Draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HashWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ESPWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -45,12 +42,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Draw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hashes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ClassNames.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
