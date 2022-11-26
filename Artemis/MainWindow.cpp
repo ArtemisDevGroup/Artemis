@@ -1,6 +1,6 @@
 #include "Window.h"
 
-MainWindow::MainWindow() : IWindow("Main Window", 1) {}
+MainWindow::MainWindow() : IWindow("Main Window", WND_MAINWINDOW) {}
 
 void MainWindow::Window() {
     ImGui::Text("Welcome to Artemis!");

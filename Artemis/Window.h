@@ -3,6 +3,8 @@
 
 #include <ArtemisSpecific/Midnight.h>
 
+#include "Identifiers.h"
+
 using namespace Artemis;
 
 class MainWindow : public IWindow {

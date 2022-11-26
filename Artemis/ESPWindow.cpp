@@ -2,7 +2,7 @@
 
 #include "Draw.h"
 
-ESPWindow::ESPWindow() : IWindow("ESP Window", 3) {}
+ESPWindow::ESPWindow() : IWindow("ESP Window", WND_ESPWINDOW) {}
 
 bool bBoneEsp = false;
 

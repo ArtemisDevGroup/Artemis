@@ -8,6 +8,9 @@ namespace Artemis {
 	namespace Constants {
 		const BASE_OFFSET c_GameManager = 0x6E3FF30;
 
+		typedef char(__fastcall* tSetGameTimer)(__int64 GameManager, int nMilliseconds, char a3);
+		const BASE_OFFSET c_fnSetGameTimer = 0x213DC80;
+
 		const POINTER_OFFSET c_PlaylistOffset = 0x68;
 
 		const BASE_POINTER c_Playlist						= { c_GameManager, { c_PlaylistOffset }, 1 };

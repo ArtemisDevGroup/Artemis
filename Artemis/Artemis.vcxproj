@@ -152,7 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Draw.cpp" />
+    <ClCompile Include="ESPDraw.cpp" />
     <ClCompile Include="ESPWindow.cpp" />
     <ClCompile Include="Keybinds.cpp" />
     <ClCompile Include="MainWindow.cpp" />
@@ -160,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Draw.h" />
+    <ClInclude Include="Identifiers.h" />
     <ClInclude Include="Keybinds.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
