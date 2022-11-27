@@ -32,7 +32,7 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
     pLog->LogInfo(__FUNCTION__, "Module base address: 0x%llX", pMem->GetModuleBase());
     pLog->LogInfo(__FUNCTION__, "Module size: %lu", pMem->GetModuleSize());
 
-    pInst->Initialize();
+    pInst->Initialize(hModule);
 
     pWndMgr->RegisterWnd(new MainWindow());
     pWndMgr->RegisterWnd(new ESPWindow());

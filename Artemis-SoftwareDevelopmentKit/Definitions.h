@@ -15,7 +15,6 @@
 
 #define MAX_NAME				64										// The max characters in a name.
 #define MAX_MESSAGE				256										// The max characters in a message.
-#define MAX_PATH				260										// The max characters in a system path.
 #define MAX_INVOKE				64										// The max number of invokable pointers. Affects the hard limit on things like Event or WindowManager.
 
 #define IN_RANGE(n, lo, hi) ((n >= lo) && (n <= hi))					// Checks if the value is in the range of two other values.

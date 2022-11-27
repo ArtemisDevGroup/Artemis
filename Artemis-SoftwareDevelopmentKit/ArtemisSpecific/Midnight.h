@@ -39,12 +39,13 @@ namespace Artemis {
 		BOOL bRun;						// A bool that if set to false will shut the module down and release its resources.
 		LPVOID lpPresent;				// A pointer to the original present function.
 		WNDPROC oWndProc;				// A pointer to the original window proceidure.
+		HMODULE hModule;				// A handle to the Artemis dll module.
 		HWND hWnd;						// A handle to the main window.
 
 		/// <summary>
 		/// Initializes the Midnight instance.
 		/// </summary>
-		void Initialize();
+		void Initialize(_In_ HMODULE hModule);
 
 		/// <summary>
 		/// Releases the Midnight instance.
