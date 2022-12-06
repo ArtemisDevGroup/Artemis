@@ -12,7 +12,7 @@ namespace Artemis {
 	/// <summary>
 	/// An abstract class for easily drawing to the screen using ImGui.
 	/// </summary>
-	class IDraw {
+	class IDraw : public IRegisterable {
 		ImDrawList* pDrawList;
 
 	public:
@@ -20,7 +20,7 @@ namespace Artemis {
 		/// Sets the data fields.
 		/// </summary>
 		/// <param name="dwDrawId">- The draw action id. Has to be an unique id used by no other draw action. Id 0-39 are reserved.</param>
-		IDraw(_In_ DWORD dwDrawId) : dwDrawId(dwDrawId), pDrawList(nullptr) {}
+		IDraw(_In_ DWORD dwDrawId) : IRegisterable(), dwDrawId(dwDrawId), pDrawList(nullptr) {}
 
 		const DWORD dwDrawId; // The draw action id.
 

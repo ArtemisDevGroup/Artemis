@@ -1,4 +1,5 @@
 #include "OnFrameManager.h"
+#include "..\SafeMemory.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -20,6 +21,7 @@ namespace Artemis {
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (!lpszOnFrameArray[i]) {
 				lpszOnFrameArray[i] = lpOnFrameAction;
+				lpOnFrameAction->dwRegisteredCount++;
 				break;
 			}
 		}
@@ -34,6 +36,7 @@ namespace Artemis {
 
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (lpszOnFrameArray[i] == lpOnFrameAction) {
+				lpszOnFrameArray[i]->dwRegisteredCount--;
 				lpszOnFrameArray[i] = nullptr;
 				bUnregistered = TRUE;
 				break;
@@ -48,7 +51,8 @@ namespace Artemis {
 	void OnFrameManager::Release() {
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (lpszOnFrameArray[i]) {
-				delete lpszOnFrameArray[i];
+				if (lpszOnFrameArray[i]->dwRegisteredCount <= 1) SafeDelete(lpszOnFrameArray[i]);
+				else lpszOnFrameArray[i]->dwRegisteredCount--;
 				lpszOnFrameArray[i] = nullptr;
 			}
 		}

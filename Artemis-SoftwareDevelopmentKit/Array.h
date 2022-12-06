@@ -57,7 +57,7 @@ namespace Artemis {
 		/// <param name="lpArray">- A pointer to a previously allocated array of items.</param>
 		/// <param name="nCount">- The number of elements to copy from the previous array.</param>
 		inline List(
-			_In_ T* lpArray,
+			_In_reads_(nCount) T* lpArray,
 			_In_ INT nCount
 		) : lpAlloc(nullptr) {
 			Allocate(nCount);
@@ -70,7 +70,7 @@ namespace Artemis {
 		/// <typeparam name="nCount">- The number of elements to copy from the previous array.</typeparam>
 		/// <param name="szArray">- A reference to a previously allocated array of items.</param>
 		template<INT nCount>
-		inline List(_In_ T(&szArray)[nCount]) : lpAlloc(nullptr) {
+		inline List(_In_reads_(nCount) T(&szArray)[nCount]) : lpAlloc(nullptr) {
 			Allocate(nCount);
 			memcpy(lpAlloc, szArray, nCount * sizeof(T));
 		}
@@ -116,7 +116,7 @@ namespace Artemis {
 		/// <param name="nIndex">- The index to add at. -1 means appending to the end of the list.</param>
 		/// <exception cref="IndexOutOfRangeException"/>
 		inline void Add(
-			_In_ T* lpElements,
+			_In_reads_(nCount) T* lpElements,
 			_In_ INT nCount,
 			_In_ INT nIndex
 		) {
@@ -145,7 +145,7 @@ namespace Artemis {
 		/// <exception cref="IndexOutOfRangeException"/>
 		template<INT nCount>
 		inline void Add(
-			_In_ T(&szArray)[nCount],
+			_In_reads_(nCount) T(&szArray)[nCount],
 			_In_ INT nIndex
 		) {
 			if (nIndex >= this->nCount) throw IndexOutOfRangeException(nIndex, this->nCount - 1);

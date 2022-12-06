@@ -8,6 +8,8 @@
 
 using namespace Artemis;
 
+void RegisterEventHandlers(); // Forward declaration from ExceptionLoggers.cpp.
+
 Midnight* pInst = Midnight::GetInst();
 Logger* pLog = &pInst->Log;
 Console* pCon = &pInst->ConInst;
@@ -34,8 +36,11 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
 
     pInst->Initialize(hModule);
 
+    ESPWindow* pEspWnd = new ESPWindow();
+    pWndMgr->RegisterWnd(pEspWnd);
+    pOnFrameMgr->RegisterOnFrameAction(pEspWnd);
+
     pWndMgr->RegisterWnd(new MainWindow());
-    pWndMgr->RegisterWnd(new ESPWindow());
     pWndMgr->RegisterWnd(new TestWindow());
 
     pBindMgr->RegisterKeybind(new ExitKeybind());
@@ -71,13 +76,13 @@ BOOL APIENTRY DllMain(
         break;
 
     case DLL_PROCESS_DETACH:
+        pInst->Release();
         pWndMgr->Release();
         pDrawMgr->Release();
         pESPDrawMgr->Release();
         pBindMgr->Release();
         pOnFrameMgr->Release();
         pMem->Release();
-        pInst->Release();
         pLog->Release();
         pCon->Release();
         break;

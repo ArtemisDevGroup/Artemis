@@ -9,13 +9,13 @@ namespace Artemis {
 	/// <summary>
 	/// An abstract class for running an action at the beginning of every frame.
 	/// </summary>
-	class IOnFrame {
+	class IOnFrame : public IRegisterable {
 	public:
 		/// <summary>
 		/// Sets the data fields.
 		/// </summary>
 		/// <param name="dwOnFrameId">- The OnFrame action id.</param>
-		inline IOnFrame(_In_ DWORD dwOnFrameId) : dwOnFrameId(dwOnFrameId) {}
+		inline IOnFrame(_In_ DWORD dwOnFrameId) : IRegisterable(), dwOnFrameId(dwOnFrameId) {}
 
 		const DWORD dwOnFrameId; // The OnFrame action id.
 		

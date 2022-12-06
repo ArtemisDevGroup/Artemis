@@ -42,13 +42,13 @@ namespace Artemis {
 		return dt;
 	}
 
-	DateTime DateTime::Now() {
+	_Check_return_ DateTime DateTime::Now() {
 		SYSTEMTIME st;
 		GetLocalTime(&st);
 		return ProcessTimeData(&st);
 	}
 
-	DateTime DateTime::NowUTC() {
+	_Check_return_ DateTime DateTime::NowUTC() {
 		SYSTEMTIME st;
 		GetSystemTime(&st);
 		return ProcessTimeData(&st);

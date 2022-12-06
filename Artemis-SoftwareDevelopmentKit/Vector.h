@@ -64,6 +64,7 @@ namespace Artemis {
 			szVector[0] /= Right.X();
 			szVector[1] /= Right.Y();
 		}
+		inline operator T* () { return szVector; }
 	};
 
 	template<typename T = float>
@@ -139,6 +140,7 @@ namespace Artemis {
 			szVector[1] /= Right.Y();
 			szVector[2] /= Right.Z();
 		}
+		inline operator T* () { return szVector; }
 	};
 
 	template<typename T = float>
@@ -225,6 +227,7 @@ namespace Artemis {
 			szVector[2] /= Right.Z();
 			szVector[3] /= Right.W();
 		}
+		inline operator T* () { return szVector; }
 	};
 }
 

@@ -6,6 +6,12 @@ namespace Artemis {
 	public:
 		virtual void Release() = 0;
 	};
+
+	class IRegisterable {
+	public:
+		IRegisterable() : dwRegisteredCount(0) {}
+		DWORD dwRegisteredCount; // The number of times this object has been registered.
+	};
 }
 
 #endif // !__INTERFACES_H__

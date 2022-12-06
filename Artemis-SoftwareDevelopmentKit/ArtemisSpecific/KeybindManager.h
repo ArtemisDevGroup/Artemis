@@ -9,7 +9,7 @@ namespace Artemis {
 	/// <summary>
 	/// An interface for binding key presses to operations.
 	/// </summary>
-	class IKeybind {
+	class IKeybind : public IRegisterable {
 	public:
 		IKeybind(_In_ WORD wKey);
 

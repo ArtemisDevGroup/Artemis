@@ -1,4 +1,5 @@
 #include "DrawManager.h"
+#include "..\SafeMemory.h"
 
 #include <stdio.h>
 
@@ -295,6 +296,7 @@ namespace Artemis {
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (!lpszDrawArray[i]) {
 				lpszDrawArray[i] = lpDrawInst;
+				lpDrawInst->dwRegisteredCount++;
 				break;
 			}
 		}
@@ -309,6 +311,7 @@ namespace Artemis {
 
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (lpszDrawArray[i] == lpDrawInst) {
+				lpszDrawArray[i]->dwRegisteredCount--;
 				lpszDrawArray[i] = nullptr;
 				bUnregistered = TRUE;
 				break;
@@ -323,7 +326,8 @@ namespace Artemis {
 	void DrawManager::Release() {
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (lpszDrawArray[i]) {
-				delete lpszDrawArray[i];
+				if (lpszDrawArray[i]->dwRegisteredCount <= 1) SafeDelete(lpszDrawArray[i]);
+				else lpszDrawArray[i]->dwRegisteredCount--;
 				lpszDrawArray[i] = nullptr;
 			}
 		}

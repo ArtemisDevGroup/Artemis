@@ -160,6 +160,7 @@ namespace Artemis {
 
 				ID3D11Texture2D* pBackBuffer;
 				pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+				if (!pBackBuffer) return oPresent(pSwapChain, SyncInterval, Flags);
 				pDevice->CreateRenderTargetView(pBackBuffer, NULL, &pMainRenderTargetView);
 				pBackBuffer->Release();
 

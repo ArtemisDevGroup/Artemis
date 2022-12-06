@@ -1,10 +1,11 @@
 #include "KeybindManager.h"
+#include "..\SafeMemory.h"
 
 #include <stdio.h>
 #include <Windows.h>
 
 namespace Artemis {
-	IKeybind::IKeybind(_In_ WORD wKey) : wKey(wKey) {}
+	IKeybind::IKeybind(_In_ WORD wKey) : IRegisterable(), wKey(wKey) {}
 
 	void IKeybind::Invoke() { if (GetAsyncKeyState(wKey) & 1) WhenPressed(); }
 
@@ -24,6 +25,7 @@ namespace Artemis {
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (!lpszKeybindArray[i]) {
 				lpszKeybindArray[i] = lpKeybindInst;
+				lpKeybindInst->dwRegisteredCount++;
 				break;
 			}
 		}
@@ -38,6 +40,7 @@ namespace Artemis {
 
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (lpszKeybindArray[i] == lpKeybindInst) {
+				lpszKeybindArray[i]->dwRegisteredCount--;
 				lpszKeybindArray[i] = nullptr;
 				bUnregistered = TRUE;
 				break;
@@ -52,7 +55,8 @@ namespace Artemis {
 	void KeybindManager::Release() {
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (lpszKeybindArray[i]) {
-				delete lpszKeybindArray[i];
+				if (lpszKeybindArray[i]->dwRegisteredCount <= 1) SafeDelete(lpszKeybindArray[i]);
+				else lpszKeybindArray[i]->dwRegisteredCount--;
 				lpszKeybindArray[i] = nullptr;
 			}
 		}

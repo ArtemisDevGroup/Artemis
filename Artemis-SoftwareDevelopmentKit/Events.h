@@ -27,7 +27,7 @@ namespace Artemis {
 					lpszFunctions[i](params...);
 		}
 
-		inline void operator+=(LPFUNCTION lpFunction) {
+		inline void operator+=(_In_ LPFUNCTION lpFunction) {
 			for (INT i = 0; i < MAX_INVOKE; i++) {
 				if (!lpszFunctions[i]) {
 					lpszFunctions[i] = lpFunction;
@@ -36,7 +36,7 @@ namespace Artemis {
 			}
 		}
 
-		inline void operator-=(LPFUNCTION lpFunction) {
+		inline void operator-=(_In_ LPFUNCTION lpFunction) {
 			for (INT i = 0; i < MAX_INVOKE; i++) {
 				if (lpszFunctions[i] == lpFunction) {
 					lpszFunctions[i] = nullptr;
@@ -87,7 +87,7 @@ namespace Artemis {
 			}
 		}
 
-		inline void operator+=(LPFUNCTION lpFunction) {
+		inline void operator+=(_In_ LPFUNCTION lpFunction) {
 			for (INT i = 0; i < 64; i++) {
 				if (!lpszFunctions[i]) {
 					lpszFunctions[i] = lpFunction;
@@ -96,7 +96,7 @@ namespace Artemis {
 			}
 		}
 
-		inline void operator-=(LPFUNCTION lpFunction) {
+		inline void operator-=(_In_ LPFUNCTION lpFunction) {
 			for (INT i = 0; i < 64; i++) {
 				if (lpszFunctions[i] == lpFunction) {
 					lpszFunctions[i] = nullptr;

@@ -1,22 +1,36 @@
 #include "Window.h"
-
 #include "Draw.h"
 
-ESPWindow::ESPWindow() : IWindow("ESP Window", WND_ESPWINDOW) {}
+#include <ArtemisSpecific/Const.h>
 
-bool bBoneEsp = false;
+using namespace Artemis::Constants;
+
+ESPWindow::ESPWindow() : IWindow("ESP Window", WND_ESPWINDOW), IOnFrame(ONFRAME_ESP), bBoneEsp(false) {}
 
 void ESPWindow::Window() {
     static DrawManager* pDraw = &Midnight::GetInst()->ESPDrawManager;
+
+    if (ImGui::Checkbox("Bone ESP", &bBoneEsp)) {
+        if (!bBoneEsp) pDraw->Release();
+    }
+
+    ImGui::ColorPicker4(
+        "Bone Color",
+        BoneAndESPDraw::Color(),
+        ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_DisplayHex | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_Uint8
+    );
+}
+
+void ESPWindow::OnFrame() {
     static Memory* pm = &Midnight::GetInst()->Mem;
-    static Logger* pLog = &Midnight::GetInst()->Log;
-    const ADDRESS c_GameManager = *(ADDRESS*)(pm->GetModuleBase() + 0x6E3FF30);
+    static DrawManager* pDraw = &Midnight::GetInst()->ESPDrawManager;
+    static const ADDRESS c_uGameManager = *(ADDRESS*)(pm->GetModuleBase() + c_GameManager);
 
     if (bBoneEsp) {
-        ADDRESS uPtr = *(ADDRESS*)(c_GameManager + 0xB0);
+        ADDRESS uPtr = *(ADDRESS*)(c_uGameManager + 0xB0);
         uPtr = ((uPtr - 0x36) >> 0x11 | (uPtr - 0x36) << 0x2F) - 0x58;
 
-        ADDRESS uCount = *(ADDRESS*)(c_GameManager + 0xB8);
+        ADDRESS uCount = *(ADDRESS*)(c_uGameManager + 0xB8);
         INT nCount = (((uCount - 0x36) >> 0x11 | (uCount - 0x36) << 0x2F) - 0x58) ^ 0x18C0000000;
 
         try {
@@ -32,10 +46,4 @@ void ESPWindow::Window() {
         }
         catch (AttributeException&) {}
     }
-
-    if (ImGui::Checkbox("Bone ESP", &bBoneEsp)) {
-        if (!bBoneEsp) pDraw->Release();
-    }
-
-    ImGui::ColorPicker4("Bone Color", BoneAndESPDraw::Color().szVector, ImGuiColorEditFlags_NoInputs);
 }

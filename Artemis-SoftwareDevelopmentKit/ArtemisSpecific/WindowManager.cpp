@@ -1,4 +1,5 @@
 #include "WindowManager.h"
+#include "..\SafeMemory.h"
 
 #include <stdio.h>
 
@@ -35,6 +36,7 @@ namespace Artemis {
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (!lpszWndArray[i]) {
 				lpszWndArray[i] = lpWndInst;
+				lpWndInst->dwRegisteredCount++;
 				break;
 			}
 		}
@@ -49,6 +51,7 @@ namespace Artemis {
 
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (lpszWndArray[i] == lpWndInst) {
+				lpszWndArray[i]->dwRegisteredCount--;
 				lpszWndArray[i] = nullptr;
 				bUnregistered = TRUE;
 				break;
@@ -63,7 +66,8 @@ namespace Artemis {
 	void WindowManager::Release() {
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (lpszWndArray[i]) {
-				delete lpszWndArray[i];
+				if (lpszWndArray[i]->dwRegisteredCount <= 1) SafeDelete(lpszWndArray[i]);
+				else lpszWndArray[i]->dwRegisteredCount--;
 				lpszWndArray[i] = nullptr;
 			}
 		}

@@ -19,6 +19,9 @@
     <Filter Include="Source Files\Draw">
       <UniqueIdentifier>{a3232c15-11f8-4b1a-84bc-4b7952cf43b2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\OnFrame">
+      <UniqueIdentifier>{f6c49508-0cb3-43c6-b598-58b81d6cbb18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -38,6 +41,9 @@
     </ClCompile>
     <ClCompile Include="ESPDraw.cpp">
       <Filter>Source Files\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="ExceptionLoggers.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -9,8 +9,8 @@ namespace Artemis {
 		static DateTime ProcessTimeData(_In_ LPSYSTEMTIME lpSystemTime);
 
 	public:
-		static DateTime Now();
-		static DateTime NowUTC();
+		static _Check_return_ DateTime Now();
+		static _Check_return_ DateTime NowUTC();
 
 		WORD wMilliseconds;
 		WORD wSecond;

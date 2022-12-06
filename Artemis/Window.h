@@ -13,10 +13,13 @@ public:
     void Window();
 };
 
-class ESPWindow : public IWindow {
+class ESPWindow : public IWindow, public IOnFrame {
+    bool bBoneEsp;
+
 public:
     ESPWindow();
     void Window();
+    void OnFrame();
 };
 
 class TestWindow : public IWindow {
