@@ -27,7 +27,7 @@
 #define IS_UPPERCASE(c) IN_RANGE(c, 'A', 'Z')							// Checks if a character is upper case.
 #define IS_LETTER(c) (IS_LOWERCASE(c) || IS_UPPERCASE(c))				// Checks if a character is a letter.
 #define IS_DIGIT(c) IN_RANGE(c, '0', '9')								// Checks if a character is a digit.
-#define IS_HEX(c) (IS_DIGIT(c) && (IN_RANGE(c, 'A', 'F') || IN_RANGE(c, 'a', 'f'))) // Checks if a character is a hexadecimal digit.
+#define IS_HEX(c) (IS_DIGIT(c) || (IN_RANGE(c, 'A', 'F') || IN_RANGE(c, 'a', 'f'))) // Checks if a character is a hexadecimal digit.
 
 #define TO_LOWERCASE(c) (c + '\x20')									// Converts an upper case letter to a lower case one.
 #define TO_UPPERCASE(c) (c - '\x20')									// Converts a lower case character to an upper case one.
