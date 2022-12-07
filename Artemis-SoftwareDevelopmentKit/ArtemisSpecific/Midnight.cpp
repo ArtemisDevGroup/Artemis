@@ -84,6 +84,17 @@ namespace Artemis {
 			return;
 		}
 
+		Log.LogInfo(__FUNCTION__, "Attempting to restore the old window procedure.");
+
+		try {
+			if (!SetWindowLongPtrW(hWnd, GWLP_WNDPROC, (LONG_PTR)oWndProc)) throw WindowsApiException("SetWindowLongPtrW");
+			Log.LogSuccess("Successfully restored the window procedure.");
+		}
+		catch (WindowsApiException& e) {
+			Log.LogError("Failed to restore the old window procedure. Message: %s", e.GetWindowsMessage());
+			return;
+		}
+
 		Log.LogInfo(__FUNCTION__, "Releasing hooking library...");
 		try {
 			Hook::UninitializeLibrary();

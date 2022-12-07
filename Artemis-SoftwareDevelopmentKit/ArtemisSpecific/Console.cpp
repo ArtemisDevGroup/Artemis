@@ -47,10 +47,10 @@ namespace Artemis {
 		}
 	}
 
-	void Console::Show() { if (bAllocated && bShowing) if (!ShowWindow(hConsoleWnd, SW_SHOW)) throw WindowsApiException("ShowWindow"); }
-	void Console::Hide() { if (bAllocated && !bShowing) if (!ShowWindow(hConsoleWnd, SW_HIDE)) throw WindowsApiException("ShowWindow"); }
+	void Console::Show() const { if (bAllocated && bShowing) if (!ShowWindow(hConsoleWnd, SW_SHOW)) throw WindowsApiException("ShowWindow"); }
+	void Console::Hide() const { if (bAllocated && !bShowing) if (!ShowWindow(hConsoleWnd, SW_HIDE)) throw WindowsApiException("ShowWindow"); }
 
-	void Console::SetTextColor(_In_ WORD wColor) { if (bAllocated) if (!SetConsoleTextAttribute(hConsoleOut, wColor)) throw WindowsApiException("SetConsoleTextAttribute"); }
+	void Console::SetTextColor(_In_ WORD wColor) const { if (bAllocated) if (!SetConsoleTextAttribute(hConsoleOut, wColor)) throw WindowsApiException("SetConsoleTextAttribute"); }
 
 	Console::~Console() { Release(); }
 }

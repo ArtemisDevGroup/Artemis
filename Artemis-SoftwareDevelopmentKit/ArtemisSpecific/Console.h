@@ -39,20 +39,20 @@ namespace Artemis {
 		/// Shows the console window.
 		/// </summary>
 		/// <exception cref="WindowsApiException"/>
-		void Show();
+		void Show() const;
 
 		/// <summary>
 		/// Hides the console window.
 		/// </summary>
 		/// <exception cref="WindowsApiException"/>
-		void Hide();
+		void Hide() const;
 
 		/// <summary>
 		/// Sets the text color of the console window.
 		/// </summary>
 		/// <param name="wColor">- The windows color constants.</param>
 		/// <exception cref="WindowsApiException"/>
-		void SetTextColor(_In_ WORD wColor = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		void SetTextColor(_In_ WORD wColor = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE) const;
 
 		~Console();
 	};

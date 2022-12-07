@@ -45,6 +45,7 @@ namespace Artemis {
 		/// <summary>
 		/// Initializes the Midnight instance.
 		/// </summary>
+		/// <param name="hModule">- A handle to the Artemis module.</param>
 		void Initialize(_In_ HMODULE hModule);
 
 		/// <summary>
