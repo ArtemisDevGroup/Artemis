@@ -51,13 +51,13 @@ namespace Artemis {
 			_In_ ADDRESS uAddress,
 			_Out_ LPVOID lpBuffer,
 			_In_ DWORD dwSize
-		);
+		) const;
 	
 		void _Write(
 			_In_ ADDRESS uAddress,
 			_In_ LPCVOID lpBuffer,
 			_In_ DWORD dwSize
-		);
+		) const;
 	
 	public:
 		Memory();
@@ -150,7 +150,7 @@ namespace Artemis {
 		/// <exception cref="WindowsApiException (External)"/>
 		/// <exception cref="InstanceInvalidException"/>
 		template<typename T>
-		inline _Check_return_ T Read(_In_ ADDRESS uAddress) {
+		inline _Check_return_ T Read(_In_ ADDRESS uAddress) const {
 			CONTEXT_BEGIN;
 
 			T n = T();
@@ -176,7 +176,7 @@ namespace Artemis {
 		inline void ReadArray(
 			_In_ ADDRESS uAddress,
 			_Out_writes_(uSize) T(&lpBuffer)[uSize]
-		) {
+		) const {
 			CONTEXT_BEGIN;
 
 			_Read(uAddress, lpBuffer, uSize * sizeof(T));
@@ -201,7 +201,7 @@ namespace Artemis {
 			_In_ ADDRESS uAddress,
 			_Out_writes_bytes_(uSize) T* lpBuffer,
 			_In_ UINT uSize
-		) {
+		) const {
 			CONTEXT_BEGIN;
 
 			_Read(uAddress, lpBuffer, uSize);
@@ -223,7 +223,7 @@ namespace Artemis {
 		_Check_return_ ADDRESS ReadPtrAddress(
 			_In_ ADDRESS uAddress,
 			_In_ LPCPOINTER lpPointer
-		);
+		) const;
 	
 		/// <summary>
 		/// Reads the address from the end of a pointer.
@@ -235,7 +235,7 @@ namespace Artemis {
 		/// <exception cref="MemoryAccessViolationException (Internal)"/>
 		/// <exception cref="WindowsApiException (External)"/>
 		/// <exception cref="InstanceInvalidException"/>
-		_Check_return_ ADDRESS ReadPtrAddress(_In_ LPCBASE_POINTER lpPointer);
+		_Check_return_ ADDRESS ReadPtrAddress(_In_ LPCBASE_POINTER lpPointer) const;
 
 		/// <summary>
 		/// Reads the address from the end of a pointer.
@@ -251,7 +251,7 @@ namespace Artemis {
 		_Check_return_ ADDRESS ReadPtrAddress(
 			_In_ ADDRESS uAddress,
 			_In_ const List<ADDRESS>& Offsets
-		);
+		) const;
 	
 		/// <summary>
 		/// Reads data from a pointer.
@@ -269,7 +269,7 @@ namespace Artemis {
 		inline _Check_return_ T ReadPtr(
 			_In_ ADDRESS uAddress,
 			_In_ LPCPOINTER lpPointer
-		) {
+		) const {
 			CONTEXT_BEGIN;
 
 			T ret = Read<T>(ReadPtrAddress(uAddress, lpPointer));
@@ -290,7 +290,7 @@ namespace Artemis {
 		/// <exception cref="WindowsApiException (External)"/>
 		/// <exception cref="InstanceInvalidException"/>
 		template<typename T>
-		inline _Check_return_ T ReadPtr(_In_ LPCBASE_POINTER lpPointer) {
+		inline _Check_return_ T ReadPtr(_In_ LPCBASE_POINTER lpPointer) const {
 			CONTEXT_BEGIN;
 
 			T ret = Read<T>(ReadPtrAddress(lpPointer));
@@ -315,7 +315,7 @@ namespace Artemis {
 		inline _Check_return_ T ReadPtr(
 			_In_ ADDRESS uAddress,
 			_In_ const List<ADDRESS>& Offsets
-		) {
+		) const {
 			CONTEXT_BEGIN;
 
 			T ret = Read<T>(ReadPtrAddress(uAddress, Offsets));
@@ -339,7 +339,7 @@ namespace Artemis {
 			_In_ ADDRESS uAddress,
 			_Out_writes_z_(uCount) LPSTR lpBuffer,
 			_In_ UINT uCount
-		);
+		) const ;
 	
 		/// <summary>
 		/// Reads a string from an address.
@@ -356,7 +356,7 @@ namespace Artemis {
 		inline void ReadStringA(
 			_In_ ADDRESS uAddress,
 			_Out_writes_z_(uCount) CHAR(&lpBuffer)[uCount]
-		) {
+		) const {
 			ReadStringA(uAddress, lpBuffer, uCount);
 		}
 	
@@ -375,7 +375,7 @@ namespace Artemis {
 			_In_ ADDRESS uAddress,
 			_Out_writes_z_(uCount) LPWSTR lpBuffer,
 			_In_ UINT uCount
-		);
+		) const;
 	
 		/// <summary>
 		/// Reads a string from an address.
@@ -392,7 +392,7 @@ namespace Artemis {
 		inline void ReadStringW(
 			_In_ ADDRESS uAddress,
 			_Out_writes_z_(uCount) WCHAR(&lpBuffer)[uCount]
-		) {
+		) const {
 			ReadStringW(uAddress, lpBuffer, uCount);
 		}
 	
@@ -411,7 +411,7 @@ namespace Artemis {
 		inline void Write(
 			_In_ ADDRESS uAddress,
 			_In_ const T Data
-		) {
+		) const {
 			BOOL b = ExceptionContext::HasContext();
 			if (!b) ExceptionContext::SetContext(__FUNCTION__);
 			_Write(uAddress, &Data, sizeof(T));
@@ -434,7 +434,7 @@ namespace Artemis {
 		inline void WriteArray(
 			_In_ ADDRESS uAddress,
 			_In_ const T(&lpBuffer)[uSize]
-		) {
+		) const {
 			CONTEXT_BEGIN;
 
 			_Write(uAddress, lpBuffer, uSize * sizeof(T));
@@ -459,7 +459,7 @@ namespace Artemis {
 			_In_ ADDRESS uAddress,
 			_In_ const T* lpBuffer,
 			_In_ UINT uSize
-		) {
+		) const {
 			CONTEXT_BEGIN;
 
 			_Write(uAddress, lpBuffer, uSize);
@@ -484,7 +484,7 @@ namespace Artemis {
 			_In_ ADDRESS uAddress,
 			_In_ LPCPOINTER lpPointer,
 			_In_ const T Data
-		) {
+		) const {
 			CONTEXT_BEGIN;
 
 			Write<T>(ReadPtrAddress(uAddress, lpPointer), Data);
@@ -507,7 +507,7 @@ namespace Artemis {
 		inline void WritePtr(
 			_In_ LPCBASE_POINTER lpPointer,
 			_In_ const T Data
-		) {
+		) const {
 			CONTEXT_BEGIN;
 
 			Write<T>(ReadPtrAddress(lpPointer), Data);
@@ -528,7 +528,7 @@ namespace Artemis {
 		void WriteStringA(
 			_In_ ADDRESS uAddress,
 			_In_z_ LPCSTR lpString
-		);
+		) const;
 	
 		/// <summary>
 		/// Writes a string to an address.
@@ -543,7 +543,7 @@ namespace Artemis {
 		void WriteStringW(
 			_In_ ADDRESS uAddress,
 			_In_z_ LPCWSTR lpString
-		);
+		) const;
 	
 		/// <summary>
 		/// Defines which operation to run.
@@ -575,7 +575,7 @@ namespace Artemis {
 			_In_ ADDRESS uAddress,
 			_In_ LPCASM_PATCH lpPatch,
 			_In_ AssemblyAction Action
-		);
+		) const;
 	
 		/// <summary>
 		/// Patches assembly code.
@@ -590,7 +590,7 @@ namespace Artemis {
 		void AssemblyPatch(
 			_In_ LPCBASE_ASM_PATCH lpPatch,
 			_In_ AssemblyAction Action
-		);
+		) const;
 	
 		/// <summary>
 		/// Creates a memory scanner associated to the current target process. Scans a code style pattern.
@@ -604,7 +604,7 @@ namespace Artemis {
 			_In_ LPCSTR lpPattern,
 			_In_z_ LPCSTR lpMask,
 			_In_ BOOL bScanModule = TRUE
-		);
+		) const;
 	
 		/// <summary>
 		/// Creates a memory scanner associared with the current target process. Scans an IDA style pattern.
@@ -616,7 +616,7 @@ namespace Artemis {
 		_Check_return_ MemoryScanner CreateScanner(
 			_In_z_ LPCSTR lpPattern,
 			_In_ BOOL bScanModule = TRUE
-		);
+		) const;
 	
 		/// <summary>
 		/// Creates a memory scanner associated with the current target process. Scans a string.
@@ -630,7 +630,7 @@ namespace Artemis {
 			_In_z_ LPCSTR lpString,
 			_In_ BOOL bCaseSensitive,
 			_In_ BOOL bScanModule = TRUE
-		);
+		) const;
 	
 		/// <summary>
 		/// Creates a memory scanner associated with the current target process. Scans a string.
@@ -644,7 +644,7 @@ namespace Artemis {
 			_In_z_ LPCWSTR lpString,
 			_In_ BOOL bCaseSensitive,
 			_In_ BOOL bScanModule = TRUE
-		);
+		) const;
 	
 		/// <summary>
 		/// Creates a virtual allocation object with the provided parameters.
@@ -659,7 +659,7 @@ namespace Artemis {
 			_In_ SIZE_T uSize = 1024,
 			_In_ AllocationType Type = AllocationType::Commit | AllocationType::Reserve,
 			_In_ MemoryProtection Protection = MemoryProtection::ReadWrite
-		);
+		) const;
 	
 		/// <summary>
 		/// Changes the protection of one or more memory pages.
@@ -674,7 +674,7 @@ namespace Artemis {
 			_In_ SIZE_T uSize,
 			_In_ MemoryProtection NewProtection,
 			_Out_opt_ MemoryProtection* lpOldProtection = nullptr
-		);
+		) const;
 	
 		/// <summary>
 		/// Queries information about a memory page.
@@ -686,7 +686,7 @@ namespace Artemis {
 		void VirtualQuery(
 			_In_ ADDRESS uAddress,
 			_Out_ LPMBI lpMbi
-		);
+		) const;
 	
 		/// <summary>
 		/// Creates a hook on the API function provided.
@@ -701,7 +701,7 @@ namespace Artemis {
 			_In_z_ LPCSTR lpFunction,
 			_In_ LPVOID lpDetour,
 			_Out_opt_ LPVOID* lpOriginal = nullptr
-		);
+		) const;
 	
 		/// <summary>
 		/// Creates a hook on the target function.
@@ -716,7 +716,7 @@ namespace Artemis {
 			_In_ LPVOID lpTarget,
 			_In_ LPVOID lpDetour,
 			_Out_opt_ LPVOID* lpOriginal = nullptr
-		);
+		) const;
 	
 		/// <summary>
 		/// Creates a hook on the function at the target address.
@@ -731,7 +731,7 @@ namespace Artemis {
 			_In_ ADDRESS uTarget,
 			_In_ LPVOID lpDetour,
 			_Out_opt_ LPVOID* lpOriginal = nullptr
-		);
+		) const;
 
 		/// <summary>
 		/// Releases the current instance.

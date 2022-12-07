@@ -152,7 +152,7 @@ namespace Artemis {
 		/// Waits for the scan thread to finish.
 		/// </summary>
 		/// <exception cref="WindowsApiException"/>
-		void Wait();
+		void Wait() const;
 
 		/// <summary>
 		/// Gets a list of the found addresses.

@@ -81,7 +81,7 @@ namespace Artemis {
 		_In_ INT nIndex,
 		_Out_ LPVOID lpBuffer,
 		_In_ DWORD dwSize
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		if (!lpBuffer) throw ParameterException("lpBuffer");
@@ -111,7 +111,7 @@ namespace Artemis {
 		_In_ INT nIndex,
 		_In_ LPCVOID lpData,
 		_In_ DWORD dwSize
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		if (!lpData) throw ParameterException("lpData");
@@ -138,6 +138,6 @@ namespace Artemis {
 	}
 	//---------------------------------------------------------------------->
 	// Getters:
-	_Check_return_ ADDRESS VirtualAllocation::GetAllocatedAddress() { return this->uAllocatedAddress; }
+	_Check_return_ ADDRESS VirtualAllocation::GetAllocatedAddress() const { return this->uAllocatedAddress; }
 	//---------------------------------------------------------------------->
 }

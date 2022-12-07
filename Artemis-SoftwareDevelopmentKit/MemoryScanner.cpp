@@ -135,7 +135,7 @@ namespace Artemis {
 		CONTEXT_END;
 	}
 	//-------------------------------------//
-	void MemoryScanner::Wait() {
+	void MemoryScanner::Wait() const {
 		CONTEXT_BEGIN;
 
 		if (WaitForSingleObject(this->hThread, INFINITE) == WAIT_FAILED) throw WindowsApiException("WaitForSingleObject");

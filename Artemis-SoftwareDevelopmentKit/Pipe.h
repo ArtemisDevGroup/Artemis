@@ -22,12 +22,12 @@ namespace Artemis {
 		void Read(
 			_Out_writes_bytes_(dwSize) LPVOID lpBuffer,
 			_In_range_(0, MAX_MESSAGE) DWORD dwSize
-		);
+		) const;
 
 		void Write(
 			_In_reads_bytes_(dwSize) LPCVOID lpBuffer,
 			_In_range_(0, MAX_MESSAGE) DWORD dwSize
-		);
+		) const;
 
 		_Check_return_ _Ret_z_ LPCSTR GetPipeName() const;
 		_Check_return_ _Ret_maybenull_ HANDLE GetPipeHandle() const;

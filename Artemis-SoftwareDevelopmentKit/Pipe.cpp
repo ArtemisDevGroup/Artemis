@@ -19,7 +19,7 @@ namespace Artemis {
 	void IPipeObject::Read(
 		_Out_writes_bytes_(dwSize) LPVOID lpBuffer,
 		_In_range_(0, MAX_MESSAGE) DWORD dwSize
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		if (!ReadFile(
@@ -36,7 +36,7 @@ namespace Artemis {
 	void IPipeObject::Write(
 		_In_reads_bytes_(dwSize) LPCVOID lpBuffer, 
 		_In_range_(0, MAX_MESSAGE) DWORD dwSize
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		if (!WriteFile(

@@ -99,7 +99,7 @@ namespace Artemis {
 		/// Injects the library.
 		/// </summary>
 		/// <exception cref="WindowsApiException"/>
-		void Inject();
+		void Inject() const;
 
 		/// <summary>
 		/// Releases the instance resources.

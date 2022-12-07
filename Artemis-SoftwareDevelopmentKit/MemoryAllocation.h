@@ -122,7 +122,7 @@ namespace Artemis {
 		/// Gets the real address of the allocated memory region.
 		/// </summary>
 		/// <returns>The address of the region.</returns>
-		_Check_return_ ADDRESS GetAllocatedAddress();
+		_Check_return_ ADDRESS GetAllocatedAddress() const;
 
 		/// <summary>
 		/// Gets the real address of the allocated memory region as a pointer to the templated type.
@@ -130,7 +130,7 @@ namespace Artemis {
 		/// <typeparam name="T">- The type to return a pointer of.</typeparam>
 		/// <returns>A pointer to the region.</returns>
 		template<typename T>
-		_Check_return_ T* GetAllocatedAddress() { return (T*)uAllocatedAddress; }
+		inline _Check_return_ T* GetAllocatedAddress() const { return (T*)uAllocatedAddress; }
 
 		/// <summary>
 		/// Reads the specified number of bytes from the allocation.
@@ -146,7 +146,7 @@ namespace Artemis {
 			_In_ INT nIndex,
 			_Out_ LPVOID lpBuffer,
 			_In_ DWORD dwSize
-		);
+		) const;
 
 		/// <summary>
 		/// Writes the specified number of bytes from the allocation.
@@ -162,7 +162,7 @@ namespace Artemis {
 			_In_ INT nIndex,
 			_In_ LPCVOID lpData,
 			_In_ DWORD dwSize
-		);
+		) const;
 	};
 }
 

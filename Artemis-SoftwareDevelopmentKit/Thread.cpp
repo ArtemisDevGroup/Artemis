@@ -21,7 +21,7 @@ namespace Artemis {
 		CONTEXT_END;
 	}
 
-	BOOL Thread::Wait(_In_ DWORD dwMilliseconds) {
+	BOOL Thread::Wait(_In_ DWORD dwMilliseconds) const {
 		CONTEXT_BEGIN;
 
 		BOOL bReturn = FALSE;
@@ -39,7 +39,7 @@ namespace Artemis {
 		return bReturn;
 	}
 
-	BOOL Thread::IsRunning() {
+	BOOL Thread::IsRunning() const {
 		CONTEXT_BEGIN;
 
 		BOOL bRet = !Wait(1);
@@ -48,7 +48,7 @@ namespace Artemis {
 		return bRet;
 	}
 
-	void Thread::Suspend() {
+	void Thread::Suspend() const {
 		CONTEXT_BEGIN;
 
 		if (SuspendThread(hThread) == (DWORD)-1) throw WindowsApiException("SuspendThread");
@@ -56,7 +56,7 @@ namespace Artemis {
 		CONTEXT_END;
 	}
 
-	void Thread::Resume() {
+	void Thread::Resume() const {
 		CONTEXT_BEGIN;
 
 		if (ResumeThread(hThread) == (DWORD)-1) throw WindowsApiException("ResumeThread");
@@ -64,7 +64,7 @@ namespace Artemis {
 		CONTEXT_END;
 	}
 
-	void Thread::Terminate() {
+	void Thread::Terminate() const {
 		CONTEXT_BEGIN;
 
 #pragma warning(push)
@@ -76,7 +76,7 @@ namespace Artemis {
 		CONTEXT_END;
 	}
 
-	_Check_return_ DWORD Thread::GetExitCode() {
+	_Check_return_ DWORD Thread::GetExitCode() const {
 		CONTEXT_BEGIN;
 
 		DWORD dwRet;

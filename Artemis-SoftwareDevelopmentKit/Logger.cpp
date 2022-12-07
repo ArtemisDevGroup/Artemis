@@ -29,7 +29,7 @@ namespace Artemis {
 		_In_z_ LPCSTR lpSender,
 		_In_z_ _Printf_format_string_ LPCSTR lpFormat,
 		_In_ va_list lpArgs
-	) {
+	) const {
 		if (bConsole) ConsoleLogEvent.Invoke(nullptr, lpTime, lpPrefix, wPrefixColor, lpSender, lpFormat, lpArgs);
 		if (bFile) FileLogEvent.Invoke(lpFile, lpTime, lpPrefix, 0, lpSender, lpFormat, lpArgs);
 	}
@@ -76,7 +76,7 @@ namespace Artemis {
 		_In_z_ LPCSTR lpSender,
 		_In_z_ _Printf_format_string_ LPCSTR lpFormat,
 		...
-	) {
+	) const {
 		CHAR szTime[16] = { '\0' };
 		if (bLogTime) {
 			DateTime dt = DateTime::Now();
@@ -93,7 +93,7 @@ namespace Artemis {
 		_In_z_ LPCSTR lpSender,
 		_In_z_ _Printf_format_string_ LPCSTR lpFormat,
 		...
-	) {
+	) const {
 		CHAR szTime[16] = { '\0' };
 		if (bLogTime) {
 			DateTime dt = DateTime::Now();
@@ -110,7 +110,7 @@ namespace Artemis {
 		_In_z_ LPCSTR lpSender,
 		_In_z_ _Printf_format_string_ LPCSTR lpFormat,
 		...
-	) {
+	) const {
 		CHAR szTime[16] = { '\0' };
 		if (bLogTime) {
 			DateTime dt = DateTime::Now();
@@ -127,7 +127,7 @@ namespace Artemis {
 		_In_z_ LPCSTR lpSender,
 		_In_z_ _Printf_format_string_ LPCSTR lpFormat,
 		...
-	) {
+	) const {
 		CHAR szTime[16] = { '\0' };
 		if (bLogTime) {
 			DateTime dt = DateTime::Now();
@@ -146,4 +146,6 @@ namespace Artemis {
 			lpFile = nullptr;
 		}
 	}
+
+	Logger::~Logger() { Release(); }
 }

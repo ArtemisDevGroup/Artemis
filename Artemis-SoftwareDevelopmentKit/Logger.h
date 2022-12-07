@@ -42,7 +42,7 @@ namespace Artemis {
 			_In_z_ LPCSTR lpSender,
 			_In_z_ _Printf_format_string_ LPCSTR lpFormat,
 			_In_ va_list lpArgs
-		);
+		) const;
 
 	public:
 		Logger();
@@ -120,7 +120,7 @@ namespace Artemis {
 			_In_z_ LPCSTR lpSender,
 			_In_z_ _Printf_format_string_ LPCSTR lpFormat,
 			...
-		);
+		) const;
 
 		/// <summary>
 		/// Logs a message noting an operation succeeding.
@@ -131,7 +131,7 @@ namespace Artemis {
 			_In_z_ LPCSTR lpSender,
 			_In_z_ _Printf_format_string_ LPCSTR lpFormat,
 			...
-		);
+		) const;
 
 		/// <summary>
 		/// Logs a message noting an operation warning about potential error risks.
@@ -142,7 +142,7 @@ namespace Artemis {
 			_In_z_ LPCSTR lpSender,
 			_In_z_ _Printf_format_string_ LPCSTR lpFormat,
 			...
-		);
+		) const;
 
 		/// <summary>
 		/// Logs a message noting an operation throwing an exception.
@@ -153,12 +153,14 @@ namespace Artemis {
 			_In_z_ LPCSTR lpSender,
 			_In_z_ _Printf_format_string_ LPCSTR lpFormat,
 			...
-		);
+		) const;
 
 		/// <summary>
 		/// Releases the instance. Only usable if the logger logs to a file.
 		/// </summary>
 		void Release();
+
+		~Logger();
 	};
 }
 

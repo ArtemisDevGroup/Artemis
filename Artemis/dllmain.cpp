@@ -8,7 +8,7 @@
 
 using namespace Artemis;
 
-void RegisterEventHandlers(); // Forward declaration from ExceptionLoggers.cpp.
+void RegisterEventHandlers(); // Forward declaration from "ExceptionLoggers.cpp".
 
 Midnight* pInst = Midnight::GetInst();
 Logger* pLog = &pInst->Log;
@@ -33,6 +33,8 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
     pLog->LogInfo(__FUNCTION__, "Module handle: %p", pMem->GetModuleHandle());
     pLog->LogInfo(__FUNCTION__, "Module base address: 0x%llX", pMem->GetModuleBase());
     pLog->LogInfo(__FUNCTION__, "Module size: %lu", pMem->GetModuleSize());
+
+    RegisterEventHandlers();
 
     pInst->Initialize(hModule);
 

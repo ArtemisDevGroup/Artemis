@@ -87,13 +87,13 @@ namespace Artemis {
 		/// Enables the hook.
 		/// </summary>
 		/// <exception cref="HookException"/>
-		void Enable();
+		void Enable() const;
 
 		/// <summary>
 		/// Disables the hook.
 		/// </summary>
 		/// <exception cref="HookException"/>
-		void Disable();
+		void Disable() const;
 
 		/// <summary>
 		/// Releases the hook instance by removing the hook.

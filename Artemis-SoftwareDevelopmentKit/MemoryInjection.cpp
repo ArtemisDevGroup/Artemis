@@ -172,7 +172,7 @@ namespace Artemis {
 	DllInjection::~DllInjection() { Release(); }
 	//---------------------------------------------------------------------->
 	// Public methods:
-	void DllInjection::Inject() {
+	void DllInjection::Inject() const {
 		CONTEXT_BEGIN;
 
 		VirtualAllocation* lpAlloc = new VirtualAllocation(0, strlen(szPath) + 1);

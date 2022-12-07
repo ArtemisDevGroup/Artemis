@@ -18,14 +18,35 @@ void HookExceptionHandler(HookException* e) { pLog->LogError(e->GetFunctionName(
 
 void RegisterEventHandlers() {
 	ExceptionEventManager::GetExceptionEvent() += ExceptionHandler;
+	pLog->LogSuccess(__FUNCTION__, "Registered the Exception handler.");
+
 	ExceptionEventManager::GetParameterExceptionEvent() += ParameterExceptionHandler;
+	pLog->LogSuccess(__FUNCTION__, "Registered the ParameterException handler.");
+
 	ExceptionEventManager::GetInstanceInvalidExceptionEvent() += InstanceInvalidExceptionHandler;
+	pLog->LogSuccess(__FUNCTION__, "Registered the InstanceInvalidException handler.");
+
 	ExceptionEventManager::GetMemoryAccessViolationExceptionEvent() += MemoryAccessViolationExceptionHandler;
+	pLog->LogSuccess(__FUNCTION__, "Registered the MemoryAccessViolationException handler.");
+
 	ExceptionEventManager::GetWindowsApiExceptionEvent() += WindowsApiExceptionHandler;
+	pLog->LogSuccess(__FUNCTION__, "Registered the WindowsApiException handler.");
+
 	ExceptionEventManager::GetObjectNotFoundExceptionEvent() += ObjectNotFoundExceptionHandler;
+	pLog->LogSuccess(__FUNCTION__, "Registered the ObjectNotFoundException handler.");
+
 	ExceptionEventManager::GetNotImplementedExceptionEvent() += NotImplementedExceptionHandler;
+	pLog->LogSuccess(__FUNCTION__, "Registered the NotImplementedException handler.");
+
 	ExceptionEventManager::GetCompatibilityExceptionEvent() += CompatibilityExceptionHandler;
+	pLog->LogSuccess(__FUNCTION__, "Registered the CompatibilityException handler.");
+
 	ExceptionEventManager::GetAttributeExceptionEvent() += AttributeExceptionHandler;
+	pLog->LogSuccess(__FUNCTION__, "Registered the AttributeException handler.");
+
 	ExceptionEventManager::GetIndexOutOfRangeExceptionEvent() += IndexOutOfRangeExceptionHandler;
+	pLog->LogSuccess(__FUNCTION__, "Registered the IndexOutOfRangeException handler.");
+
 	ExceptionEventManager::GetHookExceptionEvent() += HookExceptionHandler;
+	pLog->LogSuccess(__FUNCTION__, "Registered the HookException handler.");
 }

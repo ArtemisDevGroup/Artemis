@@ -56,38 +56,38 @@ namespace Artemis {
 		/// <param name="dwMilliseconds">- The number of milliseconds to wait. Default is INFINITE.</param>
 		/// <returns>A BOOL defining wether the thread exited (TRUE) or the timer ran out (FALSE).</returns>
 		/// <exception cref="WindowsApiException"/>
-		BOOL Wait(_In_ DWORD dwMilliseconds = INFINITE);
+		BOOL Wait(_In_ DWORD dwMilliseconds = INFINITE) const;
 
 		/// <summary>
 		/// Checks if the thread is still running or if it has exited.
 		/// </summary>
 		/// <returns>TRUE if the thread is running. FALSE if it has exited.</returns>
 		/// <exception cref="WindowsApiException"/>
-		BOOL IsRunning();
+		BOOL IsRunning() const;
 
 		/// <summary>
 		/// Suspends the thread.
 		/// </summary>
 		/// <exception cref="WindowsApiException"/>
-		void Suspend();
+		void Suspend() const;
 
 		/// <summary>
 		/// Resumes the previously suspended thread.
 		/// </summary>
 		/// <exception cref="WindowsApiException"/>
-		void Resume();
+		void Resume() const;
 
 		/// <summary>
 		/// Terminates the thread.
 		/// </summary>
 		/// <exception cref="WindowsApiException"/>
-		void Terminate();
+		void Terminate() const;
 
 		/// <summary>
 		/// Gets the exit code of the thread. If the thread was terminated, the return value will be (DWORD)-1;
 		/// </summary>
 		/// <exception cref="WindowsApiException"/>
-		_Check_return_ DWORD GetExitCode();
+		_Check_return_ DWORD GetExitCode() const;
 
 		/// <summary>
 		/// Releases the thread instance by closing its handle.

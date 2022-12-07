@@ -150,7 +150,7 @@ namespace Artemis {
 	}
 	//---------------------------------------------------------------------->
 	// Public methods:
-	void Hook::Enable() {
+	void Hook::Enable() const {
 		CONTEXT_BEGIN;
 
 		switch (MH_EnableHook(lpTarget)) {
@@ -171,7 +171,7 @@ namespace Artemis {
 		CONTEXT_END;
 	}
 	//-------------------------------------//
-	void Hook::Disable() {
+	void Hook::Disable() const {
 		CONTEXT_BEGIN;
 
 		switch (MH_DisableHook(lpTarget)) {

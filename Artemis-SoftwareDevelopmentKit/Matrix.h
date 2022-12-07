@@ -21,9 +21,12 @@ namespace Artemis {
 		}
 
 		inline Vector2<T>& X() { return szMatrix[0]; }
+		inline Vector2<T> X() const { return szMatrix[0]; }
 		inline Vector2<T>& Y() { return szMatrix[1]; }
+		inline Vector2<T> Y() const { return szMatrix[1]; }
 
 		inline Vector2<T>& operator[](int i) { return szMatrix[i]; }
+		inline Vector2<T> operator[](int i) const { return szMatrix[i]; }
 	};
 
 	template<typename T = float>
@@ -44,10 +47,14 @@ namespace Artemis {
 		}
 
 		inline Vector3<T>& X() { return szMatrix[0]; }
+		inline Vector3<T> X() const { return szMatrix[0]; }
 		inline Vector3<T>& Y() { return szMatrix[1]; }
+		inline Vector3<T> Y() const { return szMatrix[1]; }
 		inline Vector3<T>& Z() { return szMatrix[2]; }
+		inline Vector3<T> Z() const { return szMatrix[2]; }
 
 		inline Vector3<T>& operator[](int i) { return szMatrix[i]; }
+		inline Vector3<T> operator[](int i) const { return szMatrix[i]; }
 	};
 
 	template<typename T = float>
@@ -70,11 +77,16 @@ namespace Artemis {
 		}
 
 		inline Vector4<T>& X() { return szMatrix[0]; }
+		inline Vector4<T> X() const { return szMatrix[0]; }
 		inline Vector4<T>& Y() { return szMatrix[1]; }
+		inline Vector4<T> Y() const { return szMatrix[1]; }
 		inline Vector4<T>& Z() { return szMatrix[2]; }
+		inline Vector4<T> Z() const { return szMatrix[2]; }
 		inline Vector4<T>& W() { return szMatrix[3]; }
+		inline Vector4<T> W() const { return szMatrix[3]; }
 
 		inline Vector4<T>& operator[](int i) { return szMatrix[i]; }
+		inline Vector4<T> operator[](int i) const { return szMatrix[i]; }
 	};
 
 }

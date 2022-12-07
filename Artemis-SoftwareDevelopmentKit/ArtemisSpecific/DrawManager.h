@@ -257,14 +257,22 @@ namespace Artemis {
 		/// Invokes all registered draw operations.
 		/// </summary>
 		/// <param name="pDrawList>- The ImGui draw list to pass to the draw operations.</param>
-		void InvokeDraw(_In_ ImDrawList* pDrawList);
+		void InvokeDraw(_In_ ImDrawList* pDrawList) const;
 
 		/// <summary>
 		/// Gets the pointer to a draw instance by its unique identifier.
 		/// </summary>
-		/// <param name="dwDrawId">- The identifier of the deaw instance to get.</param>
+		/// <param name="dwDrawId">- The identifier of the draw instance to get.</param>
+		/// <returns>A pointer to the associated object.</returns>
 		/// <exception cref="ObjectNotFoundException"/>
-		_Check_return_ _Ret_maybenull_ IDraw* GetDrawById(_In_ DWORD dwDrawId);
+		_Check_return_ _Ret_maybenull_ IDraw* GetDrawById(_In_ DWORD dwDrawId) const;
+
+		/// <summary>
+		/// Checks if a Draw Id is present in the list of currently registered objects.
+		/// </summary>
+		/// <param name="dwDrawId">- The identifier of the draw instance to check.</param>
+		/// <returns>TRUE if the associated object could be found, otherwise FALSE.</returns>
+		_Check_return_ BOOL IsIdPresent(_In_ DWORD dwDrawId) const;
 	};
 }
 

@@ -333,13 +333,13 @@ namespace Artemis {
 		}
 	}
 
-	void DrawManager::InvokeDraw(_In_ ImDrawList* pDrawList) {
+	void DrawManager::InvokeDraw(_In_ ImDrawList* pDrawList) const {
 		for (INT i = 0; i < MAX_INVOKE; i++)
 			if (lpszDrawArray[i])
 				lpszDrawArray[i]->Present(pDrawList);
 	}
 
-	_Check_return_ _Ret_maybenull_ IDraw* DrawManager::GetDrawById(_In_ DWORD dwDrawId) {
+	_Check_return_ _Ret_maybenull_ IDraw* DrawManager::GetDrawById(_In_ DWORD dwDrawId) const {
 		CONTEXT_BEGIN;
 
 		IDraw* lpReturn = nullptr;
@@ -358,5 +358,14 @@ namespace Artemis {
 		CONTEXT_END;
 
 		return lpReturn;
+	}
+
+	_Check_return_ BOOL DrawManager::IsIdPresent(_In_ DWORD dwDrawId) const {
+		for (INT i = 0; i < MAX_INVOKE; i++)
+			if (lpszDrawArray[i])
+				if (lpszDrawArray[i]->dwDrawId == dwDrawId)
+					return TRUE;
+
+		return FALSE;
 	}
 }

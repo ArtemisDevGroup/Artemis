@@ -3,8 +3,6 @@
 
 #include <ArtemisSpecific/Const.h>
 
-using namespace Artemis::Constants;
-
 ESPWindow::ESPWindow() : IWindow("ESP Window", WND_ESPWINDOW), IOnFrame(ONFRAME_ESP), bBoneEsp(false) {}
 
 void ESPWindow::Window() {
@@ -24,7 +22,7 @@ void ESPWindow::Window() {
 void ESPWindow::OnFrame() {
     static Memory* pm = &Midnight::GetInst()->Mem;
     static DrawManager* pDraw = &Midnight::GetInst()->ESPDrawManager;
-    static const ADDRESS c_uGameManager = *(ADDRESS*)(pm->GetModuleBase() + c_GameManager);
+    static const ADDRESS c_uGameManager = *(ADDRESS*)(pm->GetModuleBase() + Artemis::Constants::c_GameManager);
 
     if (bBoneEsp) {
         ADDRESS uPtr = *(ADDRESS*)(c_uGameManager + 0xB0);
@@ -36,12 +34,7 @@ void ESPWindow::OnFrame() {
         try {
             for (INT i = 0; i < nCount; i++) {
                 ADDRESS uEntity = *(ADDRESS*)(uPtr + (i * sizeof(ADDRESS)));
-                try {
-                    pDraw->GetDrawById(*(DWORD*)(&uEntity));
-                }
-                catch (ObjectNotFoundException&) {
-                    pDraw->RegisterDraw(new BoneAndESPDraw(uEntity));
-                }
+                if (!pDraw->IsIdPresent(*(DWORD*)(&uEntity))) pDraw->RegisterDraw(new BoneAndESPDraw(uEntity));
             }
         }
         catch (AttributeException&) {}

@@ -21,7 +21,7 @@ namespace Artemis {
 	public:
 		inline Event() { memset(lpszFunctions, 0x00, sizeof(lpszFunctions)); }
 
-		inline void Invoke(A... params) {
+		inline void Invoke(A... params) const {
 			for (INT i = 0; i < MAX_INVOKE; i++)
 				if (lpszFunctions[i])
 					lpszFunctions[i](params...);

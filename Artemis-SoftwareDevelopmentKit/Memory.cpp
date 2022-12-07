@@ -15,7 +15,7 @@ namespace Artemis {
 		_In_ ADDRESS uAddress,
 		_Out_ LPVOID lpBuffer,
 		_In_ DWORD dwSize
-	) {
+	) const {
 		if (!ExceptionContext::HasContext()) throw Exception("No context set.", ExceptionCode::Unknown, FALSE);
 		if (!lpBuffer) throw ParameterException("lpBuffer");
 
@@ -43,7 +43,7 @@ namespace Artemis {
 		_In_ ADDRESS uAddress,
 		_In_ LPCVOID lpBuffer,
 		_In_ DWORD dwSize
-	) {
+	) const {
 		if (!ExceptionContext::HasContext()) throw Exception("No context set.", ExceptionCode::Unknown, FALSE);
 		if (!lpBuffer) throw ParameterException("lpBuffer");
 
@@ -254,7 +254,7 @@ namespace Artemis {
 	_Check_return_ ADDRESS Memory::ReadPtrAddress(
 		_In_ ADDRESS uAddress,
 		_In_ LPCPOINTER lpPointer
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		for (UINT i = 0; i < lpPointer->dwCount; i++) {
@@ -265,7 +265,7 @@ namespace Artemis {
 		return uAddress;
 	}
 	//-------------------------------------//
-	_Check_return_ ADDRESS Memory::ReadPtrAddress(_In_ LPCBASE_POINTER lpPointer) {
+	_Check_return_ ADDRESS Memory::ReadPtrAddress(_In_ LPCBASE_POINTER lpPointer) const {
 		CONTEXT_BEGIN;
 
 		ADDRESS uAddress = GetModuleBase() + lpPointer->uBaseOffset;
@@ -280,7 +280,7 @@ namespace Artemis {
 	_Check_return_ ADDRESS Memory::ReadPtrAddress(
 		_In_ ADDRESS uAddress,
 		_In_ const List<ADDRESS>& Offsets
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		for (UINT i = 0; i < Offsets.GetCount(); i++) {
@@ -295,7 +295,7 @@ namespace Artemis {
 		_In_ ADDRESS uAddress,
 		_Out_writes_z_(uCount) LPSTR lpBuffer,
 		_In_ UINT uCount
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		_Read(uAddress, lpBuffer, uCount);
@@ -308,7 +308,7 @@ namespace Artemis {
 		_In_ ADDRESS uAddress,
 		_Out_writes_z_(uCount) LPWSTR lpBuffer,
 		_In_ UINT uCount
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		_Read(uAddress, lpBuffer, uCount * sizeof(WCHAR));
@@ -320,7 +320,7 @@ namespace Artemis {
 	void Memory::WriteStringA(
 		_In_ ADDRESS uAddress,
 		_In_z_ LPCSTR lpString
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		_Write(uAddress, lpString, (DWORD)strlen(lpString) + 1);
@@ -331,7 +331,7 @@ namespace Artemis {
 	void Memory::WriteStringW(
 		_In_ ADDRESS uAddress,
 		_In_z_ LPCWSTR lpString
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		_Write(uAddress, lpString, ((DWORD)wcslen(lpString) + 1) * 2);
@@ -343,7 +343,7 @@ namespace Artemis {
 		_In_ ADDRESS uAddress,
 		_In_ LPCASM_PATCH lpPatch,
 		_In_ AssemblyAction Action
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		if (Action == Enable) _Write(uAddress, lpPatch->szEnable, lpPatch->dwCount);
@@ -356,7 +356,7 @@ namespace Artemis {
 	void Memory::AssemblyPatch(
 		_In_ LPCBASE_ASM_PATCH lpPatch,
 		_In_ AssemblyAction Action
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		if (Action == Enable) _Write(GetModuleBase() + lpPatch->uBaseOffset, lpPatch->szEnable, lpPatch->dwCount);
@@ -366,7 +366,7 @@ namespace Artemis {
 		CONTEXT_END;
 	}
 	//-------------------------------------//
-	_Check_return_ MemoryScanner Memory::CreateScanner(_In_ LPCSTR lpPattern, _In_z_ LPCSTR lpMask, _In_ BOOL bScanModule) {
+	_Check_return_ MemoryScanner Memory::CreateScanner(_In_ LPCSTR lpPattern, _In_z_ LPCSTR lpMask, _In_ BOOL bScanModule) const {
 		CONTEXT_BEGIN;
 
 		MemoryScanner ms(lpPattern, lpMask);
@@ -381,7 +381,7 @@ namespace Artemis {
 		return ms;
 	}
 	//-------------------------------------//
-	_Check_return_ MemoryScanner Memory::CreateScanner(_In_z_ LPCSTR lpPattern, _In_ BOOL bScanModule) {
+	_Check_return_ MemoryScanner Memory::CreateScanner(_In_z_ LPCSTR lpPattern, _In_ BOOL bScanModule) const {
 		CONTEXT_BEGIN;
 
 		MemoryScanner ms(lpPattern);
@@ -396,7 +396,7 @@ namespace Artemis {
 		return ms;
 	}
 	//-------------------------------------//
-	_Check_return_ MemoryScanner Memory::CreateScanner(_In_z_ LPCSTR lpString, _In_ BOOL bCaseSensitive, _In_ BOOL bScanModule) {
+	_Check_return_ MemoryScanner Memory::CreateScanner(_In_z_ LPCSTR lpString, _In_ BOOL bCaseSensitive, _In_ BOOL bScanModule) const {
 		CONTEXT_BEGIN;
 
 		MemoryScanner ms(lpString, bCaseSensitive);
@@ -411,7 +411,7 @@ namespace Artemis {
 		return ms;
 	}
 	//-------------------------------------//
-	_Check_return_ MemoryScanner Memory::CreateScanner(_In_z_ LPCWSTR lpString, _In_ BOOL bCaseSensitive, _In_ BOOL bScanModule) {
+	_Check_return_ MemoryScanner Memory::CreateScanner(_In_z_ LPCWSTR lpString, _In_ BOOL bCaseSensitive, _In_ BOOL bScanModule) const {
 		CONTEXT_BEGIN;
 
 		MemoryScanner ms(lpString, bCaseSensitive);
@@ -431,7 +431,7 @@ namespace Artemis {
 		_In_ SIZE_T uSize,
 		_In_ AllocationType Type,
 		_In_ MemoryProtection Protection
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		VirtualAllocation va(uAddress, uSize, Type, Protection);
@@ -446,7 +446,7 @@ namespace Artemis {
 		_In_ SIZE_T uSize,
 		_In_ MemoryProtection NewProtection,
 		_Out_opt_ MemoryProtection* lpOldProtection
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		DWORD dwOld = 0;
@@ -478,7 +478,7 @@ namespace Artemis {
 	void Memory::VirtualQuery(
 		_In_ ADDRESS uAddress,
 		_Out_ LPMBI lpMbi
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		DWORD dwOld = 0;
@@ -507,7 +507,7 @@ namespace Artemis {
 		_In_z_ LPCSTR lpFunction,
 		_In_ LPVOID lpDetour,
 		_Out_opt_ LPVOID* lpOriginal
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		if (this->TargetType == External) { throw NotImplementedException(); }
@@ -524,7 +524,7 @@ namespace Artemis {
 		_In_ LPVOID lpTarget,
 		_In_ LPVOID lpDetour,
 		_Out_opt_ LPVOID* lpOriginal
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		if (this->TargetType == External) { throw NotImplementedException(); }
@@ -541,7 +541,7 @@ namespace Artemis {
 		_In_ ADDRESS uTarget,
 		_In_ LPVOID lpDetour,
 		_Out_opt_ LPVOID* lpOriginal
-	) {
+	) const {
 		CONTEXT_BEGIN;
 
 		if (this->TargetType == External) { throw NotImplementedException(); }
