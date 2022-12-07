@@ -117,7 +117,7 @@ namespace Artemis {
 		/// <summary>
 		/// Gets the unique system identifier of the target process.
 		/// </summary>
-		/// <returns>>The process id.</returns>
+		/// <returns>The process id.</returns>
 		_Check_return_ DWORD GetProcessId() const;
 	
 		/// <summary>
