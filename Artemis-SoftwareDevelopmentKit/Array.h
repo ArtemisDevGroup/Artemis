@@ -1,3 +1,13 @@
+//-------------------------------------------------------------------------------------->
+// Copyright (c) 2022 Artemis Group														|
+// This file is licensed under the MIT license.											|
+// Read more here: https://github.com/ArtemisDevGroup/Artemis/blob/master/LICENSE.md	|
+//-------------------------------------------------------------------------------------->
+// This file was authored by @iA-blip and @Sigma0014.									|
+// @iA-blip: https://github.com/iA-blip													|
+// @Sigma0014: https://github.com/Sigma0014												|
+//-------------------------------------------------------------------------------------->
+
 #ifndef __ARRAY_H__
 #define __ARRAY_H__
 
@@ -9,9 +19,6 @@
 #include "Interfaces.h"
 
 namespace Artemis {
-
-	// Thank you iA-blip for helping with writing this List class. It is very good. c:
-
 	/// <summary>
 	/// A class for dynamically allocating and interacting with an element list.
 	/// </summary>

@@ -1,6 +1,21 @@
+//-------------------------------------------------------------------------------------->
+// Copyright (c) 2022 Artemis Group														|
+// This file is licensed under the MIT license.											|
+// Read more here: https://github.com/ArtemisDevGroup/Artemis/blob/master/LICENSE.md	|
+//-------------------------------------------------------------------------------------->
+// This file was authored by @Sigma0014.												|
+// @Sigma0014: https://github.com/Sigma0014												|
+//-------------------------------------------------------------------------------------->
+
+#include "Window.h"
 #include "Draw.h"
 
-void BoneAndESPDraw::TransformsCalculation(
+#include <ArtemisSpecific/Const.h>
+
+ARTEMIS_API Vector4<> v4Color = { 1 };
+Vector4<>& BoneDraw::Color() { return v4Color; }
+
+void BoneDraw::TransformsCalculation(
 	_In_ __int64 pBones,
 	_Out_ __m128* ResultPosition,
 	_In_ __m128* BoneInfo
@@ -41,7 +56,7 @@ void BoneAndESPDraw::TransformsCalculation(
 			(__m128)v11));
 }
 
-BOOL BoneAndESPDraw::WorldToScreen(
+BOOL BoneDraw::WorldToScreen(
 	_In_ Vector3<> v3World,
 	_Out_opt_ Vector2<>* lpScreenPos
 ) {
@@ -81,7 +96,7 @@ BOOL BoneAndESPDraw::WorldToScreen(
 	return bOnScreen;
 }
 
-BOOL BoneAndESPDraw::GetBones(
+BOOL BoneDraw::GetBones(
 	_In_ ADDRESS uEntity,
 	_Out_writes_opt_(27) UINT8* lpBoneIds,
 	_Out_writes_opt_(27) Vector3<>* lpBonePositions
@@ -102,7 +117,7 @@ BOOL BoneAndESPDraw::GetBones(
 	INT8 nSkeletonIndex = pm->Read<INT8>(uPtr + 0x1CC);
 
 	uPtr = *(ADDRESS*)(uPtr + 0xD8);
-	uPtr = *(ADDRESS*)(uPtr + (nSkeletonIndex * 0x8));
+	uPtr = *(ADDRESS*)(uPtr + ((ADDRESS)nSkeletonIndex * 0x8));
 
 	ADDRESS uBoneIds = *(ADDRESS*)(uPtr + 0xC8);
 	BYTE uBoneCount = *(BYTE*)(uPtr + 0xD0);
@@ -110,10 +125,10 @@ BOOL BoneAndESPDraw::GetBones(
 	ADDRESS uBoneData = *(ADDRESS*)(uBones + 0x58);
 
 	for (INT i = 0; i < uBoneCount; i++) {
-		UINT8 uBoneId = *(UINT8*)(uBoneIds + (i * 0x4));
+		UINT8 uBoneId = *(UINT8*)(uBoneIds + ((ADDRESS)i * 0x4));
 
 		__m128 xmmBonePos;
-		__m128 xmmBoneInfo = *(__m128*)(uBoneData + 0x20 * uBoneId);
+		__m128 xmmBoneInfo = *(__m128*)(uBoneData + 0x20Ui64 * uBoneId);
 		TransformsCalculation(uBones, &xmmBonePos, &xmmBoneInfo);
 
 		if (lpBoneIds) lpBoneIds[i] = uBoneId;
@@ -123,13 +138,9 @@ BOOL BoneAndESPDraw::GetBones(
 	return TRUE;
 }
 
-BoneAndESPDraw::BoneAndESPDraw(_In_ ADDRESS uEntity) : IDraw(*(DWORD*)&uEntity), uEntity(uEntity) {}
+BoneDraw::BoneDraw(_In_ ADDRESS uEntity) : IDraw(*(DWORD*)&uEntity), uEntity(uEntity) {}
 
-Vector4<> v4Color = { 1 };
-
-Vector4<>& BoneAndESPDraw::Color() { return v4Color; }
-
-void BoneAndESPDraw::Draw() {
+void BoneDraw::Draw() {
 	Vector3<> szBones[27];
 	if (GetBones(uEntity, nullptr, szBones)) {
 		if (WorldToScreen(szBones[5])) {
@@ -160,4 +171,43 @@ void BoneAndESPDraw::Draw() {
 		}
 	}
 	else delete this;
+}
+
+WallhackWindow::WallhackWindow() : IWindow("Wallhack Window", WND_ESPWINDOW), IOnFrame(ONFRAME_ESP), bBoneEsp(false) {}
+
+void WallhackWindow::Window() {
+    static DrawManager* pDraw = &Midnight::GetInst()->ESPDrawManager;
+
+    if (ImGui::Checkbox("Bone ESP", &bBoneEsp)) {
+        if (!bBoneEsp) pDraw->Release();
+    }
+
+    ImGui::ColorPicker4(
+        "Bone Color",
+        BoneDraw::Color(),
+        ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_DisplayHex | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_Uint8
+    );
+}
+
+void WallhackWindow::OnFrame() {
+    static Memory* pm = &Midnight::GetInst()->Mem;
+    static DrawManager* pDraw = &Midnight::GetInst()->ESPDrawManager;
+    static const ADDRESS c_uGameManager = *(ADDRESS*)(pm->GetModuleBase() + Artemis::Constants::c_GameManager);
+
+    if (bBoneEsp) {
+        ADDRESS uPtr = *(ADDRESS*)(c_uGameManager + 0xB0);
+        uPtr = ((uPtr - 0x36) >> 0x11 | (uPtr - 0x36) << 0x2F) - 0x58;
+
+        ADDRESS uCount = *(ADDRESS*)(c_uGameManager + 0xB8);
+        INT nCount = (INT)((((uCount - 0x36) >> 0x11 | (uCount - 0x36) << 0x2F) - 0x58) ^ 0x18C0000000);
+
+        try {
+            for (INT i = 0; i < nCount; i++) {
+                ADDRESS uEntity = *(ADDRESS*)(uPtr + (i * sizeof(ADDRESS)));
+                if (!pDraw->IsIdPresent(*(DWORD*)(&uEntity)))
+					pDraw->RegisterDraw(new BoneDraw(uEntity));
+            }
+        }
+        catch (AttributeException&) {}
+    }
 }

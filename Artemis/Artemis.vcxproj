@@ -151,9 +151,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bones.cpp" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="ESPDraw.cpp" />
-    <ClCompile Include="ESPWindow.cpp" />
     <ClCompile Include="ExceptionLoggers.cpp" />
     <ClCompile Include="Keybinds.cpp" />
     <ClCompile Include="MainWindow.cpp" />

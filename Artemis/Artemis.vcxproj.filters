@@ -22,6 +22,9 @@
     <Filter Include="Source Files\OnFrame">
       <UniqueIdentifier>{f6c49508-0cb3-43c6-b598-58b81d6cbb18}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Hybrid">
+      <UniqueIdentifier>{867c755c-43bc-4d1c-80c8-9684891cd1e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -36,14 +39,11 @@
     <ClCompile Include="TestWindow.cpp">
       <Filter>Source Files\Window</Filter>
     </ClCompile>
-    <ClCompile Include="ESPWindow.cpp">
-      <Filter>Source Files\Window</Filter>
-    </ClCompile>
-    <ClCompile Include="ESPDraw.cpp">
-      <Filter>Source Files\Draw</Filter>
-    </ClCompile>
     <ClCompile Include="ExceptionLoggers.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bones.cpp">
+      <Filter>Source Files\Hybrid</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

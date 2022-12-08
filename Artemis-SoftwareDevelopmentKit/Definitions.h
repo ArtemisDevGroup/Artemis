@@ -1,17 +1,35 @@
+//-------------------------------------------------------------------------------------->
+// Copyright (c) 2022 Artemis Group														|
+// This file is licensed under the MIT license.											|
+// Read more here: https://github.com/ArtemisDevGroup/Artemis/blob/master/LICENSE.md	|
+//-------------------------------------------------------------------------------------->
+// This file was authored by @Sigma0014.												|
+// @Sigma0014: https://github.com/Sigma0014												|
+//-------------------------------------------------------------------------------------->
+
 #ifndef __DEFINITIONS_H__
 #define __DEFINITIONS_H__
 
-#include <sal.h>
+#include <sal.h>														// Includes all of the Microsoft Sign Annotation Language macros for annotating parameters and return values throughout Artemis.
 
 #ifdef _M_IX86
-#define _X86_
+#define _X86_															// Forward declares _X86_ for "minwindef.h".
 #elif defined(_M_AMD64)
-#define _AMD64_
+#define _AMD64_															// Forward declares _AMD64_ for "minwindef.h".
 #else
-#error No target architecture!
+#error No target architecture!											// Errors if the architecture is neither x86 or x64.
 #endif
 
-#include <minwindef.h>
+#include <minwindef.h>													// Includes most of the Windows API type definitions.
+
+#define EXPORT															// Defined for compiliing the main Artemis module, to export its global variables.
+																		// This macro shall not be defined in the framework. The framework is intended to import these variables instead.
+#ifdef EXPORT
+	#define ARTEMIS_API __declspec(dllexport)							// Exports global variables.
+#else
+	#define ARTEMIS_API __declspec(dllimport)							// Imports global variables.
+#endif // EXPORT
+
 
 #define MAX_NAME				64										// The max characters in a name.
 #define MAX_MESSAGE				256										// The max characters in a message.

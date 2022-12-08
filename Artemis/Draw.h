@@ -1,3 +1,13 @@
+//-------------------------------------------------------------------------------------->
+// Copyright (c) 2022 Artemis Group														|
+// This file is licensed under the MIT license.											|
+// Read more here: https://github.com/ArtemisDevGroup/Artemis/blob/master/LICENSE.md	|
+//-------------------------------------------------------------------------------------->
+// This file was authored by @Sigma0014 and @Monke-exe.									|
+// @Sigma0014: https://github.com/Sigma0014												|
+// @Monke-exe:	https://github.com/Monke-exe											|
+//-------------------------------------------------------------------------------------->
+
 #ifndef __DRAW_H__
 #define __DRAW_H__
 
@@ -8,7 +18,7 @@
 
 using namespace Artemis;
 
-class BoneAndESPDraw : public IDraw {
+class BoneDraw : public IDraw {
 	ADDRESS uEntity;
 
 	void TransformsCalculation(
@@ -29,7 +39,7 @@ class BoneAndESPDraw : public IDraw {
 	);
 
 public:
-	BoneAndESPDraw(_In_ ADDRESS uEntity);
+	BoneDraw(_In_ ADDRESS uEntity);
 
 	static Vector4<>& Color();
 

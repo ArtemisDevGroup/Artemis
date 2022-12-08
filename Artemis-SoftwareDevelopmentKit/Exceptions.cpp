@@ -1,3 +1,12 @@
+//-------------------------------------------------------------------------------------->
+// Copyright (c) 2022 Artemis Group														|
+// This file is licensed under the MIT license.											|
+// Read more here: https://github.com/ArtemisDevGroup/Artemis/blob/master/LICENSE.md	|
+//-------------------------------------------------------------------------------------->
+// This file was authored by @Sigma0014.												|
+// @Sigma0014: https://github.com/Sigma0014												|
+//-------------------------------------------------------------------------------------->
+
 #include "Exceptions.h"
 
 #include <string.h>
@@ -5,7 +14,7 @@
 
 namespace Artemis {
 
-	CHAR g_szContext[64];
+	ARTEMIS_API CHAR g_szContext[64];
 
 	void ExceptionContext::SetContext(_In_ LPCSTR lpSender) { strcpy_s(g_szContext, lpSender); }
 	void ExceptionContext::ResetContext() { g_szContext[0] = '\0'; }
@@ -100,17 +109,17 @@ namespace Artemis {
 
 	HookException::HookException(_In_z_ LPCSTR lpMessage, _In_ ExceptionCode ec) : Exception(lpMessage, ec, TRUE) { ExceptionEventManager::GetHookExceptionEvent().Invoke(this); }
 
-	Event<ExceptionEventHandler> g_ExceptionEvent;
-	Event<ParameterExceptionEventHandler> g_ParameterExceptionEvent;
-	Event<InstanceInvalidExceptionEventHandler> g_InstanceInvalidExceptionEvent;
-	Event<MemoryAccessViolationExceptionEventHandler> g_MemoryAccessViolationExceptionEvent;
-	Event<WindowsApiExceptionEventHandler> g_WindowsApiExceptionEvent;
-	Event<ObjectNotFoundExceptionEventHandler> g_ObjectNotFoundExceptionEvent;
-	Event<NotImplementedExceptionEventHandler> g_NotImplementedExceptionEvent;
-	Event<CompatibilityExceptionEventHandler> g_CompatibilityExceptionEvent;
-	Event<AttributeExceptionEventHandler> g_AttributeExceptionEvent;
-	Event<IndexOutOfRangeExceptionEventHandler> g_IndexOutOfRangeExceptionEvent;
-	Event<HookExceptionEventHandler> g_HookExceptionEvent;
+	ARTEMIS_API Event<ExceptionEventHandler> g_ExceptionEvent;
+	ARTEMIS_API Event<ParameterExceptionEventHandler> g_ParameterExceptionEvent;
+	ARTEMIS_API Event<InstanceInvalidExceptionEventHandler> g_InstanceInvalidExceptionEvent;
+	ARTEMIS_API Event<MemoryAccessViolationExceptionEventHandler> g_MemoryAccessViolationExceptionEvent;
+	ARTEMIS_API Event<WindowsApiExceptionEventHandler> g_WindowsApiExceptionEvent;
+	ARTEMIS_API Event<ObjectNotFoundExceptionEventHandler> g_ObjectNotFoundExceptionEvent;
+	ARTEMIS_API Event<NotImplementedExceptionEventHandler> g_NotImplementedExceptionEvent;
+	ARTEMIS_API Event<CompatibilityExceptionEventHandler> g_CompatibilityExceptionEvent;
+	ARTEMIS_API Event<AttributeExceptionEventHandler> g_AttributeExceptionEvent;
+	ARTEMIS_API Event<IndexOutOfRangeExceptionEventHandler> g_IndexOutOfRangeExceptionEvent;
+	ARTEMIS_API Event<HookExceptionEventHandler> g_HookExceptionEvent;
 
 	_Check_return_ Event<ExceptionEventHandler>& ExceptionEventManager::GetExceptionEvent() { return g_ExceptionEvent; }
 	_Check_return_ Event<ParameterExceptionEventHandler>& ExceptionEventManager::GetParameterExceptionEvent() { return g_ParameterExceptionEvent; }

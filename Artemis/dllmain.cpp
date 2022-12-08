@@ -1,3 +1,12 @@
+//-------------------------------------------------------------------------------------->
+// Copyright (c) 2022 Artemis Group														|
+// This file is licensed under the MIT license.											|
+// Read more here: https://github.com/ArtemisDevGroup/Artemis/blob/master/LICENSE.md	|
+//-------------------------------------------------------------------------------------->
+// This file was authored by @Sigma0014.												|
+// @Sigma0014: https://github.com/Sigma0014												|
+//-------------------------------------------------------------------------------------->
+
 #include <Windows.h>
 
 #include <ArtemisSpecific/Midnight.h>
@@ -38,9 +47,9 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
 
     pInst->Initialize(hModule);
 
-    ESPWindow* pEspWnd = new ESPWindow();
-    pWndMgr->RegisterWnd(pEspWnd);
-    pOnFrameMgr->RegisterOnFrameAction(pEspWnd);
+    WallhackWindow* pWhWnd = new WallhackWindow();
+    pWndMgr->RegisterWnd(pWhWnd);
+    pOnFrameMgr->RegisterOnFrameAction(pWhWnd);
 
     pWndMgr->RegisterWnd(new MainWindow());
     pWndMgr->RegisterWnd(new TestWindow());

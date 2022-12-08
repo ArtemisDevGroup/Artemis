@@ -1,9 +1,18 @@
+//-------------------------------------------------------------------------------------->
+// Copyright (c) 2022 Artemis Group														|
+// This file is licensed under the MIT license.											|
+// Read more here: https://github.com/ArtemisDevGroup/Artemis/blob/master/LICENSE.md	|
+//-------------------------------------------------------------------------------------->
+// This file was authored by @Sigma0014.												|
+// @Sigma0014: https://github.com/Sigma0014												|
+//-------------------------------------------------------------------------------------->
+
 #include "Midnight.h"
 
 #include <Windows.h>
 
 namespace Artemis {
-	Midnight g_CoreInst;
+	ARTEMIS_API Midnight g_CoreInst;
 	Midnight* Midnight::GetInst() { return &g_CoreInst; }
 
 	Midnight::Midnight() : Mem(Memory(nullptr)), ImGuiWndManager(), Log(Logger(TRUE, TRUE)), ConInst(), bRun(FALSE), hModule(nullptr), hWnd(nullptr), lpPresent(nullptr), oWndProc(nullptr) {}
@@ -37,7 +46,7 @@ namespace Artemis {
 			return;
 		}
 
-		LPVOID lpOriginal;
+		LPVOID lpOriginal = nullptr;
 		try {
 			PresentHook = Hook(lpfnPresent, hkPresent, &lpOriginal);
 			Log.LogSuccess(__FUNCTION__, "Successfully created hook on present.");
@@ -88,7 +97,7 @@ namespace Artemis {
 
 		try {
 			if (!SetWindowLongPtrW(hWnd, GWLP_WNDPROC, (LONG_PTR)oWndProc)) throw WindowsApiException("SetWindowLongPtrW");
-			Log.LogSuccess("Successfully restored the window procedure.");
+			Log.LogSuccess(__FUNCTION__, "Successfully restored the window procedure.");
 		}
 		catch (WindowsApiException& e) {
 			Log.LogError("Failed to restore the old window procedure. Message: %s", e.GetWindowsMessage());

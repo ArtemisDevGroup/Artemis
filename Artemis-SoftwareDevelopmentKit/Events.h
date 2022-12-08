@@ -1,3 +1,12 @@
+//-------------------------------------------------------------------------------------->
+// Copyright (c) 2022 Artemis Group														|
+// This file is licensed under the MIT license.											|
+// Read more here: https://github.com/ArtemisDevGroup/Artemis/blob/master/LICENSE.md	|
+//-------------------------------------------------------------------------------------->
+// This file was authored by @Sigma0014.												|
+// @Sigma0014: https://github.com/Sigma0014												|
+//-------------------------------------------------------------------------------------->
+
 #ifndef __EVENTS_H__
 #define __EVENTS_H__
 
@@ -65,7 +74,7 @@ namespace Artemis {
 	public:
 		inline FramedEvent() : lpfnPre(nullptr), lpfnPost(nullptr) { memset(lpszFunctions, 0x00, sizeof(lpszFunctions)); }
 
-		inline void Invoke(A... params) {
+		inline void Invoke(A... params) const {
 			for (INT i = 0; i < 64; i++)
 				if (lpszFunctions[i]) {
 					if (lpfnPre) lpfnPre();
