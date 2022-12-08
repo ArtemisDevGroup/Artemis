@@ -44,7 +44,6 @@
     <ClInclude Include="ImGui\imstb_truetype.h" />
     <ClInclude Include="Interfaces.h" />
     <ClInclude Include="Logger.h" />
-    <ClInclude Include="Matrix.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="MemoryAllocation.h" />
     <ClInclude Include="MemoryDefinitions.h" />
