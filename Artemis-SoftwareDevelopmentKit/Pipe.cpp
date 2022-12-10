@@ -15,14 +15,12 @@
 namespace Artemis {
 	IPipeObject::IPipeObject() : hPipe(nullptr) { szName[0] = '\0'; }
 
-	IPipeObject::IPipeObject(
+	void IPipeObject::Open(
 		_In_z_ LPCSTR lpPipeName,
-		_In_ HANDLE hPipe,
-		_In_ BOOL bIsServer
-	) : hPipe(hPipe) {
-		if (hPipe == INVALID_HANDLE_VALUE) throw WindowsApiException(bIsServer ? "CreateNamedPipeA" : "CreateFileA");
-
+		_In_ PipeAccess nPipeAccess
+	) {
 		strcpy_s(szName, lpPipeName);
+		hPipe = _Open(lpPipeName, nPipeAccess);
 	}
 
 	void IPipeObject::Read(
@@ -66,25 +64,47 @@ namespace Artemis {
 	IPipeObject::~IPipeObject() { Release(); }
 
 	PipeServer::PipeServer() : IPipeObject() {}
-	
-	PipeServer::PipeServer(
+
+	HANDLE PipeServer::_Open(
 		_In_z_ LPCSTR lpPipeName,
 		_In_ PipeAccess nPipeAccess
-	) : IPipeObject(
-		lpPipeName,
-		CreateNamedPipeA(
+	) {
+		CONTEXT_BEGIN;
+
+		DWORD dwPipeAccess = 0;
+		switch (nPipeAccess) {
+		case PipeAccess::Inbound:
+			dwPipeAccess = PIPE_ACCESS_INBOUND;
+			break;
+
+		case PipeAccess::Outbound:
+			dwPipeAccess = PIPE_ACCESS_OUTBOUND;
+			break;
+
+		case PipeAccess::Duplex:
+			dwPipeAccess = PIPE_ACCESS_DUPLEX;
+			break;
+
+		default:
+			throw ParameterException("nPipeAccess");
+		}
+
+		HANDLE hPipe = CreateNamedPipeA(
 			lpPipeName,
-			nPipeAccess == PipeAccess::Outbound ? PIPE_ACCESS_OUTBOUND :
-			(nPipeAccess == PipeAccess::Inbound ? PIPE_ACCESS_INBOUND :
-			(nPipeAccess == PipeAccess::Duplex ? PIPE_ACCESS_DUPLEX : 0)),
+			dwPipeAccess,
 			PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT | PIPE_ACCEPT_REMOTE_CLIENTS,
 			PIPE_UNLIMITED_INSTANCES,
 			MAX_MESSAGE,
 			MAX_MESSAGE,
 			INFINITE,
-			nullptr),
-		TRUE
-	) {}
+			nullptr
+		);
+
+		if (hPipe == INVALID_HANDLE_VALUE) throw WindowsApiException("CreateNamedPipeA");
+
+		CONTEXT_END;
+		return hPipe;
+	}
 
 	void PipeServer::WaitForConnection() {
 		CONTEXT_BEGIN;
@@ -100,22 +120,20 @@ namespace Artemis {
 
 	PipeClient::PipeClient() : IPipeObject() {}
 
-	PipeClient::PipeClient(
+	HANDLE PipeClient::_Open(
 		_In_z_ LPCSTR lpPipeName,
 		_In_ PipeAccess nPipeAccess
-	) : IPipeObject(
-		lpPipeName,
+	) {
 		CreateFileA(
 			lpPipeName,
 			nPipeAccess == PipeAccess::Outbound ? GENERIC_WRITE :
 			(nPipeAccess == PipeAccess::Inbound ? GENERIC_READ :
-			(nPipeAccess == PipeAccess::Duplex ? GENERIC_READ | GENERIC_WRITE : 0)),
+				(nPipeAccess == PipeAccess::Duplex ? GENERIC_READ | GENERIC_WRITE : 0)),
 			0,
 			nullptr,
 			OPEN_EXISTING,
 			FILE_ATTRIBUTE_NORMAL,
 			nullptr
-		),
-		FALSE
-	) {}
+		);
+	}
 }
