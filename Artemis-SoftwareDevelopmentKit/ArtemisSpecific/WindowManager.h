@@ -89,7 +89,7 @@ namespace Artemis {
 		/// </summary>
 		/// <param name="dwWndId">- The identifier of the window to get.</param>
 		/// <exception cref="ObjectNotFoundException"/>
-		_Check_return_ _Ret_maybenull_ IWindow* GetWndById(_In_ DWORD dwWndId);
+		_Check_return_ _When_(IN_RANGE(dwWndId, 0, 19), _Ret_notnull_) _When_(!IN_RANGE(dwWndId, 0, 19), _Ret_maybenull_) IWindow* GetWndById(_In_ DWORD dwWndId);
 
 		/// <summary>
 		/// Sets the visibility of the ImGui windows.

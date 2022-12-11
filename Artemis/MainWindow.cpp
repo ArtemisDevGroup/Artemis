@@ -8,6 +8,7 @@
 //-------------------------------------------------------------------------------------->
 
 #include "Window.h"
+#include "Identifiers.h"
 
 MainWindow::MainWindow() : IWindow("Main Window", WND_MAINWINDOW) {}
 
@@ -22,5 +23,5 @@ void MainWindow::Window() {
     ImGui::Text("F2 - Hide all windows.");
     ImGui::Text("Windows:");
     
-    ImGui::Checkbox("[TEMP] ESP Window", (bool*)&Midnight::GetInst()->ImGuiWndManager.GetWndById(3)->bShow);
+    ImGui::Checkbox("[TEMP] Wallhack Window", (bool*)&Midnight::GetInst()->ImGuiWndManager.GetWndById(WND_WALLHACKWINDOW)->bShow);
 }

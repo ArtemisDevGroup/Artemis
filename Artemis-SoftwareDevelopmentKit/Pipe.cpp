@@ -124,7 +124,9 @@ namespace Artemis {
 		_In_z_ LPCSTR lpPipeName,
 		_In_ PipeAccess nPipeAccess
 	) {
-		CreateFileA(
+		CONTEXT_BEGIN;
+
+		HANDLE hPipe = CreateFileA(
 			lpPipeName,
 			nPipeAccess == PipeAccess::Outbound ? GENERIC_WRITE :
 			(nPipeAccess == PipeAccess::Inbound ? GENERIC_READ :
@@ -135,5 +137,10 @@ namespace Artemis {
 			FILE_ATTRIBUTE_NORMAL,
 			nullptr
 		);
+
+		if (hPipe == INVALID_HANDLE_VALUE) throw WindowsApiException("CreateFileA");
+
+		CONTEXT_END;
+		return hPipe;
 	}
 }

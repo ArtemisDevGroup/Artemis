@@ -89,7 +89,7 @@ namespace Artemis {
 
 		if (TargetType == External) {
 			if (!DuplicateHandle(
-				hProcess,
+				GetCurrentProcess(),
 				hProcess,
 				GetCurrentProcess(),
 				&hProcess,
@@ -292,7 +292,7 @@ namespace Artemis {
 	) const {
 		CONTEXT_BEGIN;
 
-		for (UINT i = 0; i < Offsets.GetCount(); i++) {
+		for (INT i = 0; i < Offsets.GetCount(); i++) {
 			uAddress = Read<ADDRESS>(uAddress) + Offsets[i];
 		}
 

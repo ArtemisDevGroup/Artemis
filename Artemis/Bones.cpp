@@ -3,8 +3,9 @@
 // This file is licensed under the MIT license.											|
 // Read more here: https://github.com/ArtemisDevGroup/Artemis/blob/master/LICENSE.md	|
 //-------------------------------------------------------------------------------------->
-// This file was authored by @Sigma0014.												|
+// This file was authored by @Sigma0014 and @Monke-exe.									|
 // @Sigma0014: https://github.com/Sigma0014												|
+// @Monke-exe:	https://github.com/Monke-exe											|
 //-------------------------------------------------------------------------------------->
 
 #include "Window.h"
@@ -173,7 +174,7 @@ void BoneDraw::Draw() {
 	else delete this;
 }
 
-WallhackWindow::WallhackWindow() : IWindow("Wallhack Window", WND_ESPWINDOW), IOnFrame(ONFRAME_ESP), bBoneEsp(false) {}
+WallhackWindow::WallhackWindow() : IWindow("Wallhack Window", WND_WALLHACKWINDOW), IOnFrame(ONFRAME_WALLHACK), bBoneEsp(false) {}
 
 void WallhackWindow::Window() {
     static DrawManager* pDraw = &Midnight::GetInst()->ESPDrawManager;

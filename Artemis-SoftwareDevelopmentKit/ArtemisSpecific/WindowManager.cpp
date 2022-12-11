@@ -88,7 +88,7 @@ namespace Artemis {
 				lpszWndArray[i]->Present();
 	}
 	//-------------------------------------//
-	_Check_return_ _Ret_maybenull_ IWindow* WindowManager::GetWndById(_In_ DWORD dwWndId) {
+	_Check_return_ _When_(IN_RANGE(dwWndId, 0, 19), _Ret_notnull_) _When_(!IN_RANGE(dwWndId, 0, 19), _Ret_maybenull_) IWindow* WindowManager::GetWndById(_In_ DWORD dwWndId) {
 		CONTEXT_BEGIN;
 
 		IWindow* lpReturn = nullptr;
