@@ -31,8 +31,6 @@ namespace Artemis {
 		this->FileLogEvent += DefaultFileLogEventHandler;
 	}
 
-	Logger::~Logger() { Release(); }
-
 	void Logger::Log(
 		_In_opt_z_ LPCSTR lpTime,
 		_In_z_ LPCSTR lpPrefix,
@@ -154,12 +152,5 @@ namespace Artemis {
 		va_start(v, lpFormat);
 		Log(szTime[0] ? szTime : nullptr, "ERROR", FOREGROUND_RED, lpSender, lpFormat, v);
 		va_end(v);
-	}
-
-	void Logger::Release() {
-		if (bFile && lpFile) {
-			fclose(lpFile);
-			lpFile = nullptr;
-		}
 	}
 }

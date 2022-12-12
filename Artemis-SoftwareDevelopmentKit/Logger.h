@@ -36,7 +36,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class for logging events to files and/or the console.
 	/// </summary>
-	class ARTEMIS_API Logger : public IDisposable {
+	class ARTEMIS_API Logger {
 		BOOL bConsole;
 		BOOL bFile;
 		BOOL bLogTime;
@@ -64,8 +64,6 @@ namespace Artemis {
 			_In_ BOOL bFile,
 			_In_ BOOL bLogTime = TRUE
 		);
-
-		~Logger();
 
 		/// <summary>
 		/// An event that gets invoked every time something gets logged to the console through this instance.
@@ -160,11 +158,6 @@ namespace Artemis {
 			_In_z_ _Printf_format_string_ LPCSTR lpFormat,
 			...
 		) const;
-
-		/// <summary>
-		/// Releases the instance. Only usable if the logger logs to a file.
-		/// </summary>
-		void Release();
 	};
 }
 
