@@ -38,10 +38,7 @@ namespace Artemis {
 	/// </summary>
 	class ARTEMIS_API Logger : public IDisposable {
 		BOOL bConsole;
-
 		BOOL bFile;
-		FILE* lpFile;
-
 		BOOL bLogTime;
 
 		void Log(
@@ -61,7 +58,7 @@ namespace Artemis {
 		/// </summary>
 		/// <param name="bConsole">- Logs to stdout A.K.A. the console.</param>
 		/// <param name="bFile">- Logs to a file called log.log in the host process directory.</param>
-		/// <param name="bLogTime">- Defines wether to add timestamps to loggs or not.</param>
+		/// <param name="bLogTime">- Defines wether to add timestamps to logs or not.</param>
 		Logger(
 			_In_ BOOL bConsole,
 			_In_ BOOL bFile,
