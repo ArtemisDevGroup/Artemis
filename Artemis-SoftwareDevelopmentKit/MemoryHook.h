@@ -18,7 +18,7 @@ namespace Artemis {
 	/// <summary>
 	/// Á class for hooking functions. This class wraps around the MinHook library.
 	/// </summary>
-	class Hook : public IDisposable {
+	class ARTEMIS_API Hook : public IDisposable {
 		LPVOID lpTarget;
 
 	public:

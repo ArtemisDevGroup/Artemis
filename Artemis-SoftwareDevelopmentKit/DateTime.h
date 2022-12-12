@@ -14,7 +14,7 @@
 #include <Windows.h>
 
 namespace Artemis {
-	class DateTime {
+	class ARTEMIS_API DateTime {
 		static DateTime ProcessTimeData(_In_ LPSYSTEMTIME lpSystemTime);
 
 	public:

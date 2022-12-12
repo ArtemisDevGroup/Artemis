@@ -8,6 +8,7 @@
 //-------------------------------------------------------------------------------------->
 
 #include <Windows.h>
+#include <signal.h>
 
 #include <ArtemisSpecific/Midnight.h>
 
@@ -43,6 +44,8 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
     pLog->LogInfo(__FUNCTION__, "Module base address: 0x%llX", pMem->GetModuleBase());
     pLog->LogInfo(__FUNCTION__, "Module size: %lu", pMem->GetModuleSize());
 
+    pLog->LogInfo(__FUNCTION__, "Registered signal handlers.");
+
     RegisterEventHandlers();
 
     pInst->Initialize(hModule);
@@ -54,7 +57,10 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
     pWndMgr->RegisterWnd(new MainWindow());
     pWndMgr->RegisterWnd(new TestWindow());
 
+#ifdef _DEBUG
     pBindMgr->RegisterKeybind(new ExitKeybind());
+#endif // _DEBUG
+
     pBindMgr->RegisterKeybind(new HideAllKeybind());
 
     while (pInst->bRun) pBindMgr->InvokeKeybinds();
@@ -69,6 +75,7 @@ BOOL APIENTRY DllMain(
     _In_ LPVOID lpReserved
 ) {
     HANDLE hThread = nullptr;
+    HMODULE hSdkModule = nullptr;
     switch (dwReasonForCall) {
     case DLL_PROCESS_ATTACH:
         DisableThreadLibraryCalls(hModule);

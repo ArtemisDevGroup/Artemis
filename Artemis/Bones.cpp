@@ -13,7 +13,7 @@
 
 #include <ArtemisSpecific/Const.h>
 
-ARTEMIS_API Vector4<> v4Color = { 1 };
+Vector4<> v4Color = { 1 };
 Vector4<>& BoneDraw::Color() { return v4Color; }
 
 void BoneDraw::TransformsCalculation(

@@ -18,7 +18,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class for scanning memory for different kinds of data.
 	/// </summary>
-	class MemoryScanner {
+	class ARTEMIS_API MemoryScanner {
 	public:
 		/// <summary>
 		/// Represents which protection level the memory to be scanned should have.

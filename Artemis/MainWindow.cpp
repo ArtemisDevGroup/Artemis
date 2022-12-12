@@ -22,6 +22,19 @@ void MainWindow::Window() {
     ImGui::Text("[DEBUG] F1 - Eject Artemis.");
     ImGui::Text("F2 - Hide all windows.");
     ImGui::Text("Windows:");
+
+#ifdef _DEBUG
+    static bool bShowConsole = true;
+#else
+    static bool bShowConsole = false;
+#endif // _DEBUG
+
+    if (ImGui::Checkbox("[DEBUG] Console", &bShowConsole)) {
+        static Console* pCon = &Midnight::GetInst()->ConInst;
+
+        if (bShowConsole) pCon->Show();
+        else pCon->Hide();
+    }
     
     ImGui::Checkbox("[TEMP] Wallhack Window", (bool*)&Midnight::GetInst()->ImGuiWndManager.GetWndById(WND_WALLHACKWINDOW)->bShow);
 }

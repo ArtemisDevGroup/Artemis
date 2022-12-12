@@ -25,7 +25,7 @@ namespace Artemis {
 	/// <summary>
 	/// The core component of Artemis, codename Midnight.
 	/// </summary>
-	class Midnight : public IDisposable {
+	class ARTEMIS_API Midnight : public IDisposable {
 	public:
 		/// <summary>
 		/// Gets a pointer to the main instance.

@@ -14,12 +14,13 @@
 #include <Windows.h>
 
 #include "..\Definitions.h"
+#include "..\Interfaces.h"
 
 namespace Artemis {
 	/// <summary>
 	/// A class for managing a console instance in a non console application.
 	/// </summary>
-	class Console {
+	class ARTEMIS_API Console : public IDisposable {
 		BOOL bAllocated;
 		BOOL bShowing;
 

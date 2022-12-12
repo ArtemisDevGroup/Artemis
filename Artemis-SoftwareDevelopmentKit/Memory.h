@@ -26,7 +26,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class for interacting with the local or a remote process' virtual memory.
 	/// </summary>
-	class Memory : public IDisposable {
+	class ARTEMIS_API Memory : public IDisposable {
 	public:
 		/// <summary>
 		/// The object target type.

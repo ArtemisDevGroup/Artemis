@@ -36,7 +36,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class for logging events to files and/or the console.
 	/// </summary>
-	class Logger : public IDisposable {
+	class ARTEMIS_API Logger : public IDisposable {
 		BOOL bConsole;
 
 		BOOL bFile;

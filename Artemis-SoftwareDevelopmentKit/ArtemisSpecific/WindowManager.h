@@ -20,14 +20,14 @@ namespace Artemis {
 	/// <summary>
 	/// An abstract class for easily creating an ImGui window.
 	/// </summary>
-	class IWindow : public IRegisterable {
+	class ARTEMIS_API IWindow : public IRegisterable {
 	public:
 		/// <summary>
 		/// Sets the data fields.
 		/// </summary>
 		/// <param name="lpWndName">- The name of the window instance.</param>
 		/// <param name="dwWndId">- The window id. Has to be an unique id used by no other window. Id 0-19 are reserved.</param>
-		IWindow(_In_z_ LPCSTR lpWndName, _In_ DWORD dwWndId) : IRegisterable(), lpWndName(lpWndName), dwWndId(dwWndId), bShow(TRUE) {}
+		inline IWindow(_In_z_ LPCSTR lpWndName, _In_ DWORD dwWndId) : IRegisterable(), lpWndName(lpWndName), dwWndId(dwWndId), bShow(TRUE) {}
 
 		/// <summary>
 		/// A bool that dictates wether the window should be displayed or hidden.
@@ -51,7 +51,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class for managing the ImGui window instancws presented by project Artemis.
 	/// </summary>
-	class WindowManager : public IDisposable {
+	class ARTEMIS_API WindowManager : public IDisposable {
 		IWindow* lpszWndArray[MAX_INVOKE];
 
 	public:

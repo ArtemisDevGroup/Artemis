@@ -37,7 +37,7 @@ namespace Artemis {
 	/// <summary>
 	/// An interface for generic pipe objects.
 	/// </summary>
-	class IPipeObject : public IDisposable {
+	class ARTEMIS_API IPipeObject : public IDisposable {
 		HANDLE hPipe;
 		CHAR szName[MAX_NAME];
 
@@ -105,7 +105,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class for creating and hosting a system data pipe.
 	/// </summary>
-	class PipeServer : public IPipeObject {
+	class ARTEMIS_API PipeServer : public IPipeObject {
 		HANDLE _Open(
 			_In_z_ LPCSTR lpPipeName,
 			_In_ PipeAccess nPipeAccess
@@ -123,7 +123,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class for connecting to pipes.
 	/// </summary>
-	class PipeClient : public IPipeObject {
+	class ARTEMIS_API PipeClient : public IPipeObject {
 		HANDLE _Open(
 			_In_z_ LPCSTR lpPipeName,
 			_In_ PipeAccess nPipeAccess

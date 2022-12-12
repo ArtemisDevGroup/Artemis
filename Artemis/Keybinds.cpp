@@ -14,8 +14,8 @@
 ExitKeybind::ExitKeybind() : IKeybind(VK_F1) {}
 
 void ExitKeybind::WhenPressed() {
-    Midnight* pInst = Midnight::GetInst();
-    pInst->bRun = FALSE;
+    Midnight::GetInst()->bRun = FALSE;
+    FreeLibrary(GetModuleHandleA("Artemis-SoftwareDevelopmentKit.dll"));
 }
 
 HideAllKeybind::HideAllKeybind() : IKeybind(VK_F2) {}

@@ -80,7 +80,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class for creating and freeing virtual memory allocations.
 	/// </summary>
-	class VirtualAllocation : public IDisposable {
+	class ARTEMIS_API VirtualAllocation : public IDisposable {
 		HANDLE hProcess;
 		ADDRESS uAddress;
 		SIZE_T uSize;

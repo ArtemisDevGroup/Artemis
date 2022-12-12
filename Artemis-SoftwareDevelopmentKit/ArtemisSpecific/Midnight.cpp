@@ -12,7 +12,7 @@
 #include <Windows.h>
 
 namespace Artemis {
-	ARTEMIS_API Midnight g_CoreInst;
+	Midnight g_CoreInst;
 	Midnight* Midnight::GetInst() { return &g_CoreInst; }
 
 	Midnight::Midnight() : Mem(Memory(nullptr)), ImGuiWndManager(), Log(Logger(TRUE, TRUE)), ConInst(), bRun(FALSE), hModule(nullptr), hWnd(nullptr), lpPresent(nullptr), oWndProc(nullptr) {}

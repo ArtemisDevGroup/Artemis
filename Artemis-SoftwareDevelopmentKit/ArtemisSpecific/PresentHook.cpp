@@ -31,7 +31,7 @@ namespace Artemis {
 		return FALSE;
 	}
 
-	_Check_return_ _Ret_maybenull_ HWND GetTopLevelWnd() {
+	_Check_return_ _Ret_maybenull_ ARTEMIS_API HWND GetTopLevelWnd() {
 		HANDLEDATA data;
 		data.dwProcessId = GetCurrentProcessId();
 		data.hWnd = nullptr;
@@ -39,7 +39,7 @@ namespace Artemis {
 		return data.hWnd;
 	}
 
-	_Check_return_ _Ret_maybenull_ LPVOID GetPresentFnPtr(_In_ HWND hGameWnd) {
+	_Check_return_ _Ret_maybenull_ ARTEMIS_API LPVOID GetPresentFnPtr(_In_ HWND hGameWnd) {
 		DXGI_SWAP_CHAIN_DESC sd;
 		memset(&sd, 0, sizeof(sd));
 		sd.BufferCount = 2;
@@ -149,7 +149,7 @@ namespace Artemis {
 		return CallWindowProcW(Midnight::GetInst()->oWndProc, hWnd, uMsg, wParam, lParam);
 	}
 
-	HRESULT APIENTRY hkPresent(
+	ARTEMIS_API HRESULT APIENTRY hkPresent(
 		_In_ IDXGISwapChain* pSwapChain,
 		_In_ UINT SyncInterval,
 		_In_ UINT Flags

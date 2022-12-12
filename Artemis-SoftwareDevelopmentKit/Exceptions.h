@@ -56,7 +56,7 @@ namespace Artemis {
 	/// <summary>
 	/// A static class for managing the context of thrown exceptions.
 	/// </summary>
-	class ExceptionContext {
+	class ARTEMIS_API ExceptionContext {
 		inline ExceptionContext() {}
 		inline ExceptionContext(const ExceptionContext&) {}
 
@@ -88,7 +88,7 @@ namespace Artemis {
 	/// <summary>
 	/// A generic Exception class. All other exception types inherit from this class.
 	/// </summary>
-	class Exception {
+	class ARTEMIS_API Exception {
 		ExceptionCode ec;
 		CHAR szMessage[MAX_MESSAGE];
 		CHAR szFunction[MAX_NAME];
@@ -115,7 +115,7 @@ namespace Artemis {
 	/// <summary>
 	/// An exception type for exceptions regarding parameters containing invalid values.
 	/// </summary>
-	class ParameterException : public Exception {
+	class ARTEMIS_API ParameterException : public Exception {
 		CHAR szParameter[MAX_NAME];
 	public:
 		/// <summary>
@@ -136,7 +136,7 @@ namespace Artemis {
 	/// <summary>
 	/// An exception type for exceptions regarding a class instance being invalid.
 	/// </summary>
-	class InstanceInvalidException : public Exception { public: InstanceInvalidException(); };
+	class ARTEMIS_API InstanceInvalidException : public Exception { public: InstanceInvalidException(); };
 
 	/// <summary>
 	/// Defines the type of operation the violation is associated with.
@@ -146,7 +146,7 @@ namespace Artemis {
 	/// <summary>
 	/// An exception type for exceptions regarding memory access violations.
 	/// </summary>
-	class MemoryAccessViolationException : public Exception {
+	class ARTEMIS_API MemoryAccessViolationException : public Exception {
 		ADDRESS uAddress;
 		DWORD dwSize;
 		OperationType ot;
@@ -186,7 +186,7 @@ namespace Artemis {
 	/// <summary>
 	/// An exception type for exceptions regarding subsequent calls to the Windows API failing.
 	/// </summary>
-	class WindowsApiException : public Exception {
+	class ARTEMIS_API WindowsApiException : public Exception {
 		CHAR szName[MAX_NAME];
 
 		DWORD dwWinCode;
@@ -227,7 +227,7 @@ namespace Artemis {
 	/// <summary>
 	/// An exception type for exceptions regarding an object searched for not being found.
 	/// </summary>
-	class ObjectNotFoundException : public Exception {
+	class ARTEMIS_API ObjectNotFoundException : public Exception {
 		CHAR szName[MAX_NAME];
 		CHAR szType[MAX_NAME];
 
@@ -255,17 +255,17 @@ namespace Artemis {
 	/// <summary>
 	/// An exception type for exceptions regarding a feature not being implemented yet.
 	/// </summary>
-	class NotImplementedException : public Exception { public: NotImplementedException(); };
+	class ARTEMIS_API NotImplementedException : public Exception { public: NotImplementedException(); };
 
 	/// <summary>
 	/// An exception type for exceptions regarding different parameter values not being compatible with each other.
 	/// </summary>
-	class CompatibilityException : public Exception { public: CompatibilityException(); };
+	class ARTEMIS_API CompatibilityException : public Exception { public: CompatibilityException(); };
 
 	/// <summary>
 	/// An exception type for exceptions regarding object attributes being incompatible with the application they are being used in.
 	/// </summary>
-	class AttributeException : public Exception {
+	class ARTEMIS_API AttributeException : public Exception {
 		CHAR szAttributeName[MAX_NAME];
 
 	public:
@@ -285,7 +285,7 @@ namespace Artemis {
 	/// <summary>
 	/// An exception type for exceptions regarding an index being out of range.
 	/// </summary>
-	class IndexOutOfRangeException : public Exception {
+	class ARTEMIS_API IndexOutOfRangeException : public Exception {
 		INT nIndex;
 		INT nMaxIndex;
 
@@ -313,7 +313,7 @@ namespace Artemis {
 	/// <summary>
 	/// An exception type for all exceptions regarding hooking functions.
 	/// </summary>
-	class HookException : public Exception {
+	class ARTEMIS_API HookException : public Exception {
 		HookException(_In_z_ LPCSTR lpMessage, _In_ ExceptionCode ec);
 
 	public:
@@ -352,7 +352,7 @@ namespace Artemis {
 	/// <summary>
 	/// A static class for registering and unregistering exception event handler.
 	/// </summary>
-	class ExceptionEventManager {
+	class ARTEMIS_API ExceptionEventManager {
 		ExceptionEventManager() {}
 		ExceptionEventManager(const ExceptionEventManager&) {}
 

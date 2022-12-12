@@ -22,9 +22,7 @@
 
 #include <minwindef.h>													// Includes most of the Windows API type definitions.
 
-#define EXPORT															// Defined for compiliing the main Artemis module, to export its global variables.
-																		// This macro shall not be defined in the framework. The framework is intended to import these variables instead.
-#ifdef EXPORT
+#ifdef _ARTEMIS_EXPORT
 	#define ARTEMIS_API __declspec(dllexport)							// Exports global variables.
 #else
 	#define ARTEMIS_API __declspec(dllimport)							// Imports global variables.

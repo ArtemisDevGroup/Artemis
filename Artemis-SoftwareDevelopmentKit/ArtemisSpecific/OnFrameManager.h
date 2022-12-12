@@ -18,7 +18,7 @@ namespace Artemis {
 	/// <summary>
 	/// An abstract class for running an action at the beginning of every frame.
 	/// </summary>
-	class IOnFrame : public IRegisterable {
+	class ARTEMIS_API IOnFrame : public IRegisterable {
 	public:
 		/// <summary>
 		/// Sets the data fields.
@@ -37,7 +37,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class for registering actions to run at the beginning of every frame.
 	/// </summary>
-	class OnFrameManager : public IDisposable {
+	class ARTEMIS_API OnFrameManager : public IDisposable {
 		IOnFrame* lpszOnFrameArray[MAX_INVOKE];
 
 	public:

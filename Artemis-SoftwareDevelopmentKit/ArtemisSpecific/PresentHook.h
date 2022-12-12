@@ -20,10 +20,10 @@
 #include "..\Exceptions.h"
 
 namespace Artemis {
-	_Check_return_ _Ret_maybenull_ HWND GetTopLevelWnd();
-	_Check_return_ _Ret_maybenull_ LPVOID GetPresentFnPtr(_In_ HWND hGameWnd);
+	_Check_return_ _Ret_maybenull_ ARTEMIS_API HWND GetTopLevelWnd();
+	_Check_return_ _Ret_maybenull_ ARTEMIS_API LPVOID GetPresentFnPtr(_In_ HWND hGameWnd);
 
-	HRESULT APIENTRY hkPresent(
+	ARTEMIS_API HRESULT APIENTRY hkPresent(
 		_In_ IDXGISwapChain* pSwapChain,
 		_In_ UINT SyncInterval,
 		_In_ UINT Flags

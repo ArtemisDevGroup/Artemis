@@ -33,7 +33,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class for creating threads inside the current process.
 	/// </summary>
-	class Thread : public IDisposable {
+	class ARTEMIS_API Thread : public IDisposable {
 		HANDLE hThread;
 		LPTHREAD_START_ROUTINE lpThreadFunction;
 		LPVOID lpThreadParameter;
@@ -108,7 +108,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class for creating a thread that loops a single function until it is terminated.
 	/// </summary>
-	class LoopThread : public Thread {
+	class ARTEMIS_API LoopThread : public Thread {
 		static DWORD WINAPI ThreadFunction(LoopThreadFunction lpThreadFunction);
 
 	public:

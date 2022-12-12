@@ -10,7 +10,7 @@
 #include "SafeMemory.h"
 
 namespace Artemis {
-	void SafeDelete(_In_ void* pBlock) {
+	ARTEMIS_API void SafeDelete(_In_ void* pBlock) {
 		if (pBlock) {
 			__try {
 				delete pBlock;

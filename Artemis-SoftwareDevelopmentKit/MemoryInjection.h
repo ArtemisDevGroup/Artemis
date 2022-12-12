@@ -18,7 +18,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class for injecting dynamic link libraries into a process.
 	/// </summary>
-	class DllInjection : public IDisposable {
+	class ARTEMIS_API DllInjection : public IDisposable {
 	public:
 		/// <summary>
 		/// Defines what the dll path is relative to.
