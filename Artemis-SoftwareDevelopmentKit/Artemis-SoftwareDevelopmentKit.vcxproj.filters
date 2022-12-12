@@ -156,9 +156,6 @@
     <ClInclude Include="ArtemisSpecific\Const.h">
       <Filter>Artemis-Specific\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SafeMemory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Thread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -244,9 +241,6 @@
     </ClCompile>
     <ClCompile Include="ArtemisSpecific\OnFrameManager.cpp">
       <Filter>Artemis-Specific\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SafeMemory.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Thread.cpp">
       <Filter>Source Files</Filter>

@@ -8,7 +8,6 @@
 //-------------------------------------------------------------------------------------->
 
 #include "KeybindManager.h"
-#include "..\SafeMemory.h"
 
 #include <stdio.h>
 #include <Windows.h>
@@ -64,7 +63,7 @@ namespace Artemis {
 	void KeybindManager::Release() {
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (lpszKeybindArray[i]) {
-				if (lpszKeybindArray[i]->dwRegisteredCount <= 1) SafeDelete(lpszKeybindArray[i]);
+				if (lpszKeybindArray[i]->dwRegisteredCount <= 1) delete lpszKeybindArray[i];
 				else lpszKeybindArray[i]->dwRegisteredCount--;
 				lpszKeybindArray[i] = nullptr;
 			}

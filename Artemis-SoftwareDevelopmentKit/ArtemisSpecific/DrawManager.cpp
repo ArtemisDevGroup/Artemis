@@ -8,7 +8,6 @@
 //-------------------------------------------------------------------------------------->
 
 #include "DrawManager.h"
-#include "..\SafeMemory.h"
 
 #include <stdio.h>
 
@@ -335,7 +334,7 @@ namespace Artemis {
 	void DrawManager::Release() {
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (lpszDrawArray[i]) {
-				if (lpszDrawArray[i]->dwRegisteredCount <= 1) SafeDelete(lpszDrawArray[i]);
+				if (lpszDrawArray[i]->dwRegisteredCount <= 1) delete lpszDrawArray[i];
 				else lpszDrawArray[i]->dwRegisteredCount--;
 				lpszDrawArray[i] = nullptr;
 			}

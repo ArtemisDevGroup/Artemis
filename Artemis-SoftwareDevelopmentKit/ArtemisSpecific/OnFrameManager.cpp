@@ -8,7 +8,6 @@
 //-------------------------------------------------------------------------------------->
 
 #include "OnFrameManager.h"
-#include "..\SafeMemory.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -60,7 +59,7 @@ namespace Artemis {
 	void OnFrameManager::Release() {
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (lpszOnFrameArray[i]) {
-				if (lpszOnFrameArray[i]->dwRegisteredCount <= 1) SafeDelete(lpszOnFrameArray[i]);
+				if (lpszOnFrameArray[i]->dwRegisteredCount <= 1) delete lpszOnFrameArray[i];
 				else lpszOnFrameArray[i]->dwRegisteredCount--;
 				lpszOnFrameArray[i] = nullptr;
 			}
