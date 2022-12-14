@@ -42,8 +42,10 @@ namespace Artemis {
 		if (bConsole) ConsoleLogEvent.Invoke(nullptr, lpTime, lpPrefix, wPrefixColor, lpSender, lpFormat, lpArgs);
 		if (bFile) {
 			FILE* lpFile = nullptr;
-			if (!fopen_s(&lpFile, "log.log", "a"))
+			if (!fopen_s(&lpFile, "log.log", "a")) {
 				FileLogEvent.Invoke(lpFile, lpTime, lpPrefix, 0, lpSender, lpFormat, lpArgs);
+				fclose(lpFile);
+			}
 			else throw Exception("fopen failed for unknown reason.", ExceptionCode::Unknown);
 		}
 	}
