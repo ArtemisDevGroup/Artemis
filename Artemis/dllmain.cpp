@@ -44,8 +44,6 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
     pLog->LogInfo(__FUNCTION__, "Module base address: 0x%llX", pMem->GetModuleBase());
     pLog->LogInfo(__FUNCTION__, "Module size: %lu", pMem->GetModuleSize());
 
-    pLog->LogInfo(__FUNCTION__, "Registered signal handlers.");
-
     RegisterEventHandlers();
 
     pInst->Initialize(hModule);
