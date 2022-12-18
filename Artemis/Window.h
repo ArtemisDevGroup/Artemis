@@ -37,4 +37,10 @@ public:
     void Window();
 };
 
+class TerroristWindow : public IWindow {
+public:
+    TerroristWindow();
+    void Window();
+};
+
 #endif // !__WINDOW_H__
