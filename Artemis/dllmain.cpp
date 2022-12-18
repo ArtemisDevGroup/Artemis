@@ -58,7 +58,6 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
 #ifdef _DEBUG
     pBindMgr->RegisterKeybind(new ExitKeybind());
 #endif // _DEBUG
-
     pBindMgr->RegisterKeybind(new HideAllKeybind());
 
     while (pInst->bRun) pBindMgr->InvokeKeybinds();
