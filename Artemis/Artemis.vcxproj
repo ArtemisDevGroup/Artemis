@@ -156,6 +156,7 @@
     <ClCompile Include="ExceptionLoggers.cpp" />
     <ClCompile Include="Keybinds.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="TerroristWindow.cpp" />
     <ClCompile Include="TestWindow.cpp" />
   </ItemGroup>
   <ItemGroup>

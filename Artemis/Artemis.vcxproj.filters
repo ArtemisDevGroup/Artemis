@@ -45,6 +45,9 @@
     <ClCompile Include="Bones.cpp">
       <Filter>Source Files\Hybrid</Filter>
     </ClCompile>
+    <ClCompile Include="TerroristWindow.cpp">
+      <Filter>Source Files\Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Keybinds.h">
