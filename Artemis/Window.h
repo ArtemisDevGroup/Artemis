@@ -41,6 +41,7 @@ class TerroristWindow : public IWindow {
 public:
     TerroristWindow();
     void Window();
+    void Inini();
 };
 
 #endif // !__WINDOW_H__

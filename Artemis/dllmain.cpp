@@ -53,7 +53,11 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
     pOnFrameMgr->RegisterOnFrameAction(pWhWnd);
 
     pWndMgr->RegisterWnd(new MainWindow());
-    pWndMgr->RegisterWnd(new TestWindow());
+    //pWndMgr->RegisterWnd(new TestWindow());
+
+    TerroristWindow* pThWnd = new TerroristWindow();
+    pThWnd->Inini();
+    pWndMgr->RegisterWnd(pThWnd);
 
 #ifdef _DEBUG
     pBindMgr->RegisterKeybind(new ExitKeybind());
