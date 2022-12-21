@@ -20,15 +20,15 @@ using namespace Artemis;
 
 void RegisterEventHandlers(); // Forward declaration from "ExceptionLoggers.cpp".
 
-Midnight* pInst = Midnight::GetInst();
-Logger* pLog = &pInst->Log;
-Console* pCon = &pInst->ConInst;
-Memory* pMem = &pInst->Mem;
-WindowManager* pWndMgr = &pInst->ImGuiWndManager;
-DrawManager* pDrawMgr = &pInst->ImGuiDrawManager;
-DrawManager* pESPDrawMgr = &pInst->ESPDrawManager;
-KeybindManager* pBindMgr = &pInst->BindManager;
-OnFrameManager* pOnFrameMgr = &pInst->ActionManager;
+Midnight*           pInst           = Midnight::GetInst();
+Logger*             pLog            = &pInst->Log;
+Console*            pCon            = &pInst->ConInst;
+Memory*             pMem            = &pInst->Mem;
+WindowManager*      pWndMgr         = &pInst->ImGuiWndManager;
+DrawManager*        pDrawMgr        = &pInst->ImGuiDrawManager;
+DrawManager*        pESPDrawMgr     = &pInst->ESPDrawManager;
+KeybindManager*     pBindMgr        = &pInst->BindManager;
+OnFrameManager*     pOnFrameMgr     = &pInst->ActionManager;
 
 DWORD APIENTRY Main(_In_ HMODULE hModule) {
     pCon->Allocate();
@@ -48,12 +48,12 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
 
     pInst->Initialize(hModule);
 
+    pWndMgr->RegisterWnd(new MainWindow());
+    //pWndMgr->RegisterWnd(new TestWindow());
+
     WallhackWindow* pWhWnd = new WallhackWindow();
     pWndMgr->RegisterWnd(pWhWnd);
     pOnFrameMgr->RegisterOnFrameAction(pWhWnd);
-
-    pWndMgr->RegisterWnd(new MainWindow());
-    //pWndMgr->RegisterWnd(new TestWindow());
 
     TerroristWindow* pThWnd = new TerroristWindow();
     pThWnd->Inini();
