@@ -89,7 +89,7 @@ namespace Artemis {
 		if (nMode & Read) szMode[0] = 'r';
 		else if (nMode & Write) szMode[0] = 'w';
 		else if (nMode & Append) szMode[0] = 'a';
-		else /* Throw */;
+		else throw ParameterException("nMode");
 
 		if (nMode & Update) szMode[1] = '+';
 
@@ -318,7 +318,7 @@ namespace Artemis {
 
 		OpenFile(Append);
 
-		fprintf(pFile, "\n#section(\"%s\") {\n}", lpSectionName);
+		fprintf(pFile, "#section(\"%s\") {\n}\n", lpSectionName);
 
 		CloseFile();
 
