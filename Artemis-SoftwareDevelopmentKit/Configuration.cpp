@@ -58,27 +58,33 @@ void MoveCharacters(
 	_In_ INT nNewIndex,
 	_In_ INT nMoveCount = -1
 ) {
+	CONTEXT_BEGIN;
+
 	INT nSize = lstrlenA(lpBuffer);
 
 	if (nOldIndex > nNewIndex) {
 		bool bMoveNullTerminator = nMoveCount == -1;
 
 		if (nMoveCount == -1) nMoveCount = nSize - nOldIndex;
-		if (nOldIndex + nMoveCount > nSize) /* Throw */;
+		if (nOldIndex + nMoveCount > nSize) throw Artemis::ParameterException("nMoveCount");
 
 		for (INT i = 0; i < nMoveCount; i++) {
 			lpBuffer[nNewIndex + i] = lpBuffer[nOldIndex + i];
 		}
 		if (bMoveNullTerminator) lpBuffer[nNewIndex + nMoveCount] = '\0';
 	}
+
+	CONTEXT_END;
 }
 
 namespace Artemis {
 	//----------------------------------------->ConfigurationHelper<-----------------------------------------------------
 	void ConfigurationHelper::OpenFile(_In_ INT nMode) {
+		CONTEXT_BEGIN;
+
 		CHAR szMode[3] = { '\0', '\0', '\0' };
 
-		if (nMode == Update) /* Throw */;
+		if (nMode == Update) throw ParameterException("nMode");
 
 		if (nMode & Read) szMode[0] = 'r';
 		else if (nMode & Write) szMode[0] = 'w';
@@ -87,16 +93,25 @@ namespace Artemis {
 
 		if (nMode & Update) szMode[1] = '+';
 
-		if (fopen_s(&pFile, szConfigFile, szMode)) /* Throw */;
+		if (fopen_s(&pFile, szConfigFile, szMode)) throw Exception("fopen_s failed for unknown reason.", ExceptionCode::Unknown);
+
+		CONTEXT_END;
 	}
 
-	void ConfigurationHelper::CloseFile() { if (pFile) fclose(pFile); }
+	void ConfigurationHelper::CloseFile() {
+		if (pFile) {
+			fclose(pFile);
+			pFile = nullptr;
+		}
+	}
 
 	//----------------------------------------->ConfigurationSection<-----------------------------------------------------
 	ConfigurationSection::ConfigurationSection() : nPos(0) {}
 	ConfigurationSection::ConfigurationSection(_In_z_ LPCSTR lpConfigFile, _In_ fpos_t nPosition) : nPos(nPosition) { strcpy_s(szConfigFile, lpConfigFile); }
 
-	INT ConfigurationSection::GetPropertyValue(_In_z_ LPCSTR lpPropertyName) {
+	_Check_return_ INT ConfigurationSection::GetPropertyValue(_In_z_ LPCSTR lpPropertyName) {
+		CONTEXT_BEGIN;
+
 		CHAR szBuffer[64] = { '\0' };
 		INT nReturn = -1;
 		bool bReturn = false;
@@ -116,11 +131,15 @@ namespace Artemis {
 		}
 		CloseFile();
 
-		if (!bReturn) /* Throw */;
+		if (!bReturn) throw ObjectNotFoundException(lpPropertyName, "ConfigurationSegment property");
+
+		CONTEXT_END;
 		return nReturn;
 	}
 
 	void ConfigurationSection::SetPropertyValue(_In_z_ LPCSTR lpPropertyName, _In_ INT nValue) {
+		CONTEXT_BEGIN;
+
 		CHAR szBuffer[64] = { '\0' };
 		bool bSuccess = false;
 
@@ -141,11 +160,20 @@ namespace Artemis {
 		}
 		CloseFile();
 
-		if (!bSuccess) /* Throw */;
+		if (!bSuccess) throw ObjectNotFoundException(lpPropertyName, "ConfigurationSegment property");
+
+		CONTEXT_END;
 	}
 
 	void ConfigurationSection::AddProperty(_In_z_ LPCSTR lpPropertyName, _In_ INT nValue) {
-		// Add a check for if the property exists in the first place. Suggestion: Use GetPropertyValue and catch the exception.
+		try {
+			GetPropertyValue(lpPropertyName);
+		}
+		catch (ObjectNotFoundException& e) {
+			CONTEXT_BEGIN;
+			throw ParameterException("lpPropertyName");
+		}
+		CONTEXT_BEGIN;
 
 		CHAR szBuffer[64] = { '\0' };
 		bool bFailed = false;
@@ -167,11 +195,13 @@ namespace Artemis {
 
 		CloseFile();
 
-		if (bFailed) /* Throw */;
+		if (bFailed) throw InstanceInvalidException();
+
+		CONTEXT_END;
 	}
 
 	void ConfigurationSection::RemoveProperty(_In_z_ LPCSTR lpPropertyName) {
-		// Add a check for if the property exists in the first place. Suggestion: Use GetPropertyValue and catch the exception.
+		CONTEXT_BEGIN;
 
 		OpenFile(Read);
 		fseek(pFile, 0, SEEK_END);
@@ -196,7 +226,7 @@ namespace Artemis {
 			}
 		}
 
-		if (nPropertyPos == -1) /* Throw */;
+		if (nPropertyPos == -1) throw ObjectNotFoundException(lpPropertyName, "ConfigurationSection property");
 
 		MoveCharacters(
 			lpString,
@@ -211,6 +241,8 @@ namespace Artemis {
 		CloseFile();
 
 		delete[] lpString;
+
+		CONTEXT_END;
 	}
 
 	//----------------------------------------->Configuration<-----------------------------------------------------
@@ -222,8 +254,10 @@ namespace Artemis {
 	}
 
 	bool Configuration::ValidateFile(_In_z_ LPCSTR lpConfigFile) {
+		CONTEXT_BEGIN;
+
 		FILE* pFile;
-		if (fopen_s(&pFile, lpConfigFile, "r")) /* Throw */ return false;
+		if (fopen_s(&pFile, lpConfigFile, "r")) throw Exception("fopen_s failed for unknown reason.", ExceptionCode::Unknown);
 
 		bool bValid = true;
 
@@ -241,10 +275,14 @@ namespace Artemis {
 		}
 
 		fclose(pFile);
+
+		CONTEXT_END;
 		return bValid;
 	}
 
 	_Check_return_ ConfigurationSection Configuration::GetSection(_In_z_ LPCSTR lpSectionName) {
+		CONTEXT_BEGIN;
+
 		CHAR szBuffer[64] = { '\0' };
 		ConfigurationSection Return;
 		bool bReturn = false;
@@ -263,12 +301,20 @@ namespace Artemis {
 		}
 		CloseFile();
 
-		if (!bReturn) /* Throw */;
+		if (!bReturn) throw ObjectNotFoundException(lpSectionName, "ConfigurationSection");
+
+		CONTEXT_END;
 		return Return;
 	}
 
 	ConfigurationSection Configuration::AddSection(_In_z_ LPCSTR lpSectionName) {
-		// Add a check for if the section exists in the first place. Suggestion: Use GetSection and catch the exception.
+		CONTEXT_BEGIN;
+		try {
+			GetSection(lpSectionName);
+			throw ParameterException("lpSectionName");
+		}
+		catch (ObjectNotFoundException& e) {}
+		CONTEXT_BEGIN;
 
 		OpenFile(Append);
 
@@ -276,11 +322,12 @@ namespace Artemis {
 
 		CloseFile();
 
+		CONTEXT_END;
 		return GetSection(lpSectionName);
 	}
 
 	void Configuration::RemoveSection(_In_z_ LPCSTR lpSectionName) {
-		// Add a check for if the section exists in the first place. Suggestion: Use GetSection and catch the exception.
+		CONTEXT_BEGIN;
 
 		OpenFile(Read);
 		fseek(pFile, 0, SEEK_END);
@@ -304,7 +351,7 @@ namespace Artemis {
 			}
 		}
 
-		if (nSectionPos == -1) /* Throw */;
+		if (nSectionPos == -1) throw ObjectNotFoundException(lpSectionName, "ConfigurationSection");
 
 		MoveCharacters(
 			lpString,
@@ -319,5 +366,7 @@ namespace Artemis {
 		CloseFile();
 
 		delete[] lpString;
+
+		CONTEXT_END;
 	}
 }
