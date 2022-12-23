@@ -23,9 +23,9 @@
 #include <minwindef.h>													// Includes most of the Windows API type definitions.
 
 #ifdef _ARTEMIS_EXPORT
-	#define ARTEMIS_API __declspec(dllexport)							// Exports global variables.
+	#define ARTEMIS_API __declspec(dllexport)							// Exports the Artemis API.
 #else
-	#define ARTEMIS_API __declspec(dllimport)							// Imports global variables.
+	#define ARTEMIS_API __declspec(dllimport)							// Imports the Artemis API.
 #endif // EXPORT
 
 
