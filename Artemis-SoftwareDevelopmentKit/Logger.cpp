@@ -14,17 +14,15 @@
 #include <Windows.h>
 
 namespace Artemis {
-	Logger::Logger() : bConsole(FALSE), bFile(FALSE), bLogTime(FALSE) {}
+	Logger::Logger() : bConsole(FALSE), bFile(FALSE), bLogTime(FALSE), pFile(nullptr) {}
 
 	Logger::Logger(
 		_In_ BOOL bConsole,
 		_In_ BOOL bFile,
 		_In_ BOOL bLogTime
-	) : bConsole(bConsole), bFile(bFile), bLogTime(bLogTime) {
+	) : bConsole(bConsole), bFile(bFile), bLogTime(bLogTime), pFile(nullptr) {
 		if (bFile) {
-			FILE* lpFile = nullptr;
-			if (!fopen_s(&lpFile, "log.log", "w")) fclose(lpFile);
-			else throw Exception("fopen failed for unknown reason.", ExceptionCode::Unknown);
+			if (fopen_s(&pFile, "log.log", "w")) throw Exception("fopen_s failed for unknown reason.", ExceptionCode::Unknown);
 		}
 
 		this->ConsoleLogEvent += DefaultConsoleLogEventHandler;
@@ -41,12 +39,8 @@ namespace Artemis {
 	) const {
 		if (bConsole) ConsoleLogEvent.Invoke(nullptr, lpTime, lpPrefix, wPrefixColor, lpSender, lpFormat, lpArgs);
 		if (bFile) {
-			FILE* lpFile = nullptr;
-			if (!fopen_s(&lpFile, "log.log", "a")) {
-				FileLogEvent.Invoke(lpFile, lpTime, lpPrefix, 0, lpSender, lpFormat, lpArgs);
-				fclose(lpFile);
-			}
-			else throw Exception("fopen failed for unknown reason.", ExceptionCode::Unknown);
+			FileLogEvent.Invoke(pFile, lpTime, lpPrefix, 0, lpSender, lpFormat, lpArgs);
+			fflush(pFile);
 		}
 	}
 
@@ -155,4 +149,13 @@ namespace Artemis {
 		Log(szTime[0] ? szTime : nullptr, "ERROR", FOREGROUND_RED, lpSender, lpFormat, v);
 		va_end(v);
 	}
+
+	void Logger::Release() {
+		if (pFile) {
+			fclose(pFile);
+			pFile = nullptr;
+		}
+	}
+
+	Logger::~Logger() { Release(); }
 }

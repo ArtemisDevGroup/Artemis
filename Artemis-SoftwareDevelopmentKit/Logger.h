@@ -36,10 +36,12 @@ namespace Artemis {
 	/// <summary>
 	/// A class for logging events to files and/or the console.
 	/// </summary>
-	class ARTEMIS_API Logger {
+	class ARTEMIS_API Logger : public IDisposable {
 		BOOL bConsole;
 		BOOL bFile;
 		BOOL bLogTime;
+
+		FILE* pFile;
 
 		void Log(
 			_In_opt_z_ LPCSTR lpTime,
@@ -158,6 +160,13 @@ namespace Artemis {
 			_In_z_ _Printf_format_string_ LPCSTR lpFormat,
 			...
 		) const;
+
+		/// <summary>
+		/// Releases the associated log file.
+		/// </summary>
+		void Release();
+
+		~Logger();
 	};
 }
 

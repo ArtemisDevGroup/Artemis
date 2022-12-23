@@ -102,6 +102,7 @@ BOOL APIENTRY DllMain(
         pBindMgr->Release();
         pOnFrameMgr->Release();
         pMem->Release();
+        pLog->Release();
         pCon->Release();
         break;
     }
