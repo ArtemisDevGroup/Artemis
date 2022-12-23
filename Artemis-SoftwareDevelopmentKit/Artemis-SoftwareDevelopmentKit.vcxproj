@@ -28,6 +28,7 @@
     <ClInclude Include="ArtemisSpecific\OnFrameManager.h" />
     <ClInclude Include="ArtemisSpecific\PresentHook.h" />
     <ClInclude Include="ArtemisSpecific\WindowManager.h" />
+    <ClInclude Include="Configuration.h" />
     <ClInclude Include="DateTime.h" />
     <ClInclude Include="Definitions.h" />
     <ClInclude Include="Events.h" />
@@ -68,6 +69,7 @@
     <ClCompile Include="ArtemisSpecific\OnFrameManager.cpp" />
     <ClCompile Include="ArtemisSpecific\PresentHook.cpp" />
     <ClCompile Include="ArtemisSpecific\WindowManager.cpp" />
+    <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="DateTime.cpp" />
     <ClCompile Include="Exceptions.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
