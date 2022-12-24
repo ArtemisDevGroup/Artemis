@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bones.cpp" />
+    <ClCompile Include="CreditsWindow.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="ExceptionLoggers.cpp" />
     <ClCompile Include="Keybinds.cpp" />

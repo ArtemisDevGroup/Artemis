@@ -49,7 +49,8 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
     pInst->Initialize(hModule);
 
     pWndMgr->RegisterWnd(new MainWindow());
-    //pWndMgr->RegisterWnd(new TestWindow());
+    // pWndMgr->RegisterWnd(new TestWindow());
+    pWndMgr->RegisterWnd(new CreditsWindow());
 
     WallhackWindow* pWhWnd = new WallhackWindow();
     pWndMgr->RegisterWnd(pWhWnd);
@@ -76,7 +77,6 @@ BOOL APIENTRY DllMain(
     _In_ LPVOID lpReserved
 ) {
     HANDLE hThread = nullptr;
-    HMODULE hSdkModule = nullptr;
     switch (dwReasonForCall) {
     case DLL_PROCESS_ATTACH:
         DisableThreadLibraryCalls(hModule);

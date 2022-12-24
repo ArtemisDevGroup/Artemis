@@ -16,6 +16,7 @@
 namespace Artemis {
 	namespace Constants {
 		const BASE_OFFSET c_GameManager = 0x6E3FF30;
+		const BASE_OFFSET c_UnlockAllOffset = 0x3843080;
 
 		typedef char(__fastcall* tSetGameTimer)(__int64 GameManager, int nMilliseconds, char a3);
 		const BASE_OFFSET c_fnSetGameTimer = 0x213DC80;
@@ -30,6 +31,13 @@ namespace Artemis {
 		const BASE_POINTER c_TimeOfDay						= { c_GameManager, { c_PlaylistOffset, 0x38, 0x0 }, 3 };
 		const BASE_POINTER c_TimeOfDayForge					= { c_GameManager, { c_PlaylistOffset, 0x38, 0x0, 0x10 }, 4 };
 		const BASE_POINTER c_TerroristDifficulty			= { c_GameManager, { c_PlaylistOffset, 0x30 }, 2 };
+
+		const BASE_ASM_PATCH c_UnlockAll = {
+			c_UnlockAllOffset,
+			{ 0xB4, 0x00, 0x90 }, // mov ah, 00 ; nop
+			{ 0x80, 0xF4, 0x01 }, // xor ah, 01
+			3
+		};
 	}
 }
 

@@ -44,4 +44,10 @@ public:
     void Inini();
 };
 
+class CreditsWindow : public IWindow {
+public:
+    CreditsWindow();
+    void Window();
+};
+
 #endif // !__WINDOW_H__
