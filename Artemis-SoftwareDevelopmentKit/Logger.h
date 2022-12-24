@@ -165,8 +165,6 @@ namespace Artemis {
 		/// Releases the associated log file.
 		/// </summary>
 		void Release();
-
-		~Logger();
 	};
 }
 

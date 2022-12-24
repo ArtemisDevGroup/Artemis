@@ -156,6 +156,4 @@ namespace Artemis {
 			pFile = nullptr;
 		}
 	}
-
-	Logger::~Logger() { Release(); }
 }
