@@ -14,6 +14,7 @@
 #include "..\Memory.h"
 #include "..\Logger.h"
 #include "..\Interfaces.h"
+#include "..\Configuration.h"
 #include "WindowManager.h"
 #include "DrawManager.h"
 #include "KeybindManager.h"
@@ -44,6 +45,7 @@ namespace Artemis {
 		Hook PresentHook;				// The present hook.
 		Logger Log;						// The main logger instance.
 		Console ConInst;				// The main console instance.
+		Configuration GlobalConfig;		// The global configuration file instance.
 
 		BOOL bRun;						// A bool that if set to false will shut the module down and release its resources.
 		LPVOID lpPresent;				// A pointer to the original present function.

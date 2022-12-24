@@ -15,7 +15,15 @@ namespace Artemis {
 	Midnight g_CoreInst;
 	Midnight* Midnight::GetInst() { return &g_CoreInst; }
 
-	Midnight::Midnight() : Mem(Memory(nullptr)), ImGuiWndManager(), Log(Logger(TRUE, TRUE)), ConInst(), bRun(FALSE), hModule(nullptr), hWnd(nullptr), lpPresent(nullptr), oWndProc(nullptr) {}
+	Midnight::Midnight() :
+		Mem(Memory(nullptr)),
+		Log(Logger(TRUE, TRUE)),
+		GlobalConfig("Global.mncfg"),
+		bRun(FALSE),
+		hModule(nullptr),
+		hWnd(nullptr),
+		lpPresent(nullptr),
+		oWndProc(nullptr) {}
 
 	void Midnight::Initialize(_In_ HMODULE hModule) {
 		this->hModule = hModule;
