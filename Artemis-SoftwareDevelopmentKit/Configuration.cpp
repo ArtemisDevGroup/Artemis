@@ -166,16 +166,22 @@ namespace Artemis {
 	}
 
 	void ConfigurationSection::AddProperty(_In_z_ LPCSTR lpPropertyName, _In_ INT nValue) {
-		try {
-			GetPropertyValue(lpPropertyName);
-		}
-		catch (ObjectNotFoundException& e) {
-			CONTEXT_BEGIN;
-			throw ParameterException("lpPropertyName");
-		}
 		CONTEXT_BEGIN;
 
 		CHAR szBuffer[64] = { '\0' };
+
+		OpenFile(Read);
+		fseek(pFile, nPos, SEEK_SET);
+
+		fscanf_s(pFile, "%s", szBuffer, (UINT)sizeof(szBuffer));
+		while (szBuffer[0] != '}') {
+			if (IsProperty(szBuffer, lpPropertyName)) break;
+			fscanf_s(pFile, "%s", szBuffer, (UINT)sizeof(szBuffer));
+		}
+		CloseFile();
+
+		if (szBuffer[0] != '}') throw ParameterException("lpPropertyName");
+
 		bool bFailed = false;
 
 		OpenFile(Read | Update);
@@ -309,12 +315,19 @@ namespace Artemis {
 
 	ConfigurationSection Configuration::AddSection(_In_z_ LPCSTR lpSectionName) {
 		CONTEXT_BEGIN;
-		try {
-			GetSection(lpSectionName);
-			throw ParameterException("lpSectionName");
-		}
-		catch (ObjectNotFoundException& e) {}
-		CONTEXT_BEGIN;
+
+		CHAR szBuffer[64] = { '\0' };
+		bool bFailed = false;
+
+		OpenFile(Read);
+		while (fscanf_s(pFile, "%s", szBuffer, (UINT)sizeof(szBuffer)) != EOF)
+			if (IsSection(szBuffer, lpSectionName)) {
+				bFailed = true;
+				break;
+			}
+		CloseFile();
+
+		if (bFailed) throw ParameterException("lpSectionName");
 
 		OpenFile(Append);
 

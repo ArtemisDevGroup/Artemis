@@ -13,14 +13,24 @@
 MainWindow::MainWindow() : IWindow("Main Window", WND_MAINWINDOW) {}
 
 void MainWindow::Window() {
+    static Midnight* pInst = Midnight::GetInst();
+    static ConfigurationSection WndSect = pInst->GlobalConfig.GetSection("Window");
+    static WindowManager* pWndMgr = &pInst->ImGuiWndManager;
+
+    static IWindow* pWhWnd          = pWndMgr->GetWndById(WND_WALLHACKWINDOW);
+    static IWindow* pCreditsWnd     = pWndMgr->GetWndById(WND_CREDITSWINDOW);
+
     ImGui::Text("Welcome to Artemis!");
     ImGui::Text("Brought to you by:");
     ImGui::Text("Tavreth | Monke | Sigma");
-    ImGui::Text("");
+    ImGui::NewLine();
     ImGui::Text("[DEBUG] F1 - Eject Artemis.");
     ImGui::Text("F2 - Hide all windows.");
-    ImGui::Text("");
-    ImGui::Text("Windows:");
-    
-    ImGui::Checkbox("[TEMP] Wallhack Window", (bool*)&Midnight::GetInst()->ImGuiWndManager.GetWndById(WND_WALLHACKWINDOW)->bShow);
+    ImGui::NewLine();
+
+    if (ImGui::Checkbox("Wallhack Window", (bool*)&pWhWnd->bShow))
+        WndSect.SetPropertyValue("WallhackWindow", pWhWnd->bShow);
+
+    if (ImGui::Checkbox("Credits Window", (bool*)&pCreditsWnd->bShow))
+        WndSect.SetPropertyValue("CreditsWindow", pCreditsWnd->bShow);
 }

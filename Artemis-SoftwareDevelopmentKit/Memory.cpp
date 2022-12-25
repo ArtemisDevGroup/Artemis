@@ -59,7 +59,7 @@ namespace Artemis {
 		if (this->TargetType == Type::Internal) {
 			__try {
 				for (UINT i = 0; i < dwSize; i++) {
-					*(BYTE*)(uAddress + i) = *((BYTE*)((ADDRESS)uAddress + i));
+					*(BYTE*)(uAddress + i) = *((BYTE*)((ADDRESS)lpBuffer + i));
 				}
 			}
 			__except (EXCEPTION_EXECUTE_HANDLER) { throw MemoryAccessViolationException(uAddress, dwSize, OperationType::Write); }
@@ -475,7 +475,7 @@ namespace Artemis {
 				uSize,
 				(DWORD)NewProtection,
 				&dwOld
-			)) throw WindowsApiException("VirtualProtectEx");
+			)) throw WindowsApiException("VirtualProtect");
 		}
 		else throw InstanceInvalidException();
 

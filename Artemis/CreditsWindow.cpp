@@ -1,6 +1,18 @@
 #include "Window.h"
 
-CreditsWindow::CreditsWindow() : IWindow("Credits Window", WND_CREDITSWINDOW) {}
+CreditsWindow::CreditsWindow() : IWindow("Credits Window", WND_CREDITSWINDOW) {
+	Logger* pLog = &Midnight::GetInst()->Log;
+	ConfigurationSection WndSect = Midnight::GetInst()->GlobalConfig.GetSection("Window");
+
+	try {
+		bShow = WndSect.GetPropertyValue("CreditsWindow");
+	}
+	catch (ObjectNotFoundException& e) {
+		bShow = FALSE;
+		pLog->LogInfo(__FUNCTION__, "ConfigurationProperty \"CreditsWindow\" could not be found, creating...");
+		WndSect.AddProperty("CreditsWindow", FALSE);
+	}
+}
 
 void CreditsWindow::Window() {
 	ImGui::Text("Reserved Artemis_Credits");

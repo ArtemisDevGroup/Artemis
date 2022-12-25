@@ -34,9 +34,9 @@ namespace Artemis {
 
 		const BASE_ASM_PATCH c_UnlockAll = {
 			c_UnlockAllOffset,
-			{ 0xB4, 0x00, 0x90 }, // mov ah, 00 ; nop
-			{ 0x80, 0xF4, 0x01 }, // xor ah, 01
-			3
+			{ 0x41, 0xB4, 0x00, 0x90 }, // mov r12l, 00 ; nop
+			{ 0x41, 0x80, 0xF4, 0x01 }, // xor r12l, 01
+			4
 		};
 	}
 }

@@ -26,7 +26,7 @@ namespace Artemis {
 		case MH_ERROR_ALREADY_INITIALIZED:
 			throw HookException::Create::AlreadyInitialized();
 		case MH_OK:
-			return;
+			break;
 		}
 
 		CONTEXT_END;
@@ -39,7 +39,7 @@ namespace Artemis {
 		case MH_ERROR_NOT_INITIALIZED:
 			throw HookException::Create::NotInitialized();
 		case MH_OK:
-			return;
+			break;
 		}
 
 		CONTEXT_END;
@@ -72,7 +72,7 @@ namespace Artemis {
 		case MH_ERROR_NOT_INITIALIZED:
 			throw HookException::Create::NotInitialized();
 		case MH_OK:
-			return;
+			break;
 		}
 
 		CONTEXT_END;
@@ -102,7 +102,7 @@ namespace Artemis {
 		case MH_ERROR_NOT_INITIALIZED:
 			throw HookException::Create::NotInitialized();
 		case MH_OK:
-			return;
+			break;
 		}
 
 		CONTEXT_END;
@@ -127,7 +127,7 @@ namespace Artemis {
 		case MH_ERROR_NOT_INITIALIZED:
 			throw HookException::Create::NotInitialized();
 		case MH_OK:
-			return;
+			break;
 		}
 
 		CONTEXT_END;
@@ -152,7 +152,7 @@ namespace Artemis {
 		case MH_ERROR_NOT_INITIALIZED:
 			throw HookException::Create::NotInitialized();
 		case MH_OK:
-			return;
+			break;
 		}
 
 		CONTEXT_END;
@@ -174,7 +174,7 @@ namespace Artemis {
 		case MH_ERROR_NOT_INITIALIZED:
 			throw HookException::Create::NotInitialized();
 		case MH_OK:
-			return;
+			break;
 		}
 
 		CONTEXT_END;
@@ -195,7 +195,7 @@ namespace Artemis {
 		case MH_ERROR_NOT_INITIALIZED:
 			throw HookException::Create::NotInitialized();
 		case MH_OK:
-			return;
+			break;
 		}
 
 		CONTEXT_END;
@@ -214,7 +214,7 @@ namespace Artemis {
 		case MH_ERROR_NOT_INITIALIZED:
 			throw HookException::Create::NotInitialized();
 		case MH_OK:
-			return;
+			break;
 		}
 
 		CONTEXT_END;

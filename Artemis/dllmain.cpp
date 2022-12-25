@@ -11,6 +11,7 @@
 #include <signal.h>
 
 #include <ArtemisSpecific/Midnight.h>
+#include <ArtemisSpecific/Const.h>
 
 #include "Keybinds.h"
 #include "Window.h"
@@ -29,6 +30,7 @@ DrawManager*        pDrawMgr        = &pInst->ImGuiDrawManager;
 DrawManager*        pESPDrawMgr     = &pInst->ESPDrawManager;
 KeybindManager*     pBindMgr        = &pInst->BindManager;
 OnFrameManager*     pOnFrameMgr     = &pInst->ActionManager;
+Configuration*      pCfg            = &pInst->GlobalConfig;
 
 DWORD APIENTRY Main(_In_ HMODULE hModule) {
     pCon->Allocate();
@@ -48,9 +50,19 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
 
     pInst->Initialize(hModule);
 
+    ConfigurationSection WndSect;
+    try {
+       WndSect = pCfg->GetSection("Window");
+    }
+    catch (ObjectNotFoundException& e) {
+        pLog->LogInfo(__FUNCTION__, "ConfigurationSection \"Window\" could not be found, creating...");
+        WndSect = pCfg->AddSection("Window");
+    }
+
     pWndMgr->RegisterWnd(new MainWindow());
-    // pWndMgr->RegisterWnd(new TestWindow());
     pWndMgr->RegisterWnd(new CreditsWindow());
+
+    // pWndMgr->RegisterWnd(new TestWindow());
 
     WallhackWindow* pWhWnd = new WallhackWindow();
     pWndMgr->RegisterWnd(pWhWnd);
@@ -59,6 +71,34 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
     TerroristWindow* pThWnd = new TerroristWindow();
     pThWnd->Inini();
     pWndMgr->RegisterWnd(pThWnd);
+
+    // THIS IS A TEST AND NOT A PERMANENT FEATURE, MOVE THIS LATER.
+
+    MemoryProtection nOldProtect;
+
+    try {
+        Memory("RainbowSix.exe", nullptr).VirtualProtect(
+            pMem->GetModuleBase() + Constants::c_UnlockAllOffset,
+            Constants::c_UnlockAll.dwCount,
+            MemoryProtection::Execute_ReadWrite,
+            &nOldProtect
+        );
+
+        pLog->LogSuccess(__FUNCTION__, "Successfully changed memory protection.");
+
+        pMem->AssemblyPatch(
+            &Constants::c_UnlockAll,
+            Memory::Enable
+        );
+
+        pLog->LogSuccess(__FUNCTION__, "Successfully wrote UnlockAll code.");
+    }
+    catch (WindowsApiException& e) {
+        pLog->LogError(__FUNCTION__, "UnlockAll VirtualProtect call failed. %s", e.GetWindowsMessage());
+    }
+    catch (MemoryAccessViolationException& e) {
+        pLog->LogError(__FUNCTION__, "Failed to overwrite UnlockAll instructions.");
+    }
 
 #ifdef _DEBUG
     pBindMgr->RegisterKeybind(new ExitKeybind());

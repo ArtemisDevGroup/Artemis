@@ -174,7 +174,19 @@ void BoneDraw::Draw() {
 	else delete this;
 }
 
-WallhackWindow::WallhackWindow() : IWindow("Wallhack Window", WND_WALLHACKWINDOW), IOnFrame(ONFRAME_WALLHACK), bBoneEsp(false) {}
+WallhackWindow::WallhackWindow() : IWindow("Wallhack Window", WND_WALLHACKWINDOW), IOnFrame(ONFRAME_WALLHACK), bBoneEsp(false) {
+	Logger* pLog = &Midnight::GetInst()->Log;
+	ConfigurationSection WndSect = Midnight::GetInst()->GlobalConfig.GetSection("Window");
+
+	try {
+		bShow = WndSect.GetPropertyValue("WallhackWindow");
+	}
+	catch (ObjectNotFoundException& e) {
+		bShow = FALSE;
+		pLog->LogInfo(__FUNCTION__, "ConfigurationProperty \"WallhackWindow\" could not be found, creating...");
+		WndSect.AddProperty("WallhackWindow", FALSE);
+	}
+}
 
 void WallhackWindow::Window() {
     static DrawManager* pDraw = &Midnight::GetInst()->ESPDrawManager;

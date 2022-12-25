@@ -16,7 +16,7 @@ static Logger* pLog = &Midnight::GetInst()->Log;
 void ExceptionHandler(Exception* e) { pLog->LogWarning(e->GetFunctionName(), e->GetExceptionMessage()); }
 void ParameterExceptionHandler(ParameterException* e) { pLog->LogWarning(e->GetFunctionName(), "Regarding parameter %s: %s", e->GetParameterName(), e->GetExceptionMessage()); }
 void InstanceInvalidExceptionHandler(InstanceInvalidException* e) { pLog->LogWarning(e->GetFunctionName(), e->GetExceptionMessage()); }
-void MemoryAccessViolationExceptionHandler(MemoryAccessViolationException* e) { pLog->LogWarning(e->GetFunctionName(), "%s Operation: %s, Location: 0xllX, Size: %lu", e->GetExceptionMessage(), (e->GetOperationType() == OperationType::Read ? "Read" : "Write"), e->GetAddress(), e->GetSize()); }
+void MemoryAccessViolationExceptionHandler(MemoryAccessViolationException* e) { pLog->LogWarning(e->GetFunctionName(), "%s Operation: %s, Location: 0x%llX, Size: %lu", e->GetExceptionMessage(), (e->GetOperationType() == OperationType::Read ? "Read" : "Write"), e->GetAddress(), e->GetSize()); }
 void WindowsApiExceptionHandler(WindowsApiException* e) { pLog->LogWarning(e->GetFunctionName(), "%s failed with code %lu: %s", e->GetWindowsFunction(), e->GetWindowsCode(), e->GetWindowsMessage()); }
 void ObjectNotFoundExceptionHandler(ObjectNotFoundException* e) { pLog->LogWarning(e->GetFunctionName(), "%s Regarded Object: %s, Object Type: %s", e->GetExceptionMessage(), e->GetObjectName(), e->GetObjectType()); }
 void NotImplementedExceptionHandler(NotImplementedException* e) { pLog->LogWarning(e->GetFunctionName(), e->GetExceptionMessage()); }
