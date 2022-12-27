@@ -141,6 +141,7 @@ BOOL APIENTRY DllMain(
         pESPDrawMgr->Release();
         pBindMgr->Release();
         pOnFrameMgr->Release();
+        pMpMgr->Release();
         pMem->Release();
         pLog->Release();
         pCon->Release();
