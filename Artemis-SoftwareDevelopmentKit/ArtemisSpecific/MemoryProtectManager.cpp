@@ -110,7 +110,10 @@ namespace Artemis {
 	}
 
 	void MemoryProtectManager::Release() {
-		Restore();
-		delete pMem;
+		if (pMem) {
+			Restore();
+			delete pMem;
+			pMem = nullptr;
+		}
 	}
 }
