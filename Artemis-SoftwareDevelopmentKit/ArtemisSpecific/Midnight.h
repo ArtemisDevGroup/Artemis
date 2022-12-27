@@ -19,6 +19,7 @@
 #include "DrawManager.h"
 #include "KeybindManager.h"
 #include "OnFrameManager.h"
+#include "MemoryProtectManager.h"
 #include "Console.h"
 #include "PresentHook.h"
 
@@ -36,22 +37,23 @@ namespace Artemis {
 		
 		Midnight();
 
-		Memory Mem;						// The main memory instance.
-		WindowManager ImGuiWndManager;	// The main ImGui window manager instance used in the present hook.
-		DrawManager ImGuiDrawManager;	// The main ImGui draw manager instance used in the present hook.
-		DrawManager ESPDrawManager;		// The ESP draw manager instanced used for drawing all the ESP and bones. Is flushed regularily.
-		KeybindManager BindManager;		// The main keybind manager instance used in the main loop.
-		OnFrameManager ActionManager;	// The main OnFrame manager executing before the draw and window operations every frame.
-		Hook PresentHook;				// The present hook.
-		Logger Log;						// The main logger instance.
-		Console ConInst;				// The main console instance.
-		Configuration GlobalConfig;		// The global configuration file instance.
+		Memory Mem;									// The main memory instance.
+		MemoryProtectManager GameMemProtectManager;	// The memory protection manager for the game allocation.
+		WindowManager ImGuiWndManager;				// The main ImGui window manager instance used in the present hook.
+		DrawManager ImGuiDrawManager;				// The main ImGui draw manager instance used in the present hook.
+		DrawManager ESPDrawManager;					// The ESP draw manager instanced used for drawing all the ESP and bones. Is flushed regularily.
+		KeybindManager BindManager;					// The main keybind manager instance used in the main loop.
+		OnFrameManager ActionManager;				// The main OnFrame manager executing before the draw and window operations every frame.
+		Hook PresentHook;							// The present hook.
+		Logger Log;									// The main logger instance.
+		Console ConInst;							// The main console instance.
+		Configuration GlobalConfig;					// The global configuration file instance.
 
-		BOOL bRun;						// A bool that if set to false will shut the module down and release its resources.
-		LPVOID lpPresent;				// A pointer to the original present function.
-		WNDPROC oWndProc;				// A pointer to the original window proceidure.
-		HMODULE hModule;				// A handle to the Artemis dll module.
-		HWND hWnd;						// A handle to the main window.
+		BOOL bRun;									// A bool that if set to false will shut the module down and release its resources.
+		LPVOID lpPresent;							// A pointer to the original present function.
+		WNDPROC oWndProc;							// A pointer to the original window proceidure.
+		HMODULE hModule;							// A handle to the Artemis dll module.
+		HWND hWnd;									// A handle to the main window.
 
 		/// <summary>
 		/// Initializes the Midnight instance.

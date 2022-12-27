@@ -19,6 +19,7 @@ namespace Artemis {
 		Mem(Memory(nullptr)),
 		Log(Logger(TRUE, TRUE)),
 		GlobalConfig("Global.mncfg"),
+		GameMemProtectManager("RainbowSix.exe"),
 		bRun(FALSE),
 		hModule(nullptr),
 		hWnd(nullptr),
