@@ -18,6 +18,7 @@ void MainWindow::Window() {
     static WindowManager* pWndMgr = &pInst->ImGuiWndManager;
 
     static IWindow* pWhWnd          = pWndMgr->GetWndById(WND_WALLHACKWINDOW);
+    static IWindow* pThWnd          = pWndMgr->GetWndById(WND_TERRORISTWINDOW);
     static IWindow* pCreditsWnd     = pWndMgr->GetWndById(WND_CREDITSWINDOW);
 
     ImGui::Text("Welcome to Artemis!");
@@ -30,6 +31,9 @@ void MainWindow::Window() {
 
     if (ImGui::Checkbox("Wallhack Window", (bool*)&pWhWnd->bShow))
         WndSect.SetPropertyValue("WallhackWindow", pWhWnd->bShow);
+
+    if (ImGui::Checkbox("Terrorist Window", (bool*)&pThWnd->bShow))
+        WndSect.SetPropertyValue("TerroristWindow", pThWnd->bShow);
 
     if (ImGui::Checkbox("Credits Window", (bool*)&pCreditsWnd->bShow))
         WndSect.SetPropertyValue("CreditsWindow", pCreditsWnd->bShow);

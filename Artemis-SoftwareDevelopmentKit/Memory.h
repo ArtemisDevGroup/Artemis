@@ -76,6 +76,8 @@ namespace Artemis {
 		/// Constructs a Memory object targetting a module in the local process' virtual memory region.
 		/// </summary>
 		/// <param name="lpModuleName">- The name of the module to base off of with it's extension. This parameter is optional, nullptr will target the main module of the process.</param>
+		/// <exception cref="ObjectNotFoundException"/>
+		/// <exception cref="WindowsApiException"/>
 		Memory(_In_opt_z_ LPCSTR lpModuleName);
 	
 		/// <summary>
@@ -83,6 +85,8 @@ namespace Artemis {
 		/// </summary>
 		/// <param name="lpProcessName">- The name of the process along with it's extension.</param>
 		/// <param name="lpModuleName">- The name of the module to base off of with it's extension. This parameter is optional, nullptr will target the main module of the process.</param>
+		/// <exception cref="ObjectNotFoundException"/>
+		/// <exception cref="WindowsApiException"/>
 		Memory(_In_z_ LPCSTR lpProcessName, _In_opt_z_ LPCSTR lpModuleName);
 
 		~Memory();

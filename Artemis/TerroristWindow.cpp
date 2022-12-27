@@ -13,7 +13,19 @@
 
 using namespace Artemis::Constants;
 
-TerroristWindow::TerroristWindow() : IWindow("Terrorist Window", WND_TERRORISTWINDOW) {}
+TerroristWindow::TerroristWindow() : IWindow("Terrorist Window", WND_TERRORISTWINDOW) {
+	Logger* pLog = &Midnight::GetInst()->Log;
+	ConfigurationSection WndSect = Midnight::GetInst()->GlobalConfig.GetSection("Window");
+
+	try {
+		bShow = WndSect.GetPropertyValue("TerroristWindow");
+	}
+	catch (ObjectNotFoundException& e) {
+		bShow = FALSE;
+		pLog->LogInfo(__FUNCTION__, "ConfigurationProperty \"TerroristWindow\" could not be found, creating...");
+		WndSect.AddProperty("TerroristWindow", FALSE);
+	}
+}
 
 void TerroristWindow::Window() {
 
