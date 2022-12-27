@@ -9,7 +9,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class for changing the protection of memory inside the game allocation.
 	/// </summary>
-	class MemoryProtectManager : public IDisposable {
+	class ARTEMIS_API MemoryProtectManager : public IDisposable {
 		typedef struct _REFLECTION {
 			ADDRESS uAddress;
 			DWORD dwSize;
@@ -68,16 +68,20 @@ namespace Artemis {
 		/// <summary>
 		/// Applies the queued changes.
 		/// </summary>
+		/// <exception cref="IndexOutOfRangeException"/>
+		/// <exception cref="WindowsApiException"/>
 		void Apply();
 
 		/// <summary>
 		/// Restores the old memory protections of all pages changed with this instance.
 		/// </summary>
+		/// <exception cref="WindowsApiException"/>
 		void Restore();
 
 		/// <summary>
 		/// Releases the instance.
 		/// </summary>
+		/// <exception cref="WindowsApiException"/>
 		void Release();
 	};
 }

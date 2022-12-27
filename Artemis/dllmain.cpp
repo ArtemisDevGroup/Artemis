@@ -21,16 +21,17 @@ using namespace Artemis;
 
 void RegisterEventHandlers(); // Forward declaration from "ExceptionLoggers.cpp".
 
-Midnight*           pInst           = Midnight::GetInst();
-Logger*             pLog            = &pInst->Log;
-Console*            pCon            = &pInst->ConInst;
-Memory*             pMem            = &pInst->Mem;
-WindowManager*      pWndMgr         = &pInst->ImGuiWndManager;
-DrawManager*        pDrawMgr        = &pInst->ImGuiDrawManager;
-DrawManager*        pESPDrawMgr     = &pInst->ESPDrawManager;
-KeybindManager*     pBindMgr        = &pInst->BindManager;
-OnFrameManager*     pOnFrameMgr     = &pInst->ActionManager;
-Configuration*      pCfg            = &pInst->GlobalConfig;
+Midnight*               pInst           = Midnight::GetInst();
+Logger*                 pLog            = &pInst->Log;
+Console*                pCon            = &pInst->ConInst;
+Memory*                 pMem            = &pInst->Mem;
+WindowManager*          pWndMgr         = &pInst->ImGuiWndManager;
+DrawManager*            pDrawMgr        = &pInst->ImGuiDrawManager;
+DrawManager*            pESPDrawMgr     = &pInst->ESPDrawManager;
+KeybindManager*         pBindMgr        = &pInst->BindManager;
+OnFrameManager*         pOnFrameMgr     = &pInst->ActionManager;
+Configuration*          pCfg            = &pInst->GlobalConfig;
+MemoryProtectManager*   pMpMgr          = &pInst->GameMemProtectManager;
 
 DWORD APIENTRY Main(_In_ HMODULE hModule) {
     pCon->Allocate();
@@ -74,15 +75,14 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
 
     // THIS IS A TEST AND NOT A PERMANENT FEATURE, MOVE THIS LATER.
 
-    MemoryProtection nOldProtect;
-
     try {
-        Memory("RainbowSix.exe", nullptr).VirtualProtect(
+        pMpMgr->Add(
             pMem->GetModuleBase() + Constants::c_UnlockAllOffset,
             Constants::c_UnlockAll.dwCount,
-            MemoryProtection::Execute_ReadWrite,
-            &nOldProtect
+            MemoryProtection::Execute_ReadWrite
         );
+
+        pMpMgr->Apply(); // Move apply call later.
 
         pLog->LogSuccess(__FUNCTION__, "Successfully changed memory protection.");
 

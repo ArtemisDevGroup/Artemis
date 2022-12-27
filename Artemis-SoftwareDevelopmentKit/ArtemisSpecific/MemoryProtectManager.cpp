@@ -60,7 +60,7 @@ namespace Artemis {
 		CONTEXT_BEGIN;
 
 		if (nPendingCount >= ARRAYSIZE(szPending)) throw IndexOutOfRangeException(nPendingCount, ARRAYSIZE(szPending) - 1);
-		szReflections[nPendingCount] = { uAddress, dwSize, nProtection };
+		szPending[nPendingCount] = { uAddress, dwSize, nProtection };
 		nPendingCount++;
 
 		CONTEXT_END;
