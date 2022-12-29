@@ -114,7 +114,7 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
 BOOL APIENTRY DllMain(
     _In_ HMODULE hModule,
     _In_ DWORD dwReasonForCall,
-    _In_ LPVOID lpReserved
+    _Reserved_ LPVOID lpReserved
 ) {
     HANDLE hThread = nullptr;
     switch (dwReasonForCall) {

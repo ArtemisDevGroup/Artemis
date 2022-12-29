@@ -168,6 +168,9 @@
     <ClInclude Include="ArtemisSpecific\MemoryProtectManager.h">
       <Filter>Artemis-Specific\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ArtemisSpecific\ExtensionFramework.h">
+      <Filter>Artemis-Specific\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ArtemisSpecific\WindowManager.cpp">
@@ -258,6 +261,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ArtemisSpecific\MemoryProtectManager.cpp">
+      <Filter>Artemis-Specific\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ArtemisSpecific\ExtensionFramework.cpp">
       <Filter>Artemis-Specific\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

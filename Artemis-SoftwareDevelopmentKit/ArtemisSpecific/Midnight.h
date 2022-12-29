@@ -20,6 +20,7 @@
 #include "KeybindManager.h"
 #include "OnFrameManager.h"
 #include "MemoryProtectManager.h"
+#include "ExtensionFramework.h"
 #include "Console.h"
 #include "PresentHook.h"
 
@@ -39,6 +40,7 @@ namespace Artemis {
 
 		Memory Mem;									// The main memory instance.
 		MemoryProtectManager GameMemProtectManager;	// The memory protection manager for the game allocation.
+		ExtensionManager DllManager;				// The extension manager responsible for loading and releasing all extensions inside of Artemis-Extensions.
 		WindowManager ImGuiWndManager;				// The main ImGui window manager instance used in the present hook.
 		DrawManager ImGuiDrawManager;				// The main ImGui draw manager instance used in the present hook.
 		DrawManager ESPDrawManager;					// The ESP draw manager instanced used for drawing all the ESP and bones. Is flushed regularily.

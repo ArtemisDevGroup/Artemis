@@ -23,6 +23,7 @@
     <ClInclude Include="ArtemisSpecific\Console.h" />
     <ClInclude Include="ArtemisSpecific\Const.h" />
     <ClInclude Include="ArtemisSpecific\DrawManager.h" />
+    <ClInclude Include="ArtemisSpecific\ExtensionFramework.h" />
     <ClInclude Include="ArtemisSpecific\KeybindManager.h" />
     <ClInclude Include="ArtemisSpecific\MemoryProtectManager.h" />
     <ClInclude Include="ArtemisSpecific\Midnight.h" />
@@ -65,6 +66,7 @@
   <ItemGroup>
     <ClCompile Include="ArtemisSpecific\Console.cpp" />
     <ClCompile Include="ArtemisSpecific\DrawManager.cpp" />
+    <ClCompile Include="ArtemisSpecific\ExtensionFramework.cpp" />
     <ClCompile Include="ArtemisSpecific\KeybindManager.cpp" />
     <ClCompile Include="ArtemisSpecific\MemoryProtectManager.cpp" />
     <ClCompile Include="ArtemisSpecific\Midnight.cpp" />
