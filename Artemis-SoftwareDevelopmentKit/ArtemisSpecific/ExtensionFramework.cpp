@@ -7,7 +7,6 @@
 // @Sigma0014: https://github.com/Sigma0014												|
 //-------------------------------------------------------------------------------------->
 
-
 #include "ExtensionFramework.h"
 
 #include <Windows.h>
@@ -16,7 +15,7 @@ namespace Artemis {
 	Extension::Extension(_In_z_ LPCSTR lpDllName) {
 		CONTEXT_BEGIN;
 
-		CHAR szDllPath[MAX_PATH] = "Artemis-Extensions\\";
+		CHAR szDllPath[MAX_PATH] = "Artemis\\Extensions\\";
 		strcat_s(szDllPath, lpDllName);
 
 		hModule = LoadLibraryA(szDllPath);
@@ -51,7 +50,7 @@ namespace Artemis {
 
 	Extension::~Extension() { Release(); }
 
-	ExtensionManager::ExtensionManager() : nExtensionCount(0) { memset(lpszExtensions, 0x00, sizeof(lpszExtensions)); }
+	ExtensionManager::ExtensionManager(_In_opt_ Logger* pInstanceLogger) : pLogger(pInstanceLogger), nExtensionCount(0) { memset(lpszExtensions, 0x00, sizeof(lpszExtensions)); }
 
 	BOOL PathIsDll(_In_z_ LPCSTR lpDllName) {
 		SIZE_T uSize = strlen(lpDllName);
@@ -69,7 +68,7 @@ namespace Artemis {
 
 		WIN32_FIND_DATAA FindData;
 		HANDLE hFindFile = FindFirstFileA(
-			"Artemis-Extensions\\*",
+			"Artemis\\Extensions\\*",
 			&FindData
 		);
 

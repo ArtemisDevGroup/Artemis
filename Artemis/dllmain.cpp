@@ -32,6 +32,7 @@ KeybindManager*         pBindMgr        = &pInst->BindManager;
 OnFrameManager*         pOnFrameMgr     = &pInst->ActionManager;
 Configuration*          pCfg            = &pInst->GlobalConfig;
 MemoryProtectManager*   pMpMgr          = &pInst->GameMemProtectManager;
+ExtensionManager*       pExtMgr         = &pInst->DllManager;
 
 DWORD APIENTRY Main(_In_ HMODULE hModule) {
     pCon->Allocate();
@@ -105,6 +106,10 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
 #endif // _DEBUG
     pBindMgr->RegisterKeybind(new HideAllKeybind());
 
+    // Load extensions here.
+
+    pExtMgr->LoadAll();
+
     while (pInst->bRun) pBindMgr->InvokeKeybinds();
 
     FreeLibraryAndExitThread(hModule, 0);
@@ -135,6 +140,7 @@ BOOL APIENTRY DllMain(
         break;
 
     case DLL_PROCESS_DETACH:
+        pExtMgr->Release();
         pInst->Release();
         pWndMgr->Release();
         pDrawMgr->Release();

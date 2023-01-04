@@ -14,6 +14,7 @@
 #include "..\Definitions.h"
 #include "..\Exceptions.h"
 #include "..\Interfaces.h"
+#include "..\Logger.h"
 
 namespace Artemis {
 	
@@ -86,9 +87,10 @@ namespace Artemis {
 	class ARTEMIS_API ExtensionManager : public IDisposable {
 		Extension* lpszExtensions[MAX_INVOKE];
 		INT nExtensionCount;
+		Logger* pLogger;
 
 	public:
-		ExtensionManager();
+		ExtensionManager(_In_opt_ Logger* pInstanceLogger = nullptr);
 
 		/// <summary>
 		/// Loads all extensions in the Artemis-Extensions sub directory.

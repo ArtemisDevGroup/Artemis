@@ -288,7 +288,7 @@ namespace Artemis {
 		this->pDrawList = nullptr;
 	}
 
-	DrawManager::DrawManager() { memset(lpszDrawArray, 0x00, sizeof(lpszDrawArray)); }
+	DrawManager::DrawManager(_In_opt_ Logger* pInstanceLogger) : pLogger(pInstanceLogger) { memset(lpszDrawArray, 0x00, sizeof(lpszDrawArray)); }
 
 	void DrawManager::RegisterDraw(_In_ IDraw* lpDrawInst) {
 		CONTEXT_BEGIN;
@@ -297,14 +297,17 @@ namespace Artemis {
 
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (lpszDrawArray[i])
-				if (lpszDrawArray[i]->dwDrawId == lpDrawInst->dwDrawId)
+				if (lpszDrawArray[i]->dwDrawId == lpDrawInst->dwDrawId) {
+					if (pLogger) pLogger->LogError(__FUNCTION__, "An instance with id %lu already exists.", lpDrawInst->dwDrawId);
 					throw AttributeException("dwDrawId");
+				}
 		}
 
 		for (INT i = 0; i < MAX_INVOKE; i++) {
 			if (!lpszDrawArray[i]) {
 				lpszDrawArray[i] = lpDrawInst;
 				lpDrawInst->dwRegisteredCount++;
+				if (pLogger) pLogger->LogSuccess(__FUNCTION__, "Successfully registered draw instance %p with id %lu.", lpDrawInst, lpDrawInst->dwDrawId);
 				break;
 			}
 		}
@@ -321,12 +324,16 @@ namespace Artemis {
 			if (lpszDrawArray[i] == lpDrawInst) {
 				lpszDrawArray[i]->dwRegisteredCount--;
 				lpszDrawArray[i] = nullptr;
+				if (pLogger) pLogger->LogSuccess(__FUNCTION__, "Successfully unregistered draw instance %p with id %lu.", lpDrawInst, lpDrawInst->dwDrawId);
 				bUnregistered = TRUE;
 				break;
 			}
 		}
 
-		if (!bUnregistered) throw ObjectNotFoundException("lpDrawInst", "IDraw*");
+		if (!bUnregistered) {
+			if (pLogger) pLogger->LogError(__FUNCTION__, "Failed to find registered instance %p.", lpDrawInst);
+			throw ObjectNotFoundException("lpDrawInst", "IDraw*");
+		}
 
 		CONTEXT_END;
 	}
@@ -336,6 +343,7 @@ namespace Artemis {
 			if (lpszDrawArray[i]) {
 				if (lpszDrawArray[i]->dwRegisteredCount <= 1) delete lpszDrawArray[i];
 				else lpszDrawArray[i]->dwRegisteredCount--;
+				if (pLogger) pLogger->LogSuccess(__FUNCTION__, "Unregistered draw instance %p.", lpszDrawArray[i]);
 				lpszDrawArray[i] = nullptr;
 			}
 		}

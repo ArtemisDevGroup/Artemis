@@ -15,6 +15,7 @@
 #include "..\Exceptions.h"
 #include "..\Vector.h"
 #include "..\Array.h"
+#include "..\Logger.h"
 #include "..\ImGui\imgui.h"
 
 namespace Artemis {
@@ -236,9 +237,10 @@ namespace Artemis {
 	/// </summary>
 	class ARTEMIS_API DrawManager : public IDisposable {
 		IDraw* lpszDrawArray[MAX_INVOKE];
+		Logger* pLogger;
 
 	public:
-		DrawManager();
+		DrawManager(_In_opt_ Logger* pInstanceLogger = nullptr);
 
 		/// <summary>
 		/// Registers a draw operation to be drawn on the screen.
