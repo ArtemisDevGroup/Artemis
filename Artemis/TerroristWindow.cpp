@@ -3,8 +3,8 @@
 // This file is licensed under the MIT license.											|
 // Read more here: https://github.com/ArtemisDevGroup/Artemis/blob/master/LICENSE.md	|
 //-------------------------------------------------------------------------------------->
-// This file was authored by @Sigma0014 and @Intifofo.									|
-// @Sigma0014: https://github.com/Sigma0014												|
+// This file was authored by @Astrea0014 and @Intifofo.									|
+// @Astrea0014: https://github.com/Astrea0014											|
 // @Intifofo: https://github.com/Intifofo												|
 //-------------------------------------------------------------------------------------->
 
