@@ -23,6 +23,7 @@
 #include "ExtensionFramework.h"
 #include "Console.h"
 #include "PresentHook.h"
+#include "GameClasses.h"
 
 namespace Artemis {
 	/// <summary>

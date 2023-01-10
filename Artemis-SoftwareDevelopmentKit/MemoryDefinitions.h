@@ -12,6 +12,8 @@
 
 #include "Definitions.h"
 
+#include <initializer_list>
+
 #define MAX_POINTER_LENGTH				64							// The maximum number of pointer offsets.
 #define MAX_ASSEMBLY_PATCH_SIZE			64							// The maximum number of bytes in an assembly patch.
 #define MIN_ADDRESS						0x10000						// The lowest application address.
@@ -41,81 +43,214 @@ namespace Artemis {
 
 	typedef MEMORY_BASIC_INFORMATION MBI,			* LPMBI;			// An alias to the MEMORY_BASIC_INFORMATION structure.
 
-	// Represents a pointer off of a base offset.
-	typedef struct _BASE_POINTER {
-		BASE_OFFSET uBaseOffset;										// The offset off of the base address.
-		POINTER_OFFSET szPointer[MAX_POINTER_LENGTH];					// An array containing the pointer offsets.
-		DWORD dwCount;													// The number of pointer offsets set in the array.
-	} BASE_POINTER, * LPBASE_POINTER;
-	typedef const BASE_POINTER* LPCBASE_POINTER;						// Represents a pointer off of a base offset.
-	// Represents a pointer.
-	typedef struct _POINTER {
-		POINTER_OFFSET szPointer[MAX_POINTER_LENGTH];					// An array containing the pointer offsets.
-		DWORD dwCount;													// The number of pointer offsets set in the array.
-	} POINTER, * LPPOINTER;
-	typedef const POINTER* LPCPOINTER;									// Represents a pointer.
-	// Represents an assembly patch off of a base offset.
-	typedef struct _BASE_ASM_PATCH {
-		BASE_OFFSET uBaseOffset;										// The offset off of the base address.
-		BYTE szEnable[MAX_ASSEMBLY_PATCH_SIZE];							// An array of bytes to be written to "enable" the patch.
-		BYTE szDisable[MAX_ASSEMBLY_PATCH_SIZE];						// An array of bytes to be written to "disable" the patch.
-		DWORD dwCount;													// The number of bytes set in the array.
-	} BASE_ASM_PATCH, * LPBASE_ASM_PATCH;
-	typedef const BASE_ASM_PATCH* LPCBASE_ASM_PATCH;					// Represents an assembly patch off of a base offset.
-	// Represents an assembly patch.
-	typedef struct _ASM_PATCH {
-		BYTE szEnable[MAX_ASSEMBLY_PATCH_SIZE];							// An array of bytes to be written to "enable" the patch.
-		BYTE szDisable[MAX_ASSEMBLY_PATCH_SIZE];						// An array of bytes to be written to "disable" the patch.
-		DWORD dwCount;
-	} ASM_PATCH, * LPASM_PATCH;
-	typedef const ASM_PATCH* LPCASM_PATCH;								// Represents an assembly patch.
-	// Represents a memory allocation.
-	typedef struct _ALLOCATION {
-		ADDRESS uAddress;												// The address of the allocation.
-		DWORD dwSize;													// The size of the allocation in bytes.
-	} ALLOCATION, * LPALLOCATION;
-	typedef const ALLOCATION* LPCALLOCATION;							// Represents a memory allocation.
-	// Represents a memory allocation made using the Virtual function set. (WinApi)
-	typedef struct _VIRTUAL_ALLOCATION {
-		ALLOCATION Allocation;											// The basic allocation information.
-		DWORD dwProtect;												// The memory page protection constant.
-		DWORD dwAllocationType;											// The allocation type.
-	} VIRTUAL_ALLOCATION, * LPVIRTUAL_ALLOCATION;
-	typedef const VIRTUAL_ALLOCATION* LPCVIRTUAL_ALLOCATION;			// Represents a memory allocation made using the Virtual function set. (WinApi)
-	// Represents a process running on the system.
-	typedef struct _PROCESS {
-		CHAR szName[MAX_NAME];											// The name of the process executable.
-		CHAR szPath[MAX_PATH];											// A full path to the process executable.
-		DWORD dwProcessId;												// The unique process identifier.
-		HANDLE hProcess;												// A handle to the process.
-	} PROCESS, * LPPROCESS;
-	typedef const PROCESS* LPCPROCESS;									// Represents a process running on the system.
-	// Represents a module loaded in a process.
-	typedef struct _MODULE {
-		CHAR szName[MAX_NAME];											// The name of the module binary.
-		CHAR szPath[MAX_PATH];											// A full path to the module binary.
-		HMODULE hModule;												// A handle to the module.
-		ALLOCATION Allocation;											// Information about the module base allocation.
-		PROCESS Owner;													// Information about the host process.
-	} MODULE, * LPMODULE;
-	typedef const MODULE* LPCMODULE;									// Represents a module loaded in a process.
-	// Represents a thread running in a process.
-	typedef struct _THREAD {
-		DWORD dwThreadId;												// The unique thread identifier.
-		HANDLE hThread;													// A handle to the thread.
-		PROCESS Owner;													// Information about the host process.
-	} THREAD, * LPTHREAD;
-	typedef const THREAD* LPCTHREAD;									// Represents a thread running in a process.
-	// Represents a function hook.
-	typedef struct _HOOK {
-		CHAR szHostModule[MAX_NAME];									// The name of the module that hosts the function. Can be null.
-		CHAR szFunctionName[MAX_NAME];									// The name of the function in the export table. Can be null.
-		LPVOID lpTarget;												// A pointer to the target function.
-		LPVOID lpDetour;												// A pointer to the detour or hook function.
-		LPVOID lpOriginal;												// A pointer to the original function.
-	} HOOK, * LPHOOK;
-	typedef const HOOK* LPCHOOK;										// Represents a function hook.
+	/// <summary>
+	/// A class representing a list of arguments.
+	/// </summary>
+	/// <typeparam name="T">- The type of arguments.</typeparam>
+	template<typename T>
+	class ArgumentList {
+		T* lpBuffer;
+		INT nCount;
 
+	public:
+		/// <summary>
+		/// Creates an object using an initializer list.
+		/// </summary>
+		/// <param name="list">- A list of the arguments.</param>
+		ArgumentList(_In_ std::initializer_list<T> list) {
+			nCount = list.size();
+			lpBuffer = new T[nCount];
+			memcpy(lpBuffer, list.begin(), nCount * sizeof(T));
+		}
+
+		/// <summary>
+		/// Creates an object using a stack array.
+		/// </summary>
+		/// <typeparam name="nCount">- The number of arguments.</typeparam>
+		/// <param name="lpBuffer">- A pointer to the buffer containing the arguments.</param>
+		template<int nCount>
+		ArgumentList(T(&lpBuffer)[nCount]) {
+			this->nCount = nCount;
+			this->lpBuffer = new T[nCount];
+			memcpy(this->lpBuffer, lpBuffer, nCount * sizeof(T));
+		}
+
+		/// <summary>
+		/// Creates an object using a heap array.
+		/// </summary>
+		/// <param name="lpBuffer">- A pointer to the buffer containing the arguments.</param>
+		/// <param name="nCount">- The number of arguments.</param>
+		ArgumentList(T* lpBuffer, int nCount) {
+			this->nCount = nCount;
+			this->lpBuffer = new T[nCount];
+			memcpy(this->lpBuffer, lpBuffer, nCount * sizeof(T));
+		}
+
+		ArgumentList(const ArgumentList<T>& cpy) {
+			nCount = cpy.nCount;
+			lpBuffer = new T[nCount];
+			memcpy(lpBuffer, cpy.lpBuffer, nCount * sizeof(T));
+		}
+
+		~ArgumentList() {
+			if (lpBuffer) {
+				delete[] lpBuffer;
+				lpBuffer = nullptr;
+			}
+		}
+
+		operator T* () { return lpBuffer; }
+		operator const T* () const { return lpBuffer; }
+
+		T& operator[](INT nIndex) { return lpBuffer[nIndex]; }
+		T operator[](INT nIndex) const { return lpBuffer[nIndex]; }
+
+		/// <summary>
+		/// Gets the number of arguments that are in the list.
+		/// </summary>
+		/// <returns>The number of arguments.</returns>
+		INT GetCount() const { return nCount; }
+	};
+
+	/// <summary>
+	/// A class representing a set of pointer offsets.
+	/// </summary>
+	/// <typeparam name="ReturnType">- The return type of the pointer.</typeparam>
+	template<typename ReturnType>
+	class Pointer : public ArgumentList<ADDRESS> { public: using ArgumentList::ArgumentList; };
+
+	/// <summary>
+	/// A class representing a base offset aswell as a set of pointer offsets.
+	/// </summary>
+	/// <typeparam name="ReturnType">- The return type of the pointer.</typeparam>
+	template<typename ReturnType>
+	class BasePointer : public ArgumentList<ADDRESS> {
+		BASE_OFFSET uOffset;
+
+	public:
+		/// <summary>
+		/// Creates an object using an initializer list.
+		/// </summary>
+		/// <param name="uBaseOffset">- The base offset of the pointer.</param>
+		/// <param name="list">- A list containing the pointer offsets.</param>
+		BasePointer(_In_ BASE_OFFSET uBaseOffset, _In_ std::initializer_list<ADDRESS> list) : ArgumentList(list), uOffset(uBaseOffset) {}
+
+		/// <summary>
+		/// Constructs an object using a stack array.
+		/// </summary>
+		/// <typeparam name="nCount">- The number of pointer offsets.</typeparam>
+		/// <param name="uBaseOffset">- The base offset of the pointer.</param>
+		/// <param name="lpBuffer">- A pointer to a buffer containing the pointer offsets.</param>
+		template<int nCount>
+		BasePointer(_In_ BASE_OFFSET uBaseOffset, _In_ ADDRESS(&lpBuffer)[nCount]) : ArgumentList(lpBuffer, nCount), uOffset(uBaseOffset) {}
+
+		/// <summary>
+		/// Constructs an object using a heap array.
+		/// </summary>
+		/// <param name="uBaseOffset">- The base offset of the pointer.</param>
+		/// <param name="lpBuffer">- A pointer to a buffer containing the pointer offsets.</param>
+		/// <param name="nCount">- The number of pointer offsets.</param>
+		BasePointer(_In_ BASE_OFFSET uBaseOffset, _In_ ADDRESS* lpBuffer, _In_ int nCount) : ArgumentList(lpBuffer, nCount), uOffset(uBaseOffset) {}
+
+		/// <summary>
+		/// Gets the base offset of the pointer.
+		/// </summary>
+		/// <returns>The base offset.</returns>
+		BASE_OFFSET GetOffset() const { return uOffset; }
+	};
+
+	/// <summary>
+	/// A class representing a patch in assembly code.
+	/// </summary>
+	class AssemblyPatch {
+		LPBYTE lpEnable;
+		LPBYTE lpDisable;
+		INT nCount;
+
+	public:
+		/// <summary>
+		/// Creates an AssemblyPatch object. 
+		/// </summary>
+		/// <param name="enable">- The bytes representing the enable section of the assembly code.</param>
+		/// <param name="disable">- The bytes representing the disable section of the assembly code.</param>
+		inline AssemblyPatch(_In_ const ArgumentList<BYTE>& enable, _In_ const ArgumentList<BYTE>& disable) {
+			if (enable.GetCount() != disable.GetCount()) {
+				lpEnable = nullptr;
+				lpDisable = nullptr;
+				nCount = 0;
+				return;
+			}
+
+			nCount = enable.GetCount();
+			lpEnable = new BYTE[nCount];
+			lpDisable = new BYTE[nCount];
+
+			memcpy(lpEnable, enable, nCount);
+			memcpy(lpDisable, disable, nCount);
+		}
+
+		inline AssemblyPatch(const AssemblyPatch& cpy) {
+			nCount = cpy.nCount;
+
+			lpEnable = new BYTE[nCount];
+			lpDisable = new BYTE[nCount];
+
+			memcpy(lpEnable, cpy.lpEnable, nCount);
+			memcpy(lpDisable, cpy.lpDisable, nCount);
+		}
+
+		inline ~AssemblyPatch() {
+			if (lpEnable) {
+				delete[] lpEnable;
+				lpEnable = nullptr;
+			}
+
+			if (lpDisable) {
+				delete[] lpDisable;
+				lpDisable = nullptr;
+			}
+		}
+
+		/// <summary>
+		/// Gets a pointer to the enable code.
+		/// </summary>
+		/// <returns>The enable code.</returns>
+		const BYTE* GetEnableCode() const { return lpEnable; }
+
+		/// <summary>
+		/// Gets a pointer to the disable code.
+		/// </summary>
+		/// <returns>The disable code.</returns>
+		const BYTE* GetDisableCode() const { return lpDisable; }
+
+		/// <summary>
+		/// Gets the size of the code arrays.
+		/// </summary>
+		/// <returns>The size of the code arrays.</returns>
+		const INT GetCount() const { return nCount; }
+	};
+
+	/// <summary>
+	/// A class representing a patch in assembly code at a certain base address.
+	/// </summary>
+	class BaseAssemblyPatch : public AssemblyPatch {
+		BASE_OFFSET uBaseOffset;
+
+	public:
+		/// <summary>
+		/// Constructs a BaseAssemblyPatch object.
+		/// </summary>
+		/// <param name="uBaseOffset">- The base offset to write the code to.</param>
+		/// <param name="enable">- The bytes representing the enable section of the assembly code.</param>
+		/// <param name="disable">- The bytes representing the disable section of the assembly code.</param>
+		inline BaseAssemblyPatch(_In_ BASE_OFFSET uBaseOffset, _In_ const ArgumentList<BYTE>& enable, _In_ const ArgumentList<BYTE>& disable) : AssemblyPatch(enable, disable), uBaseOffset(uBaseOffset) {}
+
+		/// <summary>
+		/// Gets the base offset.
+		/// </summary>
+		/// <returns>The base offset.</returns>
+		BASE_OFFSET GetOffset() const { return uBaseOffset; }
+	};
 }
 
 #endif // !__MEMORY_SHARED_DEFINITIONS_H__

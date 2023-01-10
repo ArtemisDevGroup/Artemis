@@ -260,46 +260,6 @@ namespace Artemis {
 	_Check_return_ DWORD Memory::GetModuleSize() const { return this->dwModuleSize; }
 	//---------------------------------------------------------------------->
 	// Public methods:
-	_Check_return_ ADDRESS Memory::ReadPtrAddress(
-		_In_ ADDRESS uAddress,
-		_In_ LPCPOINTER lpPointer
-	) const {
-		CONTEXT_BEGIN;
-
-		for (UINT i = 0; i < lpPointer->dwCount; i++) {
-			uAddress = Read<ADDRESS>(uAddress) + lpPointer->szPointer[i];
-		}
-
-		CONTEXT_END;
-		return uAddress;
-	}
-	//-------------------------------------//
-	_Check_return_ ADDRESS Memory::ReadPtrAddress(_In_ LPCBASE_POINTER lpPointer) const {
-		CONTEXT_BEGIN;
-
-		ADDRESS uAddress = GetModuleBase() + lpPointer->uBaseOffset;
-		for (UINT i = 0; i < lpPointer->dwCount; i++) {
-			uAddress = Read<ADDRESS>(uAddress) + lpPointer->szPointer[i];
-		}
-
-		CONTEXT_END;
-		return uAddress;
-	}
-	//-------------------------------------//
-	_Check_return_ ADDRESS Memory::ReadPtrAddress(
-		_In_ ADDRESS uAddress,
-		_In_ const List<ADDRESS>& Offsets
-	) const {
-		CONTEXT_BEGIN;
-
-		for (INT i = 0; i < Offsets.GetCount(); i++) {
-			uAddress = Read<ADDRESS>(uAddress) + Offsets[i];
-		}
-
-		CONTEXT_END;
-		return uAddress;
-	}
-	//-------------------------------------//
 	void Memory::ReadStringA(
 		_In_ ADDRESS uAddress,
 		_Out_writes_z_(uCount) LPSTR lpBuffer,

@@ -225,22 +225,34 @@ namespace Artemis {
 		/// <summary>
 		/// Reads the address from the end of a pointer.
 		/// </summary>
+		/// <typeparam name="T">- The return type of the pointer.</typeparam>
 		/// <param name="uAddress">- The pointer base address.</param>
-		/// <param name="lpPointer">- A pointer to an object containing the pointer.</param>
+		/// <param name="lpPointer">- A reference to a Pointer class instance.</param>
 		/// <returns>The address at the end of the pointer.</returns>
 		/// <exception cref="ParameterException"/>
 		/// <exception cref="Exception"/>
 		/// <exception cref="MemoryAccessViolationException (Internal)"/>
 		/// <exception cref="WindowsApiException (External)"/>
 		/// <exception cref="InstanceInvalidException"/>
+		template<typename T>
 		_Check_return_ ADDRESS ReadPtrAddress(
 			_In_ ADDRESS uAddress,
-			_In_ LPCPOINTER lpPointer
-		) const;
+			_In_ const Pointer<T>& pointer
+		) const {
+			CONTEXT_BEGIN;
+
+			for (INT i = 0; i < pointer.GetCount(); i++) {
+				uAddress = Read<ADDRESS>(uAddress) + pointer[i];
+			}
+
+			CONTEXT_END;
+			return uAddress;
+		}
 	
 		/// <summary>
 		/// Reads the address from the end of a pointer.
 		/// </summary>
+		/// <typeparam name="T">- The return type of the pointer.</typeparam>
 		/// <param name="lpPointer">- A pointer to an object containing the base offset and the pointer.</param>
 		/// <returns>The address at the end of the pointer.</returns>
 		/// <exception cref="ParameterException"/>
@@ -248,23 +260,18 @@ namespace Artemis {
 		/// <exception cref="MemoryAccessViolationException (Internal)"/>
 		/// <exception cref="WindowsApiException (External)"/>
 		/// <exception cref="InstanceInvalidException"/>
-		_Check_return_ ADDRESS ReadPtrAddress(_In_ LPCBASE_POINTER lpPointer) const;
+		template<typename T>
+		_Check_return_ ADDRESS ReadPtrAddress(_In_ const BasePointer<T>& pointer) const {
+			CONTEXT_BEGIN;
 
-		/// <summary>
-		/// Reads the address from the end of a pointer.
-		/// </summary>
-		/// <param name="uAddress">- The pointer base address.</param>
-		/// <param name="lpPointer">- A List containing the pointer.</param>
-		/// <returns>The address at the end of the pointer.</returns>
-		/// <exception cref="ParameterException"/>
-		/// <exception cref="Exception"/>
-		/// <exception cref="MemoryAccessViolationException (Internal)"/>
-		/// <exception cref="WindowsApiException (External)"/>
-		/// <exception cref="InstanceInvalidException"/>
-		_Check_return_ ADDRESS ReadPtrAddress(
-			_In_ ADDRESS uAddress,
-			_In_ const List<ADDRESS>& Offsets
-		) const;
+			ADDRESS uAddress = GetModuleBase() + pointer.GetOffset();
+			for (INT i = 0; i < pointer.GetCount(); i++) {
+				uAddress = Read<ADDRESS>(uAddress) + pointer[i];
+			}
+
+			CONTEXT_END;
+			return uAddress;
+		}
 	
 		/// <summary>
 		/// Reads data from a pointer.
@@ -281,11 +288,11 @@ namespace Artemis {
 		template<typename T>
 		inline _Check_return_ T ReadPtr(
 			_In_ ADDRESS uAddress,
-			_In_ LPCPOINTER lpPointer
+			_In_ const Pointer<T>& pointer
 		) const {
 			CONTEXT_BEGIN;
 
-			T ret = Read<T>(ReadPtrAddress(uAddress, lpPointer));
+			T ret = Read<T>(ReadPtrAddress<T>(uAddress, pointer));
 
 			CONTEXT_END;
 			return ret;
@@ -303,35 +310,10 @@ namespace Artemis {
 		/// <exception cref="WindowsApiException (External)"/>
 		/// <exception cref="InstanceInvalidException"/>
 		template<typename T>
-		inline _Check_return_ T ReadPtr(_In_ LPCBASE_POINTER lpPointer) const {
+		inline _Check_return_ T ReadPtr(_In_ const BasePointer<T>& pointer) const {
 			CONTEXT_BEGIN;
 
-			T ret = Read<T>(ReadPtrAddress(lpPointer));
-
-			CONTEXT_END;
-			return ret;
-		}
-
-		/// <summary>
-		/// Reads data from a pointer.
-		/// </summary>
-		/// <typeparam name="T">- The datatype to read.</typeparam>
-		/// <param name="uAddress">- The pointer base address.</param>
-		/// <param name="lpPointer">- A List object containig the pointer.</param>
-		/// <returns>The read data.</returns>
-		/// <exception cref="ParameterException"/>
-		/// <exception cref="Exception"/>
-		/// <exception cref="MemoryAccessViolationException (Internal)"/>
-		/// <exception cref="WindowsApiException (External)"/>
-		/// <exception cref="InstanceInvalidException"/>
-		template<typename T>
-		inline _Check_return_ T ReadPtr(
-			_In_ ADDRESS uAddress,
-			_In_ const List<ADDRESS>& Offsets
-		) const {
-			CONTEXT_BEGIN;
-
-			T ret = Read<T>(ReadPtrAddress(uAddress, Offsets));
+			T ret = Read<T>(ReadPtrAddress<T>(pointer));
 
 			CONTEXT_END;
 			return ret;
@@ -425,10 +407,11 @@ namespace Artemis {
 			_In_ ADDRESS uAddress,
 			_In_ const T Data
 		) const {
-			BOOL b = ExceptionContext::HasContext();
-			if (!b) ExceptionContext::SetContext(__FUNCTION__);
+			CONTEXT_BEGIN;
+
 			_Write(uAddress, &Data, sizeof(T));
-			if (!b) ExceptionContext::ResetContext();
+
+			CONTEXT_END;
 		}
 	
 		/// <summary>
@@ -485,7 +468,7 @@ namespace Artemis {
 		/// </summary>
 		/// <typeparam name="T">- The datatype to write.</typeparam>
 		/// <param name="uAddress">- The pointer base address.</param>
-		/// <param name="lpPointer">- A pointer to an object containing the pointer.</param>
+		/// <param name="pointer">- A pointer to an object containing the pointer.</param>
 		/// <param name="Data">- The data to write.</param>
 		/// <exception cref="ParameterException"/>
 		/// <exception cref="Exception"/>
@@ -495,12 +478,12 @@ namespace Artemis {
 		template<typename T>
 		inline void WritePtr(
 			_In_ ADDRESS uAddress,
-			_In_ LPCPOINTER lpPointer,
+			_In_ const Pointer<T>& pointer,
 			_In_ const T Data
 		) const {
 			CONTEXT_BEGIN;
 
-			Write<T>(ReadPtrAddress(uAddress, lpPointer), Data);
+			Write<T>(ReadPtrAddress<T>(uAddress, pointer), Data);
 
 			CONTEXT_END;
 		}
@@ -509,7 +492,7 @@ namespace Artemis {
 		/// Writes data to a pointer.
 		/// </summary>
 		/// <typeparam name="T">- The datatype to write.</typeparam>
-		/// <param name="lpPointer">- A pointer to an object containing the base offset and the pointer.</param>
+		/// <param name="pointer">- A pointer to an object containing the base offset and the pointer.</param>
 		/// <param name="Data">- The data to write.</param>
 		/// <exception cref="ParameterException"/>
 		/// <exception cref="Exception"/>
@@ -518,12 +501,12 @@ namespace Artemis {
 		/// <exception cref="InstanceInvalidException"/>
 		template<typename T>
 		inline void WritePtr(
-			_In_ LPCBASE_POINTER lpPointer,
+			_In_ BasePointer<T>& pointer,
 			_In_ const T Data
 		) const {
 			CONTEXT_BEGIN;
 
-			Write<T>(ReadPtrAddress(lpPointer), Data);
+			Write<T>(ReadPtrAddress<T>(pointer), Data);
 
 			CONTEXT_END;
 		}

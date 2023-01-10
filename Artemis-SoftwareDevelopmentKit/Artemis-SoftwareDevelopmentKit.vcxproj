@@ -24,6 +24,7 @@
     <ClInclude Include="ArtemisSpecific\Const.h" />
     <ClInclude Include="ArtemisSpecific\DrawManager.h" />
     <ClInclude Include="ArtemisSpecific\ExtensionFramework.h" />
+    <ClInclude Include="ArtemisSpecific\GameClasses.h" />
     <ClInclude Include="ArtemisSpecific\KeybindManager.h" />
     <ClInclude Include="ArtemisSpecific\MemoryProtectManager.h" />
     <ClInclude Include="ArtemisSpecific\Midnight.h" />
@@ -64,6 +65,7 @@
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ArtemisSpecific\CameraManager.cpp" />
     <ClCompile Include="ArtemisSpecific\Console.cpp" />
     <ClCompile Include="ArtemisSpecific\DrawManager.cpp" />
     <ClCompile Include="ArtemisSpecific\ExtensionFramework.cpp" />
