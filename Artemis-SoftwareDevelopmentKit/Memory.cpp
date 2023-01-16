@@ -344,6 +344,41 @@ namespace Artemis {
 		CONTEXT_END;
 	}
 	//-------------------------------------//
+	_Check_return_ Memory::AssemblyAction Memory::GetAssemblyPatchStatus(
+		_In_ ADDRESS uAddress,
+		_In_ const Artemis::AssemblyPatch& Patch
+	) const {
+		CONTEXT_BEGIN;
+
+		AssemblyAction action = Invalid;
+
+		LPBYTE lpCode = new BYTE[Patch.GetCount()];
+
+		ReadArray(uAddress, lpCode, Patch.GetCount());
+
+		if (!memcmp(lpCode, Patch.GetEnableCode(), Patch.GetCount())) action = Enable;
+		else if (!memcmp(lpCode, Patch.GetDisableCode(), Patch.GetCount())) action = Disable;
+
+		CONTEXT_END;
+		return action;
+	}
+	//-------------------------------------//
+	_Check_return_ Memory::AssemblyAction Memory::GetAssemblyPatchStatus(_In_ const BaseAssemblyPatch& Patch) const {
+		CONTEXT_BEGIN;
+
+		AssemblyAction action = Invalid;
+
+		LPBYTE lpCode = new BYTE[Patch.GetCount()];
+
+		ReadArray(GetModuleBase() + Patch.GetOffset(), lpCode, Patch.GetCount());
+
+		if (!memcmp(lpCode, Patch.GetEnableCode(), Patch.GetCount())) action = Enable;
+		else if (!memcmp(lpCode, Patch.GetDisableCode(), Patch.GetCount())) action = Disable;
+
+		CONTEXT_END;
+		return action;
+	}
+	//-------------------------------------//
 	_Check_return_ MemoryScanner Memory::CreateScanner(_In_ LPCSTR lpPattern, _In_z_ LPCSTR lpMask, _In_ BOOL bScanModule) const {
 		CONTEXT_BEGIN;
 

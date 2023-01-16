@@ -546,6 +546,11 @@ namespace Artemis {
 		/// </summary>
 		enum AssemblyAction {
 			/// <summary>
+			/// Indicates an invalid assembly patch.
+			/// </summary>
+			Invalid = -1,
+
+			/// <summary>
 			/// Writes the enable code.
 			/// </summary>
 			Enable,
@@ -587,6 +592,34 @@ namespace Artemis {
 			_In_ const BaseAssemblyPatch& Patch,
 			_In_ AssemblyAction Action
 		) const;
+
+		/// <summary>
+		/// Checks if a patch is enabled, disabled or invalid.
+		/// </summary>
+		/// <param name="uAddress">- The address of the patch.</param>
+		/// <param name="Patch">- A reference to the assembly patch data.</param>
+		/// <returns>A constant describing the current status of the patch.</returns>
+		/// <exception cref="ParameterException"/>
+		/// <exception cref="Exception"/>
+		/// <exception cref="MemoryAccessViolationException (Internal)"/>
+		/// <exception cref="WindowsApiException (External)"/>
+		/// <exception cref="InstanceInvalidException"/>
+		_Check_return_ AssemblyAction GetAssemblyPatchStatus(
+			_In_ ADDRESS uAddress,
+			_In_ const Artemis::AssemblyPatch& Patch
+		) const;
+
+		/// <summary>
+		/// Checks if a patch is enabled, disabled or invalid.
+		/// </summary>
+		/// <param name="Patch">- A reference to the assembly patch data aswell as base offset.</param>
+		/// <returns>A constant describing the current status of the patch.</returns>
+		/// <exception cref="ParameterException"/>
+		/// <exception cref="Exception"/>
+		/// <exception cref="MemoryAccessViolationException (Internal)"/>
+		/// <exception cref="WindowsApiException (External)"/>
+		/// <exception cref="InstanceInvalidException"/>
+		_Check_return_ AssemblyAction GetAssemblyPatchStatus(_In_ const BaseAssemblyPatch& Patch) const;
 	
 		/// <summary>
 		/// Creates a memory scanner associated to the current target process. Scans a code style pattern.

@@ -5,6 +5,8 @@
 
 namespace Artemis {
 	class ARTEMIS_API CameraManager {
+		Memory* pMem;
+
 	public:
 		float& X;
 		float& Y;
