@@ -71,6 +71,32 @@ namespace Artemis {
 		);
 
 		/// <summary>
+		/// Adds a memory protection change to the queue.
+		/// </summary>
+		/// <param name="uAddress">- The address of the memory to change.</param>
+		/// <param name="patch">- A reference to an AssemblyPatch object containing the size of the region to change.</param>
+		/// <param name="nProtection">- The new memory protection.</param>
+		/// <exception cref="IndexOutOfRangeException"/>
+		void Add(
+			_In_ ADDRESS uAddress,
+			_In_ const AssemblyPatch& patch,
+			_In_ MemoryProtection nProtection
+		);
+
+		/// <summary>
+		/// Adds a memory protection change to the queue.
+		/// </summary>
+		/// <param name="uAddress">- The base address of the offset specified in the BaseAssemblyPatch object.</param>
+		/// <param name="patch">- A reference to a BaseAssemblyPatch object containing the offset and size of the region to change.</param>
+		/// <param name="nProtection">- The new memory protection.</param>
+		/// <exception cref="IndexOutOfRangeException"/>
+		void Add(
+			_In_ ADDRESS uModuleBase,
+			_In_ const BaseAssemblyPatch& patch,
+			_In_ MemoryProtection nProtection
+		);
+
+		/// <summary>
 		/// Clears the current queue.
 		/// </summary>
 		void Clear();

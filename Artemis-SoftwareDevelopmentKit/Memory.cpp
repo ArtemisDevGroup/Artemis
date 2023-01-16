@@ -84,13 +84,22 @@ namespace Artemis {
 		this->szModulePath[0] = { '\0' };
 	}
 	//-------------------------------------//
-	Memory::Memory(const Memory& cpy) {
-		memcpy(this, &cpy, sizeof(Memory));
+	Memory::Memory(const Memory& cpy) : hProcess(nullptr) {
+		TargetType = cpy.TargetType;
+		dwModuleSize = cpy.dwModuleSize;
+		dwProcessId = cpy.dwProcessId;
+		hModule = cpy.hModule;
+		uModuleBaseAddress = cpy.uModuleBaseAddress;
+		
+		strcpy_s(szModuleName, cpy.szModuleName);
+		strcpy_s(szModulePath, cpy.szModulePath);
+		strcpy_s(szProcessName, cpy.szProcessName);
+		strcpy_s(szProcessPath, cpy.szProcessPath);
 
 		if (TargetType == External) {
 			if (!DuplicateHandle(
 				GetCurrentProcess(),
-				hProcess,
+				cpy.hProcess,
 				GetCurrentProcess(),
 				&hProcess,
 				0,
@@ -310,26 +319,26 @@ namespace Artemis {
 	//-------------------------------------//
 	void Memory::AssemblyPatch(
 		_In_ ADDRESS uAddress,
-		_In_ LPCASM_PATCH lpPatch,
+		_In_ const Artemis::AssemblyPatch& Patch,
 		_In_ AssemblyAction Action
 	) const {
 		CONTEXT_BEGIN;
 
-		if (Action == Enable) _Write(uAddress, lpPatch->szEnable, lpPatch->dwCount);
-		else if (Action == Disable) _Write(uAddress, lpPatch->szDisable, lpPatch->dwCount);
+		if (Action == Enable) _Write(uAddress, Patch.GetEnableCode(), Patch.GetCount());
+		else if (Action == Disable) _Write(uAddress, Patch.GetDisableCode(), Patch.GetCount());
 		else throw ParameterException("Action");
 
 		CONTEXT_END;
 	}
 	//-------------------------------------//
 	void Memory::AssemblyPatch(
-		_In_ LPCBASE_ASM_PATCH lpPatch,
+		_In_ const BaseAssemblyPatch& Patch,
 		_In_ AssemblyAction Action
 	) const {
 		CONTEXT_BEGIN;
 
-		if (Action == Enable) _Write(GetModuleBase() + lpPatch->uBaseOffset, lpPatch->szEnable, lpPatch->dwCount);
-		else if (Action == Disable) _Write(GetModuleBase() + lpPatch->uBaseOffset, lpPatch->szDisable, lpPatch->dwCount);
+		if (Action == Enable) _Write(GetModuleBase() + Patch.GetOffset(), Patch.GetEnableCode(), Patch.GetCount());
+		else if (Action == Disable) _Write(GetModuleBase() + Patch.GetOffset(), Patch.GetDisableCode(), Patch.GetCount());
 		else throw ParameterException("Action");
 
 		CONTEXT_END;

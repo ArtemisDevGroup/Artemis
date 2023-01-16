@@ -48,7 +48,7 @@ namespace Artemis {
 	/// </summary>
 	/// <typeparam name="T">- The type of arguments.</typeparam>
 	template<typename T>
-	class ArgumentList {
+	class ARTEMIS_API ArgumentList {
 		T* lpBuffer;
 		INT nCount;
 
@@ -110,21 +110,21 @@ namespace Artemis {
 		/// </summary>
 		/// <returns>The number of arguments.</returns>
 		INT GetCount() const { return nCount; }
-	};
+};
 
 	/// <summary>
 	/// A class representing a set of pointer offsets.
 	/// </summary>
 	/// <typeparam name="ReturnType">- The return type of the pointer.</typeparam>
 	template<typename ReturnType>
-	class Pointer : public ArgumentList<ADDRESS> { public: using ArgumentList::ArgumentList; };
+	class ARTEMIS_API Pointer : public ArgumentList<ADDRESS> { public: using ArgumentList::ArgumentList; };
 
 	/// <summary>
 	/// A class representing a base offset aswell as a set of pointer offsets.
 	/// </summary>
 	/// <typeparam name="ReturnType">- The return type of the pointer.</typeparam>
 	template<typename ReturnType>
-	class BasePointer : public ArgumentList<ADDRESS> {
+	class ARTEMIS_API BasePointer : public ArgumentList<ADDRESS> {
 		BASE_OFFSET uOffset;
 
 	public:
@@ -150,7 +150,7 @@ namespace Artemis {
 		/// <param name="uBaseOffset">- The base offset of the pointer.</param>
 		/// <param name="lpBuffer">- A pointer to a buffer containing the pointer offsets.</param>
 		/// <param name="nCount">- The number of pointer offsets.</param>
-		BasePointer(_In_ BASE_OFFSET uBaseOffset, _In_ ADDRESS* lpBuffer, _In_ int nCount) : ArgumentList(lpBuffer, nCount), uOffset(uBaseOffset) {}
+		BasePointer(_In_ BASE_OFFSET uBaseOffset, _In_ ADDRESS* lpBuffer, _In_ INT nCount) : ArgumentList(lpBuffer, nCount), uOffset(uBaseOffset) {}
 
 		/// <summary>
 		/// Gets the base offset of the pointer.
@@ -162,7 +162,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class representing a patch in assembly code.
 	/// </summary>
-	class AssemblyPatch {
+	class ARTEMIS_API AssemblyPatch {
 		LPBYTE lpEnable;
 		LPBYTE lpDisable;
 		INT nCount;
@@ -233,7 +233,7 @@ namespace Artemis {
 	/// <summary>
 	/// A class representing a patch in assembly code at a certain base address.
 	/// </summary>
-	class BaseAssemblyPatch : public AssemblyPatch {
+	class ARTEMIS_API BaseAssemblyPatch : public AssemblyPatch {
 		BASE_OFFSET uBaseOffset;
 
 	public:

@@ -1,10 +1,10 @@
 #ifndef __GAME_CLASSES_H__
 #define __GAME_CLASSES_H__
 
-#include "Midnight.h"
+#include "..\Memory.h"
 
 namespace Artemis {
-	class CameraManager {
+	class ARTEMIS_API CameraManager {
 	public:
 		float& X;
 		float& Y;
@@ -12,7 +12,7 @@ namespace Artemis {
 
 		float& FieldOfView;
 
-		CameraManager(_In_ Midnight* pMidnight);
+		CameraManager(_In_ Memory* pMemory);
 
 		void ToggleFreezeCamera();
 		void ToggleFreezeFov();

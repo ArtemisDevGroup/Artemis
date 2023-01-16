@@ -76,6 +76,34 @@ namespace Artemis {
 		CONTEXT_END;
 	}
 
+	void MemoryProtectManager::Add(
+		_In_ ADDRESS uAddress,
+		_In_ const AssemblyPatch& patch,
+		_In_ MemoryProtection nProtection
+	) {
+		CONTEXT_BEGIN;
+		
+		if (nPendingCount >= ARRAYSIZE(szPending)) throw IndexOutOfRangeException(nPendingCount, ARRAYSIZE(szPending) - 1);
+		szPending[nPendingCount] = { uAddress, (DWORD)patch.GetCount(), nProtection};
+		nPendingCount++;
+
+		CONTEXT_END;
+	}
+
+	void MemoryProtectManager::Add(
+		_In_ ADDRESS uModuleBase,
+		_In_ const BaseAssemblyPatch& patch,
+		_In_ MemoryProtection nProtection
+	) {
+		CONTEXT_BEGIN;
+
+		if (nPendingCount >= ARRAYSIZE(szPending)) throw IndexOutOfRangeException(nPendingCount, ARRAYSIZE(szPending) - 1);
+		szPending[nPendingCount] = { uModuleBase + patch.GetOffset(), (DWORD)patch.GetCount(), nProtection};
+		nPendingCount++;
+
+		CONTEXT_END;
+	}
+
 	void MemoryProtectManager::Clear() {
 		memset(szPending, 0x00, sizeof(szPending));
 		nReflectionCount = 0;

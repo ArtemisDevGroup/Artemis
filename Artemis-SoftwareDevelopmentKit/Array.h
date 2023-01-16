@@ -251,6 +251,9 @@ namespace Artemis {
 
 		inline ~List() { Release(); }
 
+		inline operator T* () { return lpAlloc; }
+		inline operator const T* () const { return lpAlloc; }
+
 		inline T& operator[](_In_ INT nIndex) { return lpAlloc[nIndex]; }
 		inline T operator[](_In_ INT nIndex) const { return lpAlloc[nIndex]; }
 	};

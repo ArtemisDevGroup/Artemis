@@ -78,8 +78,8 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
 
     try {
         pMpMgr->Add(
-            pMem->GetModuleBase() + Constants::c_UnlockAllOffset,
-            Constants::c_UnlockAll.dwCount,
+            pMem->GetModuleBase(),
+            Constants::c_UnlockAll,
             MemoryProtection::Execute_ReadWrite
         );
 
@@ -88,7 +88,7 @@ DWORD APIENTRY Main(_In_ HMODULE hModule) {
         pLog->LogSuccess(__FUNCTION__, "Successfully changed memory protection.");
 
         pMem->AssemblyPatch(
-            &Constants::c_UnlockAll,
+            Constants::c_UnlockAll,
             Memory::Enable
         );
 

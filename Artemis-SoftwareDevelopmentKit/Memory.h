@@ -560,7 +560,7 @@ namespace Artemis {
 		/// Patches assembly code.
 		/// </summary>
 		/// <param name="uAddress">- The address to patch.</param>
-		/// <param name="lpPatch">- A pointer to an object containing the assembly code to patch.</param>
+		/// <param name="Patch">- A reference to an object containing the assembly code to patch.</param>
 		/// <param name="Action">- The action to take.</param>
 		/// <exception cref="ParameterException"/>
 		/// <exception cref="Exception"/>
@@ -569,14 +569,14 @@ namespace Artemis {
 		/// <exception cref="InstanceInvalidException"/>
 		void AssemblyPatch(
 			_In_ ADDRESS uAddress,
-			_In_ LPCASM_PATCH lpPatch,
+			_In_ const AssemblyPatch& Patch,
 			_In_ AssemblyAction Action
 		) const;
 	
 		/// <summary>
 		/// Patches assembly code.
 		/// </summary>
-		/// <param name="lpPatch">- A pointer to an object containing the assembly code to patch aswell as the base offset.</param>
+		/// <param name="Patch">- A reference to an object containing the assembly code to patch aswell as the base offset.</param>
 		/// <param name="Action">- The action to take.</param>
 		/// <exception cref="ParameterException"/>
 		/// <exception cref="Exception"/>
@@ -584,7 +584,7 @@ namespace Artemis {
 		/// <exception cref="WindowsApiException (External)"/>
 		/// <exception cref="InstanceInvalidException"/>
 		void AssemblyPatch(
-			_In_ LPCBASE_ASM_PATCH lpPatch,
+			_In_ const BaseAssemblyPatch& Patch,
 			_In_ AssemblyAction Action
 		) const;
 	
