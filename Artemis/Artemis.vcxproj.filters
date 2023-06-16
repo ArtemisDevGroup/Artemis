@@ -13,57 +13,105 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\Window">
-      <UniqueIdentifier>{eaecf3a5-e9d6-404a-8e5d-d9381c9e37c3}</UniqueIdentifier>
+    <Filter Include="Aurora">
+      <UniqueIdentifier>{0eb74885-4516-44bd-adf2-22a63f9754c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Draw">
-      <UniqueIdentifier>{a3232c15-11f8-4b1a-84bc-4b7952cf43b2}</UniqueIdentifier>
+    <Filter Include="Aurora\HDE">
+      <UniqueIdentifier>{dc03bfac-bdd3-45e4-8f1f-d16560aa1a0d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\OnFrame">
-      <UniqueIdentifier>{f6c49508-0cb3-43c6-b598-58b81d6cbb18}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Hybrid">
-      <UniqueIdentifier>{867c755c-43bc-4d1c-80c8-9684891cd1e3}</UniqueIdentifier>
-    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\Array.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\Binary.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\CodeInjection.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\Color.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\Console.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\ConstexprMath.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\Definitions.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\DllInjection.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\Events.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\Exceptions.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\FileSystem.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\Logger.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\Memory.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\MemoryTypes.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\MemoryWin32.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\Pipe.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\ProcessInfo.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\Property.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\Shapes.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\SharedHandle.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\Signal.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\Thread.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\Time.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\Trampoline.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\Vector.h">
+      <Filter>Aurora</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\HDE\hde32.h">
+      <Filter>Aurora\HDE</Filter>
+    </ClInclude>
+    <ClInclude Include="Aurora\HDE\hde64.h">
+      <Filter>Aurora\HDE</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Keybinds.cpp">
+    <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MainWindow.cpp">
-      <Filter>Source Files\Window</Filter>
-    </ClCompile>
-    <ClCompile Include="TestWindow.cpp">
-      <Filter>Source Files\Window</Filter>
-    </ClCompile>
-    <ClCompile Include="ExceptionLoggers.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Bones.cpp">
-      <Filter>Source Files\Hybrid</Filter>
-    </ClCompile>
-    <ClCompile Include="TerroristWindow.cpp">
-      <Filter>Source Files\Window</Filter>
-    </ClCompile>
-    <ClCompile Include="CreditsWindow.cpp">
-      <Filter>Source Files\Window</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Keybinds.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Draw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Identifiers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

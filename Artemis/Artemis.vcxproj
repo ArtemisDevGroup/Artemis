@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{44fd067a-9922-49ba-88fa-2c9e198ebf81}</ProjectGuid>
+    <ProjectGuid>{02292086-fee9-47db-ade5-f40a338754da}</ProjectGuid>
     <RootNamespace>Artemis</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -70,17 +70,11 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Artemis-SoftwareDevelopmentKit</IncludePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Artemis-SoftwareDevelopmentKit</IncludePath>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Artemis-SoftwareDevelopmentKit</IncludePath>
+    <ExternalIncludePath>$(SolutionDir)Artemis;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Artemis-SoftwareDevelopmentKit</IncludePath>
+    <ExternalIncludePath>$(SolutionDir)Artemis;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -88,8 +82,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;ARTEMIS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -105,8 +100,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;ARTEMIS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -120,15 +116,17 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;ARTEMIS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>$(SolutionDir)x64\Debug\Aurora.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -137,10 +135,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;ARTEMIS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -148,28 +147,47 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>$(SolutionDir)x64\Release\Aurora.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Bones.cpp" />
-    <ClCompile Include="CreditsWindow.cpp" />
+    <ClInclude Include="Aurora\Array.h" />
+    <ClInclude Include="Aurora\Binary.h" />
+    <ClInclude Include="Aurora\CodeInjection.h" />
+    <ClInclude Include="Aurora\Color.h" />
+    <ClInclude Include="Aurora\Console.h" />
+    <ClInclude Include="Aurora\ConstexprMath.h" />
+    <ClInclude Include="Aurora\Definitions.h" />
+    <ClInclude Include="Aurora\DllInjection.h" />
+    <ClInclude Include="Aurora\Events.h" />
+    <ClInclude Include="Aurora\Exceptions.h" />
+    <ClInclude Include="Aurora\FileSystem.h" />
+    <ClInclude Include="Aurora\HDE\hde32.h" />
+    <ClInclude Include="Aurora\HDE\hde64.h" />
+    <ClInclude Include="Aurora\Logger.h" />
+    <ClInclude Include="Aurora\Memory.h" />
+    <ClInclude Include="Aurora\MemoryTypes.h" />
+    <ClInclude Include="Aurora\MemoryWin32.h" />
+    <ClInclude Include="Aurora\Pipe.h" />
+    <ClInclude Include="Aurora\ProcessInfo.h" />
+    <ClInclude Include="Aurora\Property.h" />
+    <ClInclude Include="Aurora\Shapes.h" />
+    <ClInclude Include="Aurora\SharedHandle.h" />
+    <ClInclude Include="Aurora\Signal.h" />
+    <ClInclude Include="Aurora\Thread.h" />
+    <ClInclude Include="Aurora\Time.h" />
+    <ClInclude Include="Aurora\Trampoline.h" />
+    <ClInclude Include="Aurora\Vector.h" />
+    <ClInclude Include="pch.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="ExceptionLoggers.cpp" />
-    <ClCompile Include="Keybinds.cpp" />
-    <ClCompile Include="MainWindow.cpp" />
-    <ClCompile Include="TerroristWindow.cpp" />
-    <ClCompile Include="TestWindow.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Draw.h" />
-    <ClInclude Include="Identifiers.h" />
-    <ClInclude Include="Keybinds.h" />
-    <ClInclude Include="Window.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Artemis-SoftwareDevelopmentKit\Artemis-SoftwareDevelopmentKit.vcxproj">
-      <Project>{00bfd495-6d4b-43e4-9c73-2cdec3ab0dec}</Project>
-    </ProjectReference>
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
