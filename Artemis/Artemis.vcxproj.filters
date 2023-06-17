@@ -19,6 +19,15 @@
     <Filter Include="Aurora\HDE">
       <UniqueIdentifier>{dc03bfac-bdd3-45e4-8f1f-d16560aa1a0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{be6e3d64-0683-4042-a598-21a90e6524a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header Files">
+      <UniqueIdentifier>{6074c9fa-7c35-4b92-8e1c-db42b28a2f5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Source Files">
+      <UniqueIdentifier>{e18de650-88b9-4ce8-8ffc-c0541479f92f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -105,6 +114,15 @@
     <ClInclude Include="Aurora\HDE\hde64.h">
       <Filter>Aurora\HDE</Filter>
     </ClInclude>
+    <ClInclude Include="Definitions.h">
+      <Filter>Framework\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="External.h">
+      <Filter>Framework\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KeybindManager.h">
+      <Filter>Framework\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -112,6 +130,12 @@
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="External.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KeybindManager.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
