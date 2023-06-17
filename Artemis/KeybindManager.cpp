@@ -1,8 +1,9 @@
+#include "pch.h"
 #include "KeybindManager.h"
 
 namespace Artemis {
 	void IKeybind::Invoke() {
-		if (GetAsyncKeyState((int)nKey) & (1 << (sizeof(SHORT) - 1)))
+		if (GetAsyncKeyState((int)nKey) & (1 << (Aurora::Binary<SHORT>::BufferBitCount - 1)))
 			OnKeyPress();
 	}
 
@@ -58,6 +59,7 @@ namespace Artemis {
 
 	void KeybindManager::Invoke() {
 		for (IKeybind* pKeybind : KeybindCollection)
-			pKeybind->Invoke();
+			if (pKeybind)
+				pKeybind->Invoke();
 	}
 }

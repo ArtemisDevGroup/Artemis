@@ -69,11 +69,13 @@ namespace Aurora {
 		/// Virtual method that gets called every time the logger instance requests logging to the log file.
 		/// </summary>
 		/// <param name="refTime">- A reference to a time instance representing the time at which the method was called.</param>
+		/// <param name="lpSender">- The sender of the log message. This is usually set to the name of the function printing to the log.</param>
 		/// <param name="lpPrefix">- The log level prefix.</param>
 		/// <param name="lpFormat">- The format string.</param>
 		/// <param name="lpArgs">- The format arguments.</param>
 		virtual A_VOID LogToFile(
 			_In_ const Time& refTime,
+			_In_z_ A_LPCSTR lpSender,
 			_In_z_ A_LPCSTR lpPrefix,
 			_In_z_ _Printf_format_string_ A_LPCSTR lpFormat,
 			_In_ va_list lpArgs
@@ -83,12 +85,14 @@ namespace Aurora {
 		/// Virtual method that gets called every time the logger instance requests logging to the console.
 		/// </summary>
 		/// <param name="refTime">- A reference to a time instance representing the time at which the method was called.</param>
+		/// <param name="lpSender">- The sender of the log message. This is usually set to the name of the function printing to the log.</param>
 		/// <param name="lpPrefix">- The log level prefix.</param>
 		/// <param name="dwPrefixColor">- The color of the prefix string.</param>
 		/// <param name="lpFormat">- The format string.</param>
 		/// <param name="lpArgs">- The format arguments.</param>
 		virtual A_VOID LogToConsole(
 			_In_ const Time& refTime,
+			_In_z_ A_LPCSTR lpSender,
 			_In_z_ A_LPCSTR lpPrefix,
 			_In_ ConsoleColorLegacyFlags dwPrefixColor,
 			_In_z_ _Printf_format_string_ A_LPCSTR lpFormat,
@@ -97,6 +101,7 @@ namespace Aurora {
 
 	private:
 		A_VOID Log(
+			_In_z_ A_LPCSTR lpSender,
 			_In_z_ A_LPCSTR lpPrefix,
 			_In_ ConsoleColorLegacyFlags dwPrefixColor,
 			_In_z_ _Printf_format_string_ A_LPCSTR lpFormat,
@@ -125,74 +130,82 @@ namespace Aurora {
 		/// <summary>
 		/// Logs an informational message.
 		/// </summary>
+		/// <param name="lpSender">- The sender of the log message. This is usually set to the name of the function printing to the log.</param>
 		/// <param name="lpFormat">- The format of the message.</param>
 		/// <param name="lpArgs">- The format arguments.</param>
 		/// <exception cref="ParameterInvalidException"/>
 		/// <exception cref="ErrnoException"/>
-		A_VOID LogInfoV(_In_z_ _Printf_format_string_ A_LPCSTR lpFormat, _In_ va_list lpArgs);
+		A_VOID LogInfoV(_In_z_ A_LPCSTR lpSender, _In_z_ _Printf_format_string_ A_LPCSTR lpFormat, _In_ va_list lpArgs);
 
 		/// <summary>
 		/// Logs an informational message.
 		/// </summary>
+		/// <param name="lpSender">- The sender of the log message. This is usually set to the name of the function printing to the log.</param>
 		/// <param name="lpFormat">- The format of the message.</param>
 		/// <param name="...">- The format arguments.</param>
 		/// <exception cref="ParameterInvalidException"/>
 		/// <exception cref="ErrnoException"/>
-		A_VOID LogInfo(_In_z_ _Printf_format_string_ A_LPCSTR lpFormat, ...);
+		A_VOID LogInfo(_In_z_ A_LPCSTR lpSender, _In_z_ _Printf_format_string_ A_LPCSTR lpFormat, ...);
 
 		/// <summary>
 		/// Logs a message indicating success.
 		/// </summary>
+		/// <param name="lpSender">- The sender of the log message. This is usually set to the name of the function printing to the log.</param>
 		/// <param name="lpFormat">- The format of the message.</param>
 		/// <param name="lpArgs">- The format arguments.</param>
 		/// <exception cref="ParameterInvalidException"/>
 		/// <exception cref="ErrnoException"/>
-		A_VOID LogSuccessV(_In_z_ _Printf_format_string_ A_LPCSTR lpFormat, _In_ va_list lpArgs);
+		A_VOID LogSuccessV(_In_z_ A_LPCSTR lpSender, _In_z_ _Printf_format_string_ A_LPCSTR lpFormat, _In_ va_list lpArgs);
 
 		// <summary>
 		/// Logs a message indicating success.
 		/// </summary>
+		/// <param name="lpSender">- The sender of the log message. This is usually set to the name of the function printing to the log.</param>
 		/// <param name="lpFormat">- The format of the message.</param>
 		/// <param name="...">- The format arguments.</param>
 		/// <exception cref="ParameterInvalidException"/>
 		/// <exception cref="ErrnoException"/>
-		A_VOID LogSuccess(_In_z_ _Printf_format_string_ A_LPCSTR lpFormat, ...);
+		A_VOID LogSuccess(_In_z_ A_LPCSTR lpSender, _In_z_ _Printf_format_string_ A_LPCSTR lpFormat, ...);
 
 		/// <summary>
 		/// Logs a warning message.
 		/// </summary>
+		/// <param name="lpSender">- The sender of the log message. This is usually set to the name of the function printing to the log.</param>
 		/// <param name="lpFormat">- The format of the message.</param>
 		/// <param name="lpArgs">- The format arguments.</param>
 		/// <exception cref="ParameterInvalidException"/>
 		/// <exception cref="ErrnoException"/>
-		A_VOID LogWarningV(_In_z_ _Printf_format_string_ A_LPCSTR lpFormat, _In_ va_list lpArgs);
+		A_VOID LogWarningV(_In_z_ A_LPCSTR lpSender, _In_z_ _Printf_format_string_ A_LPCSTR lpFormat, _In_ va_list lpArgs);
 
 		// <summary>
 		/// Logs a message indicating success.
 		/// </summary>
+		/// <param name="lpSender">- The sender of the log message. This is usually set to the name of the function printing to the log.</param>
 		/// <param name="lpFormat">- The format of the message.</param>
 		/// <param name="...">- The format arguments.</param>
 		/// <exception cref="ParameterInvalidException"/>
 		/// <exception cref="ErrnoException"/>
-		A_VOID LogWarning(_In_z_ _Printf_format_string_ A_LPCSTR lpFormat, ...);
+		A_VOID LogWarning(_In_z_ A_LPCSTR lpSender, _In_z_ _Printf_format_string_ A_LPCSTR lpFormat, ...);
 
 		/// <summary>
 		/// Logs a message indicating an error.
 		/// </summary>
+		/// <param name="lpSender">- The sender of the log message. This is usually set to the name of the function printing to the log.</param>
 		/// <param name="lpFormat">- The format of the message.</param>
 		/// <param name="lpArgs">- The format arguments.</param>
 		/// <exception cref="ParameterInvalidException"/>
 		/// <exception cref="ErrnoException"/>
-		A_VOID LogErrorV(_In_z_ _Printf_format_string_ A_LPCSTR lpFormat, _In_ va_list lpArgs);
+		A_VOID LogErrorV(_In_z_ A_LPCSTR lpSender, _In_z_ _Printf_format_string_ A_LPCSTR lpFormat, _In_ va_list lpArgs);
 
 		// <summary>
 		/// Logs a message indicating success.
 		/// </summary>
+		/// <param name="lpSender">- The sender of the log message. This is usually set to the name of the function printing to the log.</param>
 		/// <param name="lpFormat">- The format of the message.</param>
 		/// <param name="...">- The format arguments.</param>
 		/// <exception cref="ParameterInvalidException"/>
 		/// <exception cref="ErrnoException"/>
-		A_VOID LogError(_In_z_ _Printf_format_string_ A_LPCSTR lpFormat, ...);
+		A_VOID LogError(_In_z_ A_LPCSTR lpSender, _In_z_ _Printf_format_string_ A_LPCSTR lpFormat, ...);
 	};
 }
 

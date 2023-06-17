@@ -25,6 +25,22 @@ void PrintAsciiArt() {
         printf("%s\n", lpString);
 }
 
+void LogBasicInformation(const char* lpSender, const Aurora::ProcessInfo& CurrentProcess) {
+    Log.LogInfo(lpSender, "Welcome to Artemis!");
+    Log.LogInfo(lpSender, "Current process:");
+    Log.LogInfo(lpSender, "    %s : %s", CurrentProcess.GetProcessName(), CurrentProcess.GetProcessPath());
+    Log.LogInfo(lpSender, "Process Id: 0x%lX", CurrentProcess.GetProcessId());
+    Log.LogInfo(lpSender, "Process Handle: 0x%p\n", CurrentProcess.GetProcessHandle());
+
+    const Aurora::ModuleInfo& Module = CurrentProcess.GetModule();
+
+    Log.LogInfo(lpSender, "Module: %s", Module.GetModuleName());
+    Log.LogInfo(lpSender, "    %s", Module.GetModulePath());
+    Log.LogInfo(lpSender, "Module handle: 0x%p", Module.GetModuleHandle());
+    Log.LogInfo(lpSender, "Module base address: 0x%llX", Module.GetModuleBaseAddress());
+    Log.LogInfo(lpSender, "Module size: 0x%lX", Module.GetModuleSize());
+}
+
 class StopProcessKeybind : public IKeybind {
 public:
     StopProcessKeybind() : IKeybind(VirtualKey::F1, true) {}
@@ -33,25 +49,26 @@ public:
 };
 
 DWORD APIENTRY Main(HMODULE hModule) {
+#ifdef _DEBUG
     Aurora::CreateConsole();
     Aurora::OpenStream(Aurora::StandardStream::Out);
+#endif // _DEBUG
 
     PrintAsciiArt();
+    LogBasicInformation(__FUNCTION__, Aurora::GetCurrentProcessInfo());
 
-    const Aurora::ProcessInfo& CurrentProcess = Aurora::GetCurrentProcessInfo();
-
-    Log.LogInfo("Welcome to Artemis!");
-    Log.LogInfo("Current process:");
-    Log.LogInfo("    %s : %s", CurrentProcess.GetProcessName(), CurrentProcess.GetProcessPath());
-    Log.LogInfo("Process Id: 0x%lX", CurrentProcess.GetProcessId());
-    Log.LogInfo("Process Handle: 0x%p", CurrentProcess.GetProcessHandle());
-
-    Keybinds.Add(new StopProcessKeybind());
+    if (Keybinds.Add(new StopProcessKeybind()) == INVALID_INDEX) {
+        Log.LogError(__FUNCTION__, "Stop process keybind could not be added. Aborting...");
+        bRunning = false;
+    }
+    else Log.LogSuccess(__FUNCTION__, "Successfully registered the stop process keybind.");
 
     while (bRunning) Keybinds.Invoke();
 
+#ifdef _DEBUG
     Aurora::CloseStream(Aurora::StandardStream::Out);
     Aurora::ReleaseConsole();
+#endif // _DEBUG
 
     FreeLibraryAndExitThread(hModule, 0);
     return 0;

@@ -9,11 +9,11 @@ using Aurora::Logger;
 #include "KeybindManager.h"
 
 namespace Artemis {
+	ARTEMIS_API extern bool bRunning;
+
 	ARTEMIS_API extern Logger Log;
 
 	ARTEMIS_API extern KeybindManager Keybinds;
-
-	ARTEMIS_API extern bool bRunning;
 }
 
 #endif // !__ARTEMIS_EXTERNAL_H__
