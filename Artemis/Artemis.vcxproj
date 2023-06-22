@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{02292086-fee9-47db-ade5-f40a338754da}</ProjectGuid>
+    <ProjectGuid>{4e99baed-17c5-4495-9f7f-c747e38a1d74}</ProjectGuid>
     <RootNamespace>Artemis</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -84,7 +84,6 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -102,7 +101,6 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -116,7 +114,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_ARTEMIS_EXPORT;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_ARTEMIS_EXPORT;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -126,7 +124,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(SolutionDir)x64\Debug\Aurora.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(ProjectDir)Libraries\DebugLib\Aurora.lib;$(ProjectDir)Libraries\DebugLib\ImGui.lib;$(ProjectDir)Libraries\DebugLib\MinHook.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -135,7 +133,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_ARTEMIS_EXPORT;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_ARTEMIS_EXPORT;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -147,7 +145,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(SolutionDir)x64\Release\Aurora.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(ProjectDir)Libraries\ReleaseLib\Aurora.lib;$(ProjectDir)Libraries\ReleaseLib\ImGui.lib;$(ProjectDir)Libraries\ReleaseLib\MinHook.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -180,19 +178,63 @@
     <ClInclude Include="Aurora\Vector.h" />
     <ClInclude Include="Definitions.h" />
     <ClInclude Include="External.h" />
+    <ClInclude Include="ImGui\imconfig.h" />
+    <ClInclude Include="ImGui\imgui.h" />
+    <ClInclude Include="ImGui\imgui_impl_dx11.h" />
+    <ClInclude Include="ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="ImGui\imgui_internal.h" />
+    <ClInclude Include="ImGui\imstb_rectpack.h" />
+    <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="KeybindManager.h" />
+    <ClInclude Include="Keybinds.h" />
+    <ClInclude Include="MinHook\MinHook.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PresentHook.h" />
+    <ClInclude Include="WindowManager.h" />
+    <ClInclude Include="Windows.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="External.cpp" />
     <ClCompile Include="KeybindManager.cpp" />
+    <ClCompile Include="Keybinds.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PresentHook.cpp" />
+    <ClCompile Include="WindowManager.cpp" />
+    <ClCompile Include="Windows.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Libraries\DebugLib\Aurora.dll" />
+    <None Include="Libraries\DebugLib\Aurora.exp" />
+    <None Include="Libraries\DebugLib\Aurora.pdb" />
+    <None Include="Libraries\DebugLib\ImGui.dll" />
+    <None Include="Libraries\DebugLib\ImGui.exp" />
+    <None Include="Libraries\DebugLib\ImGui.pdb" />
+    <None Include="Libraries\DebugLib\MinHook.dll" />
+    <None Include="Libraries\DebugLib\MinHook.exp" />
+    <None Include="Libraries\DebugLib\MinHook.pdb" />
+    <None Include="Libraries\ReleaseLib\Aurora.dll" />
+    <None Include="Libraries\ReleaseLib\Aurora.exp" />
+    <None Include="Libraries\ReleaseLib\Aurora.pdb" />
+    <None Include="Libraries\ReleaseLib\ImGui.dll" />
+    <None Include="Libraries\ReleaseLib\ImGui.exp" />
+    <None Include="Libraries\ReleaseLib\ImGui.pdb" />
+    <None Include="Libraries\ReleaseLib\MinHook.dll" />
+    <None Include="Libraries\ReleaseLib\MinHook.exp" />
+    <None Include="Libraries\ReleaseLib\MinHook.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Libraries\DebugLib\Aurora.lib" />
+    <Library Include="Libraries\DebugLib\ImGui.lib" />
+    <Library Include="Libraries\DebugLib\MinHook.lib" />
+    <Library Include="Libraries\ReleaseLib\Aurora.lib" />
+    <Library Include="Libraries\ReleaseLib\ImGui.lib" />
+    <Library Include="Libraries\ReleaseLib\MinHook.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

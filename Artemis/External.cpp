@@ -2,8 +2,6 @@
 #include "External.h"
 
 namespace Artemis {
-	ARTEMIS_API bool bRunning = true;
-
 #ifdef _DEBUG
 	ARTEMIS_API Logger Log(true, true, "Artemis.log");
 #else
@@ -11,4 +9,5 @@ namespace Artemis {
 #endif // _DEBUG
 
 	ARTEMIS_API KeybindManager Keybinds;
+	ARTEMIS_API WindowManager Windows;
 }

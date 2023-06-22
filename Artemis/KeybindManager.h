@@ -11,6 +11,7 @@ namespace Artemis {
 		MiddleMouseButton = VK_MBUTTON,
 		ExtraMouseButton1 = VK_XBUTTON1,
 		ExtraMouseButton2 = VK_XBUTTON2,
+
 		Backspace = VK_BACK,
 		Tab = VK_TAB,
 		Enter = VK_RETURN,
@@ -25,13 +26,16 @@ namespace Artemis {
 		PageDown = VK_NEXT,
 		End = VK_END,
 		Home = VK_HOME,
+
 		LeftArrow = VK_LEFT,
 		UpArrow = VK_UP,
 		RightArrow = VK_RIGHT,
 		DownArrow = VK_DOWN,
+
 		PrintScreen = VK_SNAPSHOT,
 		Insert = VK_INSERT,
 		Delete = VK_DELETE,
+
 		Zero = '0',
 		One = '1',
 		Two = '2',
@@ -42,6 +46,7 @@ namespace Artemis {
 		Seven = '7',
 		Eight = '8',
 		Nine = '9',
+
 		A = 'A',
 		B = 'B',
 		C = 'C',
@@ -68,6 +73,7 @@ namespace Artemis {
 		X = 'X',
 		Y = 'Y',
 		Z = 'Z',
+
 		LeftWindows = VK_LWIN,
 		RightWindows = VK_RWIN,
 		Apps = VK_APPS,
@@ -87,6 +93,7 @@ namespace Artemis {
 		Subtract = VK_SUBTRACT,
 		Decimal = VK_DECIMAL,
 		Divide = VK_DIVIDE,
+
 		F1 = VK_F1,
 		F2 = VK_F2,
 		F3 = VK_F3,
@@ -99,6 +106,7 @@ namespace Artemis {
 		F10 = VK_F10,
 		F11 = VK_F11,
 		F12 = VK_F12,
+
 		NumLock = VK_NUMLOCK,
 		ScrollLock = VK_SCROLL,
 		LeftShift = VK_LSHIFT,
@@ -116,7 +124,7 @@ namespace Artemis {
 		PlayPause = VK_MEDIA_PLAY_PAUSE
 	};
 
-	class IKeybind {
+	class ARTEMIS_API IKeybind {
 		VirtualKey nKey;
 		bool bExclusive;
 
@@ -136,7 +144,7 @@ namespace Artemis {
 	template<class T>
 	concept KeybindType = std::is_base_of<IKeybind, T>::value;
 
-	class KeybindManager {
+	class ARTEMIS_API KeybindManager {
 		IKeybind* KeybindCollection[MAX_INVOKE];
 
 	public:

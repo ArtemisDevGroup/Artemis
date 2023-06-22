@@ -12,6 +12,9 @@
 #include <TlHelp32.h>
 #include <Psapi.h>
 
+#include <d3d11.h>
+#include <dxgi.h>
+
 // Aurora Headers
 #include <Aurora/Array.h>
 #include <Aurora/Binary.h>
@@ -38,5 +41,17 @@
 #include <Aurora/Time.h>
 #include <Aurora/Trampoline.h>
 #include <Aurora/Vector.h>
+
+// ImGui header files.
+#include <ImGui/imconfig.h>
+#include <ImGui/imgui.h>
+#include <ImGui/imgui_impl_dx11.h>
+#include <ImGui/imgui_impl_win32.h>
+#include <ImGui/imstb_rectpack.h>
+#include <ImGui/imstb_textedit.h>
+#include <ImGui/imstb_truetype.h>
+
+// MinHook header file.
+#include <MinHook/MinHook.h>
 
 #endif //PCH_H
