@@ -3,6 +3,7 @@
 
 #include "pch.h"
 #include "Definitions.h"
+#include "Manager.h"
 
 namespace Artemis {
 	enum class VirtualKey : int {
@@ -141,25 +142,12 @@ namespace Artemis {
 
 	using KeybindIndex = int;
 
-	template<class T>
-	concept KeybindType = std::is_base_of<IKeybind, T>::value;
+#ifdef _ARTEMIS_EXPORT
+	extern template class Manager<IKeybind, KeybindIndex>;
+#endif // _ARTEMIS_EXPORT
 
-	class ARTEMIS_API KeybindManager {
-		IKeybind* KeybindCollection[MAX_INVOKE];
-
+	class ARTEMIS_API KeybindManager : public Manager<IKeybind, KeybindIndex> {
 	public:
-		KeybindManager();
-		~KeybindManager();
-
-		KeybindIndex Add(_In_ IKeybind* pKeybind);
-
-		void Release(_In_range_(INVALID_INDEX, MAX_INVOKE) KeybindIndex nIndex = INVALID_INDEX);
-
-		AURORA_NDWR_GET("Get") _Ret_maybenull_ IKeybind* Get(_In_range_(0, MAX_INVOKE) KeybindIndex nIndex);
-
-		template<KeybindType Keybind>
-		AURORA_NDWR_GET("Get") _Ret_maybenull_ Keybind* Get(_In_range_(0, MAX_INVOKE) KeybindIndex nIndex) { return (Keybind*)Get(nIndex); }
-
 		void Invoke();
 	};
 }

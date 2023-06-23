@@ -3,6 +3,7 @@
 
 #include "pch.h"
 #include "Definitions.h"
+#include "Manager.h"
 
 namespace Artemis {
 	class ARTEMIS_API IWindow {
@@ -26,27 +27,16 @@ namespace Artemis {
 
 	using WindowIndex = int;
 
-	template<class T>
-	concept WindowType = std::is_base_of<IWindow, T>::value;
+#ifdef _ARTEMIS_EXPORT
+	extern template class Manager<IWindow, WindowIndex>;
+#else
+	template class ARTEMIS_IMPORT Manager<IWindow, WindowIndex>;
+#endif // _ARTEMIS_EXPORT
 
-	class ARTEMIS_API WindowManager {
-		IWindow* WindowCollection[MAX_INVOKE];
-
+	class ARTEMIS_API WindowManager : public Manager<IWindow, WindowIndex> {
 	public:
 		static bool GetGlobalWindowVisibility();
 		static void SetGlobalWindowVisibility(bool bVisibility);
-
-		WindowManager();
-		~WindowManager();
-
-		WindowIndex Add(_In_ IWindow* pWindow);
-
-		void Release(_In_range_(INVALID_INDEX, MAX_INVOKE) WindowIndex nIndex = INVALID_INDEX);
-
-		AURORA_NDWR_GET("Get") _Ret_maybenull_ IWindow* Get(_In_range_(0, MAX_INVOKE) WindowIndex nIndex);
-
-		template<WindowType Window>
-		AURORA_NDWR_GET("Get") _Ret_maybenull_ Window* Get(_In_range_(0, MAX_INVOKE) WindowIndex nIndex) { return (Window*)Get(nIndex); }
 
 		void PresentAll();
 	};

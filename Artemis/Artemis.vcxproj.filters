@@ -64,6 +64,24 @@
     <Filter Include="Libraries\x64/Debug\MinHook">
       <UniqueIdentifier>{ea10082e-6a29-41aa-a6c4-c02e2c7b84ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Engine">
+      <UniqueIdentifier>{e6aebec5-06ae-4798-a02d-7362c4e70efe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Engine\Header Files">
+      <UniqueIdentifier>{6777cb22-ac14-479e-abb0-d86fa3ccef27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Engine\Source Files">
+      <UniqueIdentifier>{a80168bd-990a-4b4b-a4ee-2dcb7793a558}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{7b7d904d-d297-4ae5-9fe4-9e7571a438a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Header Files">
+      <UniqueIdentifier>{c5a40781-ba24-4fb5-83c5-18eb22a61044}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Source Files">
+      <UniqueIdentifier>{d4d7384f-b8b3-4af3-839e-fb38de01a059}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -159,9 +177,6 @@
     <ClInclude Include="KeybindManager.h">
       <Filter>Framework\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Keybinds.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="WindowManager.h">
       <Filter>Framework\Header Files</Filter>
     </ClInclude>
@@ -192,8 +207,29 @@
     <ClInclude Include="MinHook\MinHook.h">
       <Filter>Libraries\Includes\MinHook</Filter>
     </ClInclude>
+    <ClInclude Include="Manager.h">
+      <Filter>Framework\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EventManager.h">
+      <Filter>Framework\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Events.h">
+      <Filter>Framework\Engine\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Keybinds.h">
+      <Filter>Objects\Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Windows.h">
-      <Filter>Header Files</Filter>
+      <Filter>Objects\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EventEntries.h">
+      <Filter>Objects\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Framework\Engine\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Framework\Engine\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -209,17 +245,32 @@
     <ClCompile Include="KeybindManager.cpp">
       <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Keybinds.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="WindowManager.cpp">
       <Filter>Framework\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PresentHook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Manager.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EventManager.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Events.cpp">
+      <Filter>Framework\Engine\Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Windows.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Objects\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Keybinds.cpp">
+      <Filter>Objects\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EventEntries.cpp">
+      <Filter>Objects\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Framework\Engine\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

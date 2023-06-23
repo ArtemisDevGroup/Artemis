@@ -3,8 +3,11 @@
 #include "External.h"
 
 #include "PresentHook.h"
+#include "EventEntries.h"
 #include "Keybinds.h"
 #include "Windows.h"
+
+#include "Events.h"
 
 using namespace Artemis;
 
@@ -63,11 +66,14 @@ DWORD APIENTRY Main(HMODULE hModule) {
 	if (Windows.Add(new MainWindow()) == INVALID_INDEX) Log.LogError(__FUNCTION__, "Main window could not be added.");
 	else Log.LogSuccess(__FUNCTION__, "Successfully registered the main window.");
 
-	if (Windows.Add(new MainWindow()) == INVALID_INDEX) Log.LogError(__FUNCTION__, "Main window could not be added.");
-	else Log.LogSuccess(__FUNCTION__, "Successfully registered the main window.");
-
-	if (Windows.Add(new MainWindow()) == INVALID_INDEX) Log.LogError(__FUNCTION__, "Main window could not be added.");
-	else Log.LogSuccess(__FUNCTION__, "Successfully registered the main window.");
+	if (EventEntries.Add(new EnterMainMenuEventEntry()) == INVALID_INDEX) Log.LogError(__FUNCTION__, "Enter main menu event entry could not be added.");
+	else Log.LogSuccess(__FUNCTION__, "Successfully registered the enter main menu event.");
+	if (EventEntries.Add(new EnterCustomGameLobbyEventEntry()) == INVALID_INDEX) Log.LogError(__FUNCTION__, "Enter custom game lobby event entry could not be added.");
+	else Log.LogSuccess(__FUNCTION__, "Successfully registered the enter custom game event.");
+	if (EventEntries.Add(new EnterPickPhaseEventEntry()) == INVALID_INDEX) Log.LogError(__FUNCTION__, "Enter pick phase event entry could not be added.");
+	else Log.LogSuccess(__FUNCTION__, "Successfully registered the enter pick phase event.");
+	if (EventEntries.Add(new EnterGameEventEntry()) == INVALID_INDEX) Log.LogError(__FUNCTION__, "Enter game event entry could not be added.");
+	else Log.LogSuccess(__FUNCTION__, "Successfully registered the enter game event.");
 
 	MH_STATUS status = MH_Initialize();
 	if (status != MH_OK) {

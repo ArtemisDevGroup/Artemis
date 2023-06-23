@@ -32,12 +32,19 @@
 #include "Definitions.h"
 
 namespace Aurora {
+	template<typename T, typename... U>
+	A_ADDR GetAddressOfFunction(Function<T(U...)> lpfnFunction) {
+		typedef T(fnType)(U...);
+		fnType** fnPointer = lpfnFunction.template target<fnType*>();
+		return (A_ADDR)*fnPointer;
+	}
+
 	/// <summary>
 	/// A class for subscribing and invoking to events.
 	/// </summary>
 	/// <typeparam name="InstanceEventArgs">- A class or struct containing event arguments.</typeparam>
 	template<ClassType InstanceEventArgs = NullClass_t>
-	class AURORA_API Event {
+	class Event {
 		Function<A_VOID(_In_opt_ A_LPVOID lpSender, _In_opt_ const InstanceEventArgs* lpEventArgs)> lpszfnEventHandlers[MAX_INVOKE];
 
 	public:
@@ -52,7 +59,7 @@ namespace Aurora {
 		/// <param name="lpArgs">- A pointer to an instance of the event args.</param>
 		A_VOID Invoke(_In_opt_ A_LPVOID lpSender, _In_opt_ const InstanceEventArgs* lpArgs) const {
 			for (A_I32 i = 0; i < MAX_INVOKE; i++)
-				if (lpszfnEventHandlers[i].target<void>())
+				if (lpszfnEventHandlers[i] != nullptr)
 					lpszfnEventHandlers[i](lpSender, lpArgs);
 		}
 
@@ -65,13 +72,15 @@ namespace Aurora {
 
 		A_VOID operator+=(_In_ Function<A_VOID(_In_opt_ A_LPVOID lpSender, _In_opt_ const InstanceEventArgs* lpEventArgs)> lpfnEventHandler) noexcept {
 			for (A_I32 i = 0; i < MAX_INVOKE; i++)
-				if (!lpszfnEventHandlers[i].target<void>())
+				if (lpszfnEventHandlers[i] == nullptr) {
 					lpszfnEventHandlers[i] = lpfnEventHandler;
+					break;
+				}
 		}
 
 		A_VOID operator-=(_In_ Function<A_VOID(_In_opt_ A_LPVOID lpSender, _In_opt_ const InstanceEventArgs* lpEventArgs)> lpfnEventHandler) noexcept {
 			for (A_I32 i = 0; i < MAX_INVOKE; i++)
-				if (lpszfnEventHandlers[i].target<void>() == lpfnEventHandler.target<void>())
+				if (GetAddressOfFunction(lpszfnEventHandlers[i]) == GetAddressOfFunction(lpfnEventHandler))
 					lpszfnEventHandlers[i] = nullptr;
 		}
 	};
@@ -80,7 +89,7 @@ namespace Aurora {
 	/// A class for subscribing and invoking to events.
 	/// </summary>
 	template<>
-	class AURORA_API Event<NullClass_t> {
+	class Event<NullClass_t> {
 		Function<A_VOID(A_LPVOID lpSender)> lpszfnEventHandlers[MAX_INVOKE];
 
 	public:
@@ -94,7 +103,7 @@ namespace Aurora {
 		/// <param name="lpSender">- A pointer to the sender. Can be null.</param>
 		A_VOID Invoke(_In_opt_ A_LPVOID lpSender) const {
 			for (A_I32 i = 0; i < MAX_INVOKE; i++)
-				if (lpszfnEventHandlers[i].target<void>())
+				if (lpszfnEventHandlers[i] != nullptr)
 					lpszfnEventHandlers[i](lpSender);
 		}
 
@@ -105,15 +114,17 @@ namespace Aurora {
 			for (A_I32 i = 0; i < MAX_INVOKE; i++) lpszfnEventHandlers[i] = nullptr;
 		}
 
-		A_VOID operator+=(_In_ Function<A_VOID(A_LPVOID lpSender)> lpfnEventHandler) noexcept {
+		A_VOID operator+=(_In_ Function<A_VOID(_In_opt_ A_LPVOID lpSender)> lpfnEventHandler) noexcept {
 			for (A_I32 i = 0; i < MAX_INVOKE; i++)
-				if (!lpszfnEventHandlers[i].target<void>())
+				if (lpszfnEventHandlers[i] == nullptr) {
 					lpszfnEventHandlers[i] = lpfnEventHandler;
+					break;
+				}
 		}
 
-		A_VOID operator-=(_In_ Function<A_VOID(A_LPVOID lpSender)> lpfnEventHandler) noexcept {
+		A_VOID operator-=(_In_ Function<A_VOID(_In_opt_ A_LPVOID lpSender)> lpfnEventHandler) noexcept {
 			for (A_I32 i = 0; i < MAX_INVOKE; i++)
-				if (lpszfnEventHandlers[i].target<void>() == lpfnEventHandler.target<void>())
+				if (GetAddressOfFunction(lpszfnEventHandlers[i]) == GetAddressOfFunction(lpfnEventHandler))
 					lpszfnEventHandlers[i] = nullptr;
 		}
 	};

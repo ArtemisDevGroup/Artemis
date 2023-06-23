@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -176,8 +176,13 @@
     <ClInclude Include="Aurora\Time.h" />
     <ClInclude Include="Aurora\Trampoline.h" />
     <ClInclude Include="Aurora\Vector.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="Definitions.h" />
+    <ClInclude Include="EventEntries.h" />
+    <ClInclude Include="EventManager.h" />
+    <ClInclude Include="Events.h" />
     <ClInclude Include="External.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_impl_dx11.h" />
@@ -187,6 +192,7 @@
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="KeybindManager.h" />
     <ClInclude Include="Keybinds.h" />
+    <ClInclude Include="Manager.h" />
     <ClInclude Include="MinHook\MinHook.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PresentHook.h" />
@@ -195,9 +201,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="EventEntries.cpp" />
+    <ClCompile Include="EventManager.cpp" />
+    <ClCompile Include="Events.cpp" />
     <ClCompile Include="External.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="KeybindManager.cpp" />
     <ClCompile Include="Keybinds.cpp" />
+    <ClCompile Include="Manager.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

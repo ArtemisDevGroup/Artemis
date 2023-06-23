@@ -140,6 +140,7 @@ HRESULT APIENTRY hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT F
 	// pInst->ImGuiDrawManager.InvokeDraw(ImGui::GetForegroundDrawList());
 	// pInst->ImGuiWndManager.InvokeWnd();
 
+	Artemis::EventEntries.Invoke();
 	Artemis::Windows.PresentAll();
 
 	ImGui::ShowStyleEditor();
