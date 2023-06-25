@@ -4,10 +4,14 @@
 #include "Definitions.h"
 
 namespace Artemis::Engine::Events {
+	class ARTEMIS_API OnNewFrameEventArgs {};
+
 	class ARTEMIS_API EnterMainMenuEventArgs {};
 	class ARTEMIS_API EnterCustomGameLobbyEventArgs {};
 	class ARTEMIS_API EnterPickPhaseEventArgs {};
 	class ARTEMIS_API EnterGameEventArgs {};
+
+	ARTEMIS_API extern Aurora::Event<OnNewFrameEventArgs> OnNewFrameEvent;
 
 	ARTEMIS_API extern Aurora::Event<EnterMainMenuEventArgs> EnterMainMenuEvent;
 	ARTEMIS_API extern Aurora::Event<EnterCustomGameLobbyEventArgs> EnterCustomGameLobbyEvent;

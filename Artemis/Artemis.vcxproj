@@ -178,6 +178,7 @@
     <ClInclude Include="Aurora\Vector.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Definitions.h" />
+    <ClInclude Include="DrawManager.h" />
     <ClInclude Include="EventEntries.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="Events.h" />
@@ -201,6 +202,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="DrawManager.cpp" />
     <ClCompile Include="EventEntries.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="Events.cpp" />

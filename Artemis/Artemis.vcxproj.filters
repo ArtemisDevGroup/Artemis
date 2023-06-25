@@ -231,6 +231,9 @@
     <ClInclude Include="Constants.h">
       <Filter>Framework\Engine\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DrawManager.h">
+      <Filter>Framework\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -271,6 +274,9 @@
     </ClCompile>
     <ClCompile Include="GameManager.cpp">
       <Filter>Framework\Engine\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawManager.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,8 @@
 #include "PresentHook.h"
 #include "External.h"
 
+#include "Events.h"
+
 #pragma comment(lib, "d3d11.lib")
 
 void ImGui_SetStyle() {
@@ -135,11 +137,10 @@ HRESULT APIENTRY hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT F
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	// pInst->ActionManager.InvokeOnFrameActions();
-	// pInst->ESPDrawManager.InvokeDraw(ImGui::GetForegroundDrawList());
-	// pInst->ImGuiDrawManager.InvokeDraw(ImGui::GetForegroundDrawList());
-	// pInst->ImGuiWndManager.InvokeWnd();
+	Artemis::Engine::Events::OnNewFrameEventArgs e;
+	Artemis::Engine::Events::OnNewFrameEvent.Invoke(nullptr, &e);
 
+	Artemis::DrawManagers.PresentAll(ImGui::GetForegroundDrawList(), ImGui::GetBackgroundDrawList());
 	Artemis::EventEntries.Invoke();
 	Artemis::Windows.PresentAll();
 

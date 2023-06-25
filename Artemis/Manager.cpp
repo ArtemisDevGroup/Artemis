@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Manager.h"
 
+#include "DrawManager.h"
 #include "EventManager.h"
 #include "KeybindManager.h"
 #include "WindowManager.h"
@@ -44,6 +45,7 @@ namespace Artemis {
 		return InvocableCollection[nIndex];
 	}
 
+	template class ARTEMIS_EXPORT Manager<IDraw, DrawIndex>;
 	template class ARTEMIS_EXPORT Manager<IEventEntry, EventEntryIndex>;
 	template class ARTEMIS_EXPORT Manager<IKeybind, KeybindIndex>;
 	template class ARTEMIS_EXPORT Manager<IWindow, WindowIndex>;
