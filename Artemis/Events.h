@@ -1,6 +1,8 @@
 #ifndef __ARTEMIS_ENGINE_EVENTS_H__
 #define __ARTEMIS_ENGINE_EVENTS_H__
 
+#include <Aurora/Events.h>
+
 #include "Definitions.h"
 
 namespace Artemis::Engine::Events {

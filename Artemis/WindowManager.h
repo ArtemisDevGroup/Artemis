@@ -1,7 +1,8 @@
 #ifndef __ARTEMIS_WINDOW_MANAGER_H__
 #define __ARTEMIS_WINDOW_MANAGER_H__
 
-#include "pch.h"
+#include <Aurora/Definitions.h>
+
 #include "Definitions.h"
 #include "Manager.h"
 

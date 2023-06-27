@@ -1,7 +1,8 @@
 #ifndef __ARTEMIS_KEYBIND_MANAGER_H__
 #define __ARTEMIS_KEYBIND_MANAGER_H__
 
-#include "pch.h"
+#include <Windows.h>
+
 #include "Definitions.h"
 #include "Manager.h"
 

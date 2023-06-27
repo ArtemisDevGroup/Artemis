@@ -1,6 +1,7 @@
 #include "pch.h"
 
 #include "External.h"
+#include "ExtensionManager.h"
 
 #include "PresentHook.h"
 #include "EventEntries.h"
@@ -10,9 +11,6 @@
 #include "Events.h"
 
 using namespace Artemis;
-
-static bool bRunning = true;
-ARTEMIS_API void Artemis::Exit() { bRunning = false; }
 
 const char* const lpszAsciiArt[13] = {
 		"<------------------------------------------------------------------------------------------------------>",
@@ -30,10 +28,16 @@ const char* const lpszAsciiArt[13] = {
 		"<------------------------------------------------------------------------------------------------------>"
 };
 
+static bool bRunning = true;
+static ExtensionManager Extensions;
+static PresentHook* pHook = nullptr;
+
+ARTEMIS_API void Artemis::Exit() { bRunning = false; }
+
 void LogBasicInformation(const char* lpSender, const Aurora::ProcessInfo& CurrentProcess) {
 	Log.LogInfo(lpSender, "Welcome to Artemis!");
 	Log.LogInfo(lpSender, "Current process:");
-	Log.LogInfo(lpSender, "    %s : %s", CurrentProcess.GetProcessName(), CurrentProcess.GetProcessPath());
+	Log.LogInfo(lpSender, "\t%s : %s", CurrentProcess.GetProcessName(), CurrentProcess.GetProcessPath());
 	Log.LogInfo(lpSender, "Process Id: 0x%lX", CurrentProcess.GetProcessId());
 	Log.LogInfo(lpSender, "Process Handle: 0x%p\n", CurrentProcess.GetProcessHandle());
 
@@ -44,7 +48,88 @@ void LogBasicInformation(const char* lpSender, const Aurora::ProcessInfo& Curren
 	Log.LogInfo(lpSender, "Module size: 0x%lX", Module.GetModuleSize());
 }
 
-PresentHook* pHook = nullptr;
+void GetFileExtension(
+	_In_z_ const char* lpFileName,
+	_Out_writes_z_(nSize) char* lpBuffer,
+	_In_ int nSize
+) {
+	ZeroMemory(lpBuffer, nSize);
+
+	int nLen = lstrlenA(lpFileName);
+
+	for (int i = nLen - 1; i >= 0; i--)
+		if (lpFileName[i] == '.') {
+			for (int j = 0; j < nLen - i; j++)
+				lpBuffer[j] = lpFileName[i + j];
+			break;
+		}
+}
+
+void LoadAllExtensions(const char* lpSender) {
+	WIN32_FIND_DATAA FindData;
+
+	CreateDirectoryA("ArtemisExtensions", nullptr);
+	HANDLE hFind = FindFirstFileA(
+		"ArtemisExtensions\\*",
+		&FindData
+	);
+
+	if (!hFind) {
+		Log.LogError(lpSender, "FindFirstFileA failed: %s", Aurora::WindowsApiException("FindFirstFileA").GetWindowsMessage());
+		return;
+	}
+
+	do {
+		char szExtension[16];
+		GetFileExtension(FindData.cFileName, szExtension, sizeof(szExtension));
+
+		if (strcmp(szExtension, ".dll")) continue;
+
+		Extension* pExtension = nullptr;
+		try {
+			char szPath[64] = "ArtemisExtensions\\";
+			strcat_s(szPath, FindData.cFileName);
+
+			pExtension = Extensions.Load(szPath);
+		}
+		AuroraCatch(Aurora::WindowsApiException) {
+			Log.LogError(lpSender, "Failed to load extension library %s:", FindData.cFileName);
+			Log.LogError(lpSender, "\t%s: %s", e.GetWindowsFunction(), e.GetWindowsMessage());
+			continue;
+		}
+
+		if (!pExtension->GetStatus()) {
+			Log.LogError(lpSender, "Failed to get function addresses.");
+			Extensions.Release(pExtension);
+			continue;
+		}
+
+		pExtension->LoadInfo();
+
+		const ArtemisExtensionInfo& Info = pExtension->GetInfo();
+
+		Log.LogInfo(lpSender, "Extension '%s' library loaded:", Info.szName);
+		Log.LogInfo(lpSender, "Version: %s", Info.szVersion);
+		Log.LogInfo(lpSender, "Author: %s", Info.szAuthor);
+		Log.LogInfo(lpSender, "Description:\n%s", Info.szDescription);
+		Log.LogInfo(lpSender, "Debug: %s", Info.bDebug ? "true" : "false");
+
+		try {
+			if (pExtension->LoadExtension()) Log.LogSuccess(lpSender, "Successfully loaded extension %s", Info.szName);
+			else {
+				Log.LogError(lpSender, "Failed to load extension %s. Releasing library...", Info.szName);
+				Extensions.Release(pExtension);
+			}
+		}
+		AuroraCatch(Aurora::WindowsApiException) {
+			Log.LogError(lpSender, "Failed to release extension library %s:", FindData.cFileName);
+			Log.LogError(lpSender, "\t%s: %s", e.GetWindowsFunction(), e.GetWindowsMessage());
+			continue;
+		}
+	} while (FindNextFileA(hFind, &FindData));
+
+	FindClose(hFind);
+}
 
 DWORD APIENTRY Main(HMODULE hModule) {
 #ifdef _DEBUG
@@ -85,6 +170,8 @@ DWORD APIENTRY Main(HMODULE hModule) {
 		pHook = PresentHook::Create();
 		pHook->Enable();
 	}
+
+	LoadAllExtensions(__FUNCTION__);
 
 	while (bRunning) Keybinds.Invoke();
 

@@ -182,6 +182,7 @@
     <ClInclude Include="EventEntries.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="Events.h" />
+    <ClInclude Include="ExtensionManager.h" />
     <ClInclude Include="External.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="ImGui\imconfig.h" />
@@ -206,6 +207,7 @@
     <ClCompile Include="EventEntries.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="Events.cpp" />
+    <ClCompile Include="ExtensionManager.cpp" />
     <ClCompile Include="External.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="KeybindManager.cpp" />

@@ -1,7 +1,8 @@
 #ifndef __ARTEMIS_ENGINE_CONSTANTS_H__
 #define __ARTEMIS_ENGINE_CONSTANTS_H__
 
-#include "pch.h"
+#include <Aurora/Definitions.h>
+
 #include "Definitions.h"
 
 namespace Artemis::Engine::Constants {

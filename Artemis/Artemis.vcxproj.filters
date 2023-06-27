@@ -234,6 +234,9 @@
     <ClInclude Include="DrawManager.h">
       <Filter>Framework\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ExtensionManager.h">
+      <Filter>Framework\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -276,6 +279,9 @@
       <Filter>Framework\Engine\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DrawManager.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ExtensionManager.cpp">
       <Filter>Framework\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

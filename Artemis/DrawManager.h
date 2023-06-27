@@ -1,7 +1,9 @@
 #ifndef __ARTEMIS_DRAW_MANAGER_H__
-#define __ARTRMIS_DRAW_MANAGER_H__
+#define __ARTEMIS_DRAW_MANAGER_H__
 
-#include "pch.h"
+#include <Aurora/Shapes.h>
+#include <ImGui/imgui.h>
+
 #include "Definitions.h"
 #include "Manager.h"
 

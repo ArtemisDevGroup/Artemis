@@ -1,7 +1,7 @@
 #ifndef __ARTEMIS_EXTERNAL_H__
 #define __ARTEMIS_EXTERNAL_H__
 
-#include "pch.h"
+#include <Aurora/Logger.h>
 
 using Aurora::Logger;
 

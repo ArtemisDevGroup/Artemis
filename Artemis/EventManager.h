@@ -1,7 +1,6 @@
 #ifndef __ARTEMIS_EVENT_MANAGER_H__
 #define __ARTEMIS_EVENT_MANAGER_H__
 
-#include "pch.h"
 #include "Definitions.h"
 #include "Manager.h"
 
