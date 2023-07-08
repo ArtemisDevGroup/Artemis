@@ -6,6 +6,78 @@
 
 #pragma comment(lib, "d3d11.lib")
 
+typedef struct _ENUMWINDOWSPARAM {
+	DWORD dwProcessId;
+	HWND hWnd;
+} ENUMWINDOWSPARAM, * PENUMWINDOWSPARAM;
+
+BOOL WINAPI EnumWindowsCallback(HWND hWnd, LPARAM lParam) {
+	PENUMWINDOWSPARAM pEnumWindowsParam = (PENUMWINDOWSPARAM)lParam;
+
+	DWORD dwProcessId = 0;
+	GetWindowThreadProcessId(hWnd, &dwProcessId);
+
+	if (pEnumWindowsParam->dwProcessId != dwProcessId || !IsWindowVisible(hWnd))
+		return TRUE;
+	pEnumWindowsParam->hWnd = hWnd;
+	return FALSE;
+}
+
+HWND GetGameWindow() {
+	ENUMWINDOWSPARAM EnumWindowsParam;
+	EnumWindowsParam.dwProcessId = GetCurrentProcessId();
+	EnumWindowsParam.hWnd = nullptr;
+
+	EnumWindows(EnumWindowsCallback, (LPARAM)&EnumWindowsParam);
+	return EnumWindowsParam.hWnd;
+}
+
+LPVOID GetPresentFnPtr(_In_ HWND hGameWnd) {
+	DXGI_SWAP_CHAIN_DESC sd;
+	ZeroMemory(&sd, sizeof(sd));
+	sd.BufferCount = 2;
+	sd.BufferDesc.Width = 0;
+	sd.BufferDesc.Height = 0;
+	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	sd.BufferDesc.RefreshRate.Numerator = 60;
+	sd.BufferDesc.RefreshRate.Denominator = 1;
+	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	sd.OutputWindow = hGameWnd;
+	sd.SampleDesc.Count = 1;
+	sd.SampleDesc.Quality = 0;
+	sd.Windowed = TRUE;
+	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+
+	IDXGISwapChain* pSwapChain;
+	ID3D11Device* pDevice;
+	ID3D11DeviceContext* pDeviceContext;
+
+	const D3D_FEATURE_LEVEL szFeatureLevels[2] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
+	if (SUCCEEDED(D3D11CreateDeviceAndSwapChain(
+		nullptr,
+		D3D_DRIVER_TYPE_HARDWARE,
+		nullptr,
+		0,
+		szFeatureLevels,
+		2,
+		D3D11_SDK_VERSION,
+		&sd,
+		&pSwapChain,
+		&pDevice,
+		nullptr,
+		&pDeviceContext
+	))) {
+		void** ppVTable = *(void***)pSwapChain;
+		pSwapChain->Release();
+		pDevice->Release();
+		pDeviceContext->Release();
+
+		return ppVTable[8];
+	}
+	else return nullptr;
+}
+
 void ImGui_SetStyle() {
 	ImGuiStyle& Style = ImGui::GetStyle();
 
@@ -156,7 +228,8 @@ HRESULT APIENTRY hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT F
 }
 
 PresentHook::PresentHook() {
-	pTarget = (LPVOID)(Aurora::GetCurrentProcessInfo().GetModule("DiscordHook64.dll").GetModuleBaseAddress() + 0x17860);
+	HWND hWnd = GetGameWindow();
+	pTarget = GetPresentFnPtr(hWnd);
 
 	MH_STATUS status = MH_CreateHook(pTarget, hkPresent, (void**)&oPresent);
 	if (status != MH_OK) Artemis::Log.LogError(__FUNCTION__, "Failed to create present hook: %s", MH_StatusToString(status));
