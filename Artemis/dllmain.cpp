@@ -62,19 +62,33 @@ DWORD APIENTRY Main(HMODULE hModule) {
 		Log.LogError(__FUNCTION__, "Exit keybind could not be added.");
 		bRunning = false;
 	}
-	else Log.LogSuccess(__FUNCTION__, "Successfully registered the exit keybind.");
+	else
+		Log.LogSuccess(__FUNCTION__, "Successfully registered the exit keybind.");
 
-	if (Windows.Add(new MainWindow()) == INVALID_INDEX) Log.LogError(__FUNCTION__, "Main window could not be added.");
-	else Log.LogSuccess(__FUNCTION__, "Successfully registered the main window.");
+	if (Windows.Add(new MainWindow()) == INVALID_INDEX)
+		Log.LogError(__FUNCTION__, "Main window could not be added.");
+	else
+		Log.LogSuccess(__FUNCTION__, "Successfully registered the main window.");
 
-	if (EventEntries.Add(new EnterMainMenuEventEntry()) == INVALID_INDEX) Log.LogError(__FUNCTION__, "Enter main menu event entry could not be added.");
-	else Log.LogSuccess(__FUNCTION__, "Successfully registered the enter main menu event.");
-	if (EventEntries.Add(new EnterCustomGameLobbyEventEntry()) == INVALID_INDEX) Log.LogError(__FUNCTION__, "Enter custom game lobby event entry could not be added.");
-	else Log.LogSuccess(__FUNCTION__, "Successfully registered the enter custom game event.");
-	if (EventEntries.Add(new EnterPickPhaseEventEntry()) == INVALID_INDEX) Log.LogError(__FUNCTION__, "Enter pick phase event entry could not be added.");
-	else Log.LogSuccess(__FUNCTION__, "Successfully registered the enter pick phase event.");
-	if (EventEntries.Add(new EnterGameEventEntry()) == INVALID_INDEX) Log.LogError(__FUNCTION__, "Enter game event entry could not be added.");
-	else Log.LogSuccess(__FUNCTION__, "Successfully registered the enter game event.");
+	if (EventEntries.Add(new EnterMainMenuEventEntry()) == INVALID_INDEX)
+		Log.LogError(__FUNCTION__, "Enter main menu event entry could not be added.");
+	else
+		Log.LogSuccess(__FUNCTION__, "Successfully registered the enter main menu event.");
+
+	if (EventEntries.Add(new EnterCustomGameLobbyEventEntry()) == INVALID_INDEX)
+		Log.LogError(__FUNCTION__, "Enter custom game lobby event entry could not be added.");
+	else
+		Log.LogSuccess(__FUNCTION__, "Successfully registered the enter custom game event.");
+
+	if (EventEntries.Add(new EnterPickPhaseEventEntry()) == INVALID_INDEX)
+		Log.LogError(__FUNCTION__, "Enter pick phase event entry could not be added.");
+	else
+		Log.LogSuccess(__FUNCTION__, "Successfully registered the enter pick phase event.");
+
+	if (EventEntries.Add(new EnterGameEventEntry()) == INVALID_INDEX)
+		Log.LogError(__FUNCTION__, "Enter game event entry could not be added.");
+	else
+		Log.LogSuccess(__FUNCTION__, "Successfully registered the enter game event.");
 
 	MH_STATUS status = MH_Initialize();
 	if (status != MH_OK) {
@@ -87,9 +101,11 @@ DWORD APIENTRY Main(HMODULE hModule) {
 		pHook->Enable();
 	}
 
-	while (bRunning) Keybinds.Invoke();
+	while (bRunning)
+		Keybinds.Invoke();
 
-	if (pHook) pHook->Release();
+	if (pHook)
+		pHook->Release();
 	MH_Uninitialize();
 
 #ifdef _DEBUG
@@ -103,7 +119,7 @@ DWORD APIENTRY Main(HMODULE hModule) {
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReasonForCall, LPVOID lpReserved) {
 	HANDLE hThread = nullptr;
-
+	
 	switch (dwReasonForCall) {
 	case DLL_PROCESS_ATTACH:
 		hThread = CreateThread(
