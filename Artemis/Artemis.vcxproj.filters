@@ -13,229 +13,36 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Framework">
-      <UniqueIdentifier>{05f01d7e-3ec5-4d6a-887f-71baaab7f965}</UniqueIdentifier>
+    <Filter Include="API">
+      <UniqueIdentifier>{373f81aa-3663-4efc-9180-ba63c2310738}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Framework\Header Files">
-      <UniqueIdentifier>{3e47c69a-a55a-41ed-8a38-7407fa2737a0}</UniqueIdentifier>
+    <Filter Include="API\Header Files">
+      <UniqueIdentifier>{72c4df6d-3eca-404c-9f0d-e661c086fd40}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Framework\Source Files">
-      <UniqueIdentifier>{76645fc5-3c3b-43c2-9962-5286bee8a548}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libraries">
-      <UniqueIdentifier>{4e0a213f-a948-4c47-87c4-835b8950389d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libraries\x64/Debug">
-      <UniqueIdentifier>{b24dab28-5e62-495f-a73e-8a3d0079286a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libraries\x64/Release">
-      <UniqueIdentifier>{7d1b7bc4-ed95-4dfe-ba02-d2ad08d6e3ed}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libraries\x64/Release\Aurora">
-      <UniqueIdentifier>{9531e6d0-6c82-44f5-a51e-63150f203982}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libraries\x64/Release\ImGui">
-      <UniqueIdentifier>{3032bb7d-3e70-4294-b598-b5506712fd6d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libraries\x64/Debug\Aurora">
-      <UniqueIdentifier>{8e7e5c36-0bb7-4c5f-95a8-02f739635f7d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libraries\x64/Debug\ImGui">
-      <UniqueIdentifier>{910edb44-9264-40bd-a46a-d5da601acbe2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libraries\Includes">
-      <UniqueIdentifier>{008befab-af06-4c95-8618-3e835def74ae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libraries\Includes\Aurora">
-      <UniqueIdentifier>{f2d85015-87eb-4f3a-89e8-7e0a84b9adc4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libraries\Includes\Aurora\HDE">
-      <UniqueIdentifier>{0eb13b2e-075a-4fdd-a703-7f070bcf1157}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libraries\Includes\ImGui">
-      <UniqueIdentifier>{71c07986-5de6-4029-ba99-ef08d5250579}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libraries\Includes\MinHook">
-      <UniqueIdentifier>{3c8db166-f2e4-4a00-980c-9a708fd43655}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libraries\x64/Release\MinHook">
-      <UniqueIdentifier>{2f757fc2-7978-4b5d-bdff-846dc5b5de42}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Libraries\x64/Debug\MinHook">
-      <UniqueIdentifier>{ea10082e-6a29-41aa-a6c4-c02e2c7b84ba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Framework\Engine">
-      <UniqueIdentifier>{e6aebec5-06ae-4798-a02d-7362c4e70efe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Framework\Engine\Header Files">
-      <UniqueIdentifier>{6777cb22-ac14-479e-abb0-d86fa3ccef27}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Framework\Engine\Source Files">
-      <UniqueIdentifier>{a80168bd-990a-4b4b-a4ee-2dcb7793a558}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Objects">
-      <UniqueIdentifier>{7b7d904d-d297-4ae5-9fe4-9e7571a438a0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Objects\Header Files">
-      <UniqueIdentifier>{c5a40781-ba24-4fb5-83c5-18eb22a61044}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Objects\Source Files">
-      <UniqueIdentifier>{d4d7384f-b8b3-4af3-839e-fb38de01a059}</UniqueIdentifier>
+    <Filter Include="API\Source Files">
+      <UniqueIdentifier>{8a9ebec5-aada-44ba-9cac-334e026b7e05}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Aurora\Array.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
+    <ClInclude Include="API\Memory.hxx">
+      <Filter>API\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Aurora\Binary.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
+    <ClInclude Include="API\Console.hxx">
+      <Filter>API\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Aurora\CodeInjection.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
+    <ClInclude Include="API\Error.hxx">
+      <Filter>API\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Aurora\Color.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
+    <ClInclude Include="API\Definitions.hxx">
+      <Filter>API\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Aurora\Console.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\ConstexprMath.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\Definitions.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\DllInjection.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\Events.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\Exceptions.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\FileSystem.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\Logger.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\Memory.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\MemoryTypes.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\MemoryWin32.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\Pipe.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\ProcessInfo.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\Property.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\Shapes.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\SharedHandle.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\Signal.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\Thread.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\Time.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\Trampoline.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\Vector.h">
-      <Filter>Libraries\Includes\Aurora</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\HDE\hde32.h">
-      <Filter>Libraries\Includes\Aurora\HDE</Filter>
-    </ClInclude>
-    <ClInclude Include="Aurora\HDE\hde64.h">
-      <Filter>Libraries\Includes\Aurora\HDE</Filter>
-    </ClInclude>
-    <ClInclude Include="Definitions.h">
-      <Filter>Framework\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="External.h">
-      <Filter>Framework\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="KeybindManager.h">
-      <Filter>Framework\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowManager.h">
-      <Filter>Framework\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PresentHook.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imconfig.h">
-      <Filter>Libraries\Includes\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui.h">
-      <Filter>Libraries\Includes\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_dx11.h">
-      <Filter>Libraries\Includes\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_win32.h">
-      <Filter>Libraries\Includes\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_internal.h">
-      <Filter>Libraries\Includes\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imstb_rectpack.h">
-      <Filter>Libraries\Includes\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imstb_textedit.h">
-      <Filter>Libraries\Includes\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="MinHook\MinHook.h">
-      <Filter>Libraries\Includes\MinHook</Filter>
-    </ClInclude>
-    <ClInclude Include="Manager.h">
-      <Filter>Framework\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EventManager.h">
-      <Filter>Framework\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Events.h">
-      <Filter>Framework\Engine\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Keybinds.h">
-      <Filter>Objects\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Windows.h">
-      <Filter>Objects\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EventEntries.h">
-      <Filter>Objects\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameManager.h">
-      <Filter>Framework\Engine\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Constants.h">
-      <Filter>Framework\Engine\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DrawManager.h">
-      <Filter>Framework\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ExtensionManager.h">
-      <Filter>Framework\Header Files</Filter>
+    <ClInclude Include="API\Event.hxx">
+      <Filter>API\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -245,120 +52,14 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="External.cpp">
-      <Filter>Framework\Source Files</Filter>
+    <ClCompile Include="API\Memory.cxx">
+      <Filter>API\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="KeybindManager.cpp">
-      <Filter>Framework\Source Files</Filter>
+    <ClCompile Include="API\Console.cxx">
+      <Filter>API\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WindowManager.cpp">
-      <Filter>Framework\Source Files</Filter>
+    <ClCompile Include="API\Error.cxx">
+      <Filter>API\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PresentHook.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Manager.cpp">
-      <Filter>Framework\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EventManager.cpp">
-      <Filter>Framework\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Events.cpp">
-      <Filter>Framework\Engine\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows.cpp">
-      <Filter>Objects\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Keybinds.cpp">
-      <Filter>Objects\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EventEntries.cpp">
-      <Filter>Objects\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameManager.cpp">
-      <Filter>Framework\Engine\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DrawManager.cpp">
-      <Filter>Framework\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ExtensionManager.cpp">
-      <Filter>Framework\Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Libraries\ReleaseLib\Aurora.dll">
-      <Filter>Libraries\x64/Release\Aurora</Filter>
-    </None>
-    <None Include="Libraries\ReleaseLib\Aurora.exp">
-      <Filter>Libraries\x64/Release\Aurora</Filter>
-    </None>
-    <None Include="Libraries\ReleaseLib\Aurora.pdb">
-      <Filter>Libraries\x64/Release\Aurora</Filter>
-    </None>
-    <None Include="Libraries\ReleaseLib\ImGui.dll">
-      <Filter>Libraries\x64/Release\ImGui</Filter>
-    </None>
-    <None Include="Libraries\ReleaseLib\ImGui.exp">
-      <Filter>Libraries\x64/Release\ImGui</Filter>
-    </None>
-    <None Include="Libraries\ReleaseLib\ImGui.pdb">
-      <Filter>Libraries\x64/Release\ImGui</Filter>
-    </None>
-    <None Include="Libraries\DebugLib\Aurora.dll">
-      <Filter>Libraries\x64/Debug\Aurora</Filter>
-    </None>
-    <None Include="Libraries\DebugLib\Aurora.exp">
-      <Filter>Libraries\x64/Debug\Aurora</Filter>
-    </None>
-    <None Include="Libraries\DebugLib\Aurora.pdb">
-      <Filter>Libraries\x64/Debug\Aurora</Filter>
-    </None>
-    <None Include="Libraries\DebugLib\ImGui.dll">
-      <Filter>Libraries\x64/Debug\ImGui</Filter>
-    </None>
-    <None Include="Libraries\DebugLib\ImGui.exp">
-      <Filter>Libraries\x64/Debug\ImGui</Filter>
-    </None>
-    <None Include="Libraries\DebugLib\ImGui.pdb">
-      <Filter>Libraries\x64/Debug\ImGui</Filter>
-    </None>
-    <None Include="Libraries\ReleaseLib\MinHook.dll">
-      <Filter>Libraries\x64/Release\MinHook</Filter>
-    </None>
-    <None Include="Libraries\ReleaseLib\MinHook.exp">
-      <Filter>Libraries\x64/Release\MinHook</Filter>
-    </None>
-    <None Include="Libraries\ReleaseLib\MinHook.pdb">
-      <Filter>Libraries\x64/Release\MinHook</Filter>
-    </None>
-    <None Include="Libraries\DebugLib\MinHook.dll">
-      <Filter>Libraries\x64/Debug\MinHook</Filter>
-    </None>
-    <None Include="Libraries\DebugLib\MinHook.exp">
-      <Filter>Libraries\x64/Debug\MinHook</Filter>
-    </None>
-    <None Include="Libraries\DebugLib\MinHook.pdb">
-      <Filter>Libraries\x64/Debug\MinHook</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="Libraries\ReleaseLib\Aurora.lib">
-      <Filter>Libraries\x64/Release\Aurora</Filter>
-    </Library>
-    <Library Include="Libraries\ReleaseLib\ImGui.lib">
-      <Filter>Libraries\x64/Release\ImGui</Filter>
-    </Library>
-    <Library Include="Libraries\DebugLib\Aurora.lib">
-      <Filter>Libraries\x64/Debug\Aurora</Filter>
-    </Library>
-    <Library Include="Libraries\DebugLib\ImGui.lib">
-      <Filter>Libraries\x64/Debug\ImGui</Filter>
-    </Library>
-    <Library Include="Libraries\ReleaseLib\MinHook.lib">
-      <Filter>Libraries\x64/Release\MinHook</Filter>
-    </Library>
-    <Library Include="Libraries\DebugLib\MinHook.lib">
-      <Filter>Libraries\x64/Debug\MinHook</Filter>
-    </Library>
   </ItemGroup>
 </Project>

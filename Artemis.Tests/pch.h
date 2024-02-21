@@ -7,12 +7,6 @@
 #ifndef PCH_H
 #define PCH_H
 
-#include <Windows.h>
+// add headers that you want to pre-compile here
 
-#include <string>
-#include <vector>
-#include <functional>
-#include <type_traits>
-#include <concepts>
-
-#endif // !PCH_H
+#endif //PCH_H

@@ -3,24 +3,29 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Artemis", "Artemis\Artemis.vcxproj", "{4E99BAED-17C5-4495-9F7F-C747E38A1D74}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Artemis", "Artemis\Artemis.vcxproj", "{5765AB3C-4582-45B2-BE07-87FDD7D14E87}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Artemis.Tests", "Artemis.Tests\Artemis.Tests.vcxproj", "{71538810-144D-4F9A-BC82-4D4C06C36D56}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
-		Release|x86 = Release|x86
+		Test|x64 = Test|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4E99BAED-17C5-4495-9F7F-C747E38A1D74}.Debug|x64.ActiveCfg = Debug|x64
-		{4E99BAED-17C5-4495-9F7F-C747E38A1D74}.Debug|x64.Build.0 = Debug|x64
-		{4E99BAED-17C5-4495-9F7F-C747E38A1D74}.Debug|x86.ActiveCfg = Debug|Win32
-		{4E99BAED-17C5-4495-9F7F-C747E38A1D74}.Debug|x86.Build.0 = Debug|Win32
-		{4E99BAED-17C5-4495-9F7F-C747E38A1D74}.Release|x64.ActiveCfg = Release|x64
-		{4E99BAED-17C5-4495-9F7F-C747E38A1D74}.Release|x64.Build.0 = Release|x64
-		{4E99BAED-17C5-4495-9F7F-C747E38A1D74}.Release|x86.ActiveCfg = Release|Win32
-		{4E99BAED-17C5-4495-9F7F-C747E38A1D74}.Release|x86.Build.0 = Release|Win32
+		{5765AB3C-4582-45B2-BE07-87FDD7D14E87}.Debug|x64.ActiveCfg = Debug|x64
+		{5765AB3C-4582-45B2-BE07-87FDD7D14E87}.Debug|x64.Build.0 = Debug|x64
+		{5765AB3C-4582-45B2-BE07-87FDD7D14E87}.Release|x64.ActiveCfg = Release|x64
+		{5765AB3C-4582-45B2-BE07-87FDD7D14E87}.Release|x64.Build.0 = Release|x64
+		{5765AB3C-4582-45B2-BE07-87FDD7D14E87}.Test|x64.ActiveCfg = Test|x64
+		{5765AB3C-4582-45B2-BE07-87FDD7D14E87}.Test|x64.Build.0 = Test|x64
+		{71538810-144D-4F9A-BC82-4D4C06C36D56}.Debug|x64.ActiveCfg = Debug|x64
+		{71538810-144D-4F9A-BC82-4D4C06C36D56}.Debug|x64.Build.0 = Debug|x64
+		{71538810-144D-4F9A-BC82-4D4C06C36D56}.Release|x64.ActiveCfg = Release|x64
+		{71538810-144D-4F9A-BC82-4D4C06C36D56}.Release|x64.Build.0 = Release|x64
+		{71538810-144D-4F9A-BC82-4D4C06C36D56}.Test|x64.ActiveCfg = Test|x64
+		{71538810-144D-4F9A-BC82-4D4C06C36D56}.Test|x64.Build.0 = Test|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
