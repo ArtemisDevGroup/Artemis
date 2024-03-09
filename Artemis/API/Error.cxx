@@ -5,7 +5,20 @@ namespace Artemis::API {
 	static ErrorInfo g_LastErrorInfo;
 
 	static LPCSTR ResolveErrorMessage(_In_ ErrorCode dwErrorCode) {
-		return nullptr;
+		switch (dwErrorCode) {
+		case ErrorCode::Unknown:
+			return "An unknown error has occured.";
+		case ErrorCode::Success:
+			return "An operation was successful.";
+		case ErrorCode::ParameterNull:
+			return "A parameter is null.";
+		case ErrorCode::ParameterInvalid:
+			return "A parameter is invalid.";
+		case ErrorCode::Windows:
+			return "A Windows API function has failed.";
+		default:
+			return "Invalid error code.";
+		}
 	}
 
 	ExtendedError ExtendedError::Create(_In_ DWORD dwErrorCode, _In_z_ LPCSTR lpErrorMessage) {
@@ -13,6 +26,16 @@ namespace Artemis::API {
 		ee.dwErrorCode = dwErrorCode;
 		strcpy_s(ee.szErrorMessage, lpErrorMessage);
 		return ee;
+	}
+
+	ParameterError ParameterError::Create(_In_z_ LPCSTR lpParameterName, _In_ const std::type_info& TypeInfo, _In_ INT nTypeSize, _In_reads_(nTypeSize) LPCVOID lpParameterValue) {
+		ParameterError pe;
+		strcpy_s(pe.szParameterName, lpParameterName);
+		strcpy_s(pe.TypeInfo.szTypeName, TypeInfo.name());
+		pe.TypeInfo.nTypeSize = nTypeSize;
+		pe.lpParameterValue = std::make_shared<BYTE>(nTypeSize);
+		memcpy_s(pe.lpParameterValue.get(), nTypeSize, lpParameterValue, nTypeSize);
+		return pe;
 	}
 
 	WindowsError WindowsError::Create(_In_z_ LPCSTR lpFunction, _In_ DWORD dwErrorCode, _In_opt_z_ LPCSTR lpAdditionalInformation) {
@@ -37,33 +60,55 @@ namespace Artemis::API {
 		return we;
 	}
 
-	ARTEMIS_API VOID SetLastArtemisError(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode) noexcept {
+	MemoryAccessViolationError MemoryAccessViolationError::Create(_In_ LPVOID lpAddress) {
+		MemoryAccessViolationError mave;
+		mave.lpAddress = lpAddress;
+		
+		VirtualQuery(lpAddress, &mave.FaultyPageInformation, sizeof(mave.FaultyPageInformation));
+		return mave;
+	}
+
+	static VOID SetLastArtemisErrorImpl(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode) {
 		strcpy_s(g_LastErrorInfo.szFunction, lpFunction);
 		g_LastErrorInfo.dwErrorCode = dwErrorCode;
 		strcpy_s(g_LastErrorInfo.szErrorMessage, ResolveErrorMessage(dwErrorCode));
+	}
+
+	ARTEMIS_API VOID SetLastArtemisError(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode) {
+		SetLastArtemisErrorImpl(lpFunction, dwErrorCode);
 
 		g_LastErrorInfo.ExtendedErrorType = ExtendedErrorType::None;
 	}
 
 	ARTEMIS_API VOID SetLastArtemisError(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode, const ExtendedError& CustomExtendedError) {
-		strcpy_s(g_LastErrorInfo.szFunction, lpFunction);
-		g_LastErrorInfo.dwErrorCode = dwErrorCode;
-		strcpy_s(g_LastErrorInfo.szErrorMessage, ResolveErrorMessage(dwErrorCode));
+		SetLastArtemisErrorImpl(lpFunction, dwErrorCode);
 
 		g_LastErrorInfo.ExtendedErrorType = ExtendedErrorType::Custom;
-		g_LastErrorInfo.CustomExtendedError = CustomExtendedError;
+		g_LastErrorInfo.ExtendedErrorInfo.Custom = CustomExtendedError;
+	}
+
+	ARTEMIS_API VOID SetLastArtemisError(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode, const ParameterError& ParameterError) {
+		SetLastArtemisErrorImpl(lpFunction, dwErrorCode);
+
+		g_LastErrorInfo.ExtendedErrorType = ExtendedErrorType::Parameter;
+		g_LastErrorInfo.ExtendedErrorInfo.Parameter = ParameterError;
 	}
 
 	ARTEMIS_API VOID SetLastArtemisError(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode, const WindowsError& WindowsError) {
-		strcpy_s(g_LastErrorInfo.szFunction, lpFunction);
-		g_LastErrorInfo.dwErrorCode = dwErrorCode;
-		strcpy_s(g_LastErrorInfo.szErrorMessage, ResolveErrorMessage(dwErrorCode));
+		SetLastArtemisErrorImpl(lpFunction, dwErrorCode);
 
 		g_LastErrorInfo.ExtendedErrorType = ExtendedErrorType::Windows;
-		g_LastErrorInfo.WindowsExtendedError = WindowsError;
+		g_LastErrorInfo.ExtendedErrorInfo.Windows = WindowsError;
 	}
 
-	ARTEMIS_API ErrorInfo GetLastArtemisError() noexcept {
+	ARTEMIS_API VOID SetLastArtemisError(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode, const MemoryAccessViolationError& MemoryError) {
+		SetLastArtemisErrorImpl(lpFunction, dwErrorCode);
+
+		g_LastErrorInfo.ExtendedErrorType = ExtendedErrorType::Memory;
+		g_LastErrorInfo.ExtendedErrorInfo.Memory = MemoryError;
+	}
+
+	ARTEMIS_API const ErrorInfo& GetLastArtemisError() noexcept {
 		return g_LastErrorInfo;
 	}
 }
