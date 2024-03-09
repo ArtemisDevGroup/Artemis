@@ -16,6 +16,10 @@ namespace Artemis::API {
 			return "A parameter is invalid.";
 		case ErrorCode::Windows:
 			return "A Windows API function has failed.";
+		case ErrorCode::MemoryAccessViolation:
+			return "A memory access violation has occured.";
+		case ErrorCode::StateInvalid:
+			return "The state of an object was invalid for the specified operation.";
 		default:
 			return "Invalid error code.";
 		}

@@ -23,7 +23,8 @@ namespace Artemis::API {
 		ParameterNull,
 		ParameterInvalid,
 		Windows,
-		MemoryAccessViolation
+		MemoryAccessViolation,
+		StateInvalid
 	};
 
 	enum class ExtendedErrorType {
