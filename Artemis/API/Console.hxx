@@ -12,6 +12,8 @@ namespace Artemis::API {
 		Error
 	};
 
+	ARTEMIS_API BOOL IsConsoleWindowOpen() noexcept;
+
 	ARTEMIS_API BOOL SetConsoleWindowTitle(_In_z_ LPCSTR lpConsoleWindowTitle);
 
 	ARTEMIS_API BOOL OpenConsoleWindow(_In_opt_z_ LPCSTR lpConsoleWindowTitle);
@@ -19,6 +21,8 @@ namespace Artemis::API {
 	ARTEMIS_API BOOL OpenConsoleWindow();
 
 	ARTEMIS_API BOOL CloseConsoleWindow();
+
+	ARTEMIS_API BOOL IsConsoleStreamOpen(_In_ ConsoleStream nConsoleStream) noexcept;
 
 	ARTEMIS_API BOOL OpenConsoleStream(_In_ ConsoleStream nConsoleStream);
 

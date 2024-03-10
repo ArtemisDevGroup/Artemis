@@ -9,7 +9,11 @@ namespace Artemis::API {
 	FILE* g_pStdOut = nullptr;
 	FILE* g_pStdErr = nullptr;
 
-	BOOL SetConsoleWindowTitle(_In_z_ LPCSTR lpConsoleWindowTitle) {
+	ARTEMIS_API BOOL IsConsoleWindowOpen() noexcept {
+		return g_bIsConsoleWindowOpen;
+	}
+
+	ARTEMIS_API BOOL SetConsoleWindowTitle(_In_z_ LPCSTR lpConsoleWindowTitle) {
 		if (!g_bIsConsoleWindowOpen) {
 			SetLastArtemisError(__FUNCTION__, ErrorCode::StateInvalid);
 			return FALSE;
@@ -23,7 +27,7 @@ namespace Artemis::API {
 		return TRUE;
 	}
 
-	BOOL OpenConsoleWindow(_In_opt_z_ LPCSTR lpConsoleWindowTitle) {
+	ARTEMIS_API BOOL OpenConsoleWindow(_In_opt_z_ LPCSTR lpConsoleWindowTitle) {
 		if (g_bIsConsoleWindowOpen) {
 			SetLastArtemisError(__FUNCTION__, ErrorCode::StateInvalid);
 			return FALSE;
@@ -42,11 +46,11 @@ namespace Artemis::API {
 		return TRUE;
 	}
 
-	BOOL OpenConsoleWindow() {
+	ARTEMIS_API BOOL OpenConsoleWindow() {
 		OpenConsoleWindow(nullptr);
 	}
 
-	BOOL CloseConsoleWindow() {
+	ARTEMIS_API BOOL CloseConsoleWindow() {
 		if (!g_bIsConsoleWindowOpen) {
 			SetLastArtemisError(__FUNCTION__, ErrorCode::StateInvalid);
 			return FALSE;
@@ -62,7 +66,25 @@ namespace Artemis::API {
 		return TRUE;
 	}
 
-	BOOL OpenConsoleStream(_In_ ConsoleStream nConsoleStream) {
+	ARTEMIS_API BOOL IsConsoleStreamOpen(_In_ ConsoleStream nConsoleStream) noexcept {
+		switch (nConsoleStream) {
+		case ConsoleStream::In:
+			return !!g_pStdIn;
+		case ConsoleStream::Out:
+			return !!g_pStdOut;
+		case ConsoleStream::Error:
+			return !!g_pStdErr;
+		default:
+			return FALSE;
+		}
+	}
+
+	ARTEMIS_API BOOL OpenConsoleStream(_In_ ConsoleStream nConsoleStream) {
+		if (IsConsoleStreamOpen(nConsoleStream)) {
+			SetLastArtemisError(__FUNCTION__, ErrorCode::StateInvalid);
+			return FALSE;
+		}
+
 		FILE** ppFile;
 		const char* pFileName;
 		const char* pMode;
@@ -92,31 +114,31 @@ namespace Artemis::API {
 			return FALSE;
 		}
 
-		if (*ppFile) {
-			SetLastArtemisError(__FUNCTION__, ErrorCode::StateInvalid);
-			return FALSE;
-		}
-
 		// ADD ERRNO ERROR HANDLING:
 		freopen_s(ppFile, pFileName, pMode, pOldStream);
 
 		return TRUE;
 	}
 
-	BOOL OpenAllConsoleStreams() {
-		if (!g_pStdIn)
+	ARTEMIS_API BOOL OpenAllConsoleStreams() {
+		if (!IsConsoleStreamOpen(ConsoleStream::In))
 			if (!OpenConsoleStream(ConsoleStream::In))
 				return FALSE;
-		if (!g_pStdOut)
+		if (!IsConsoleStreamOpen(ConsoleStream::Out))
 			if (!OpenConsoleStream(ConsoleStream::Out))
 				return FALSE;
-		if (!g_pStdErr)
+		if (!IsConsoleStreamOpen(ConsoleStream::Error))
 			if (!OpenConsoleStream(ConsoleStream::Error))
 				return FALSE;
 		return TRUE;
 	}
 
-	BOOL CloseConsoleStream(_In_ ConsoleStream nConsoleStream) {
+	ARTEMIS_API BOOL CloseConsoleStream(_In_ ConsoleStream nConsoleStream) {
+		if (!IsConsoleStreamOpen(nConsoleStream)) {
+			SetLastArtemisError(__FUNCTION__, ErrorCode::StateInvalid);
+			return FALSE;
+		}
+		
 		FILE** ppFile;
 
 		switch (nConsoleStream) {
@@ -134,25 +156,20 @@ namespace Artemis::API {
 			return FALSE;
 		}
 
-		if (!*ppFile) {
-			SetLastArtemisError(__FUNCTION__, ErrorCode::StateInvalid);
-			return FALSE;
-		}
-
 		// ADD ERRNO ERROR HANDLING:
 		fclose(*ppFile);
 
 		return TRUE;
 	}
 
-	BOOL CloseAllConsoleStreams() {
-		if (g_pStdIn)
+	ARTEMIS_API BOOL CloseAllConsoleStreams() {
+		if (IsConsoleStreamOpen(ConsoleStream::In))
 			if (!CloseConsoleStream(ConsoleStream::In))
 				return FALSE;
-		if (g_pStdOut)
+		if (IsConsoleStreamOpen(ConsoleStream::Out))
 			if (!CloseConsoleStream(ConsoleStream::Out))
 				return FALSE;
-		if (g_pStdErr)
+		if (IsConsoleStreamOpen(ConsoleStream::Error))
 			if (!CloseConsoleStream(ConsoleStream::Error))
 				return FALSE;
 		return TRUE;
