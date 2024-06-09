@@ -3,108 +3,77 @@
 
 #include "Definitions.hxx"
 
-#include <Windows.h>
-
-#include <typeinfo>
-#include <memory>
-
-#ifndef MAX_ERROR_MESSAGE
-#define MAX_ERROR_MESSAGE 256
-#endif // !MAX_ERROR_MESSAGE
-
-#ifndef MAX_FUNCTION_NAME
-#define MAX_FUNCTION_NAME 128
-#endif // !MAX_FUNCTION_NAME
+#define stack_record() Artemis::API::call_stack_manager::global()->record(__FUNCTION__, __FILE__, __LINE__)
+#define stack_escape() Artemis::API::call_stack_manager::global()->escape()
 
 namespace Artemis::API {
-	enum class ErrorCode : DWORD {
-		Unknown = 0xFFFFFFFF,
-		Success,
-		ParameterNull,
-		ParameterInvalid,
-		Windows,
-		MemoryAccessViolation,
-		StateInvalid
-	};
-
-	enum class ExtendedErrorType {
-		None,
-		Custom,
-		Parameter,
-		Windows,
-		Memory,
-		Errno
-	};
-
-	struct ARTEMIS_API ExtendedError {
-		DWORD dwErrorCode;
-		CHAR szErrorMessage[MAX_ERROR_MESSAGE];
-
-		static ExtendedError Create(_In_ DWORD dwErrorCode, _In_z_ LPCSTR lpErrorMessage);
-	};
-
-#define ARTEMIS_API_PARAMETER_ERROR_ARGS(x) #x, typeid(x), sizeof(x), &x
-#define AA_PEA(x) ARTEMIS_API_PARAMETER_ERROR_ARGS(x)
-
-	struct ARTEMIS_API ParameterError {
-		CHAR szParameterName[64];
-		struct {
-			CHAR szTypeName[64];
-			INT nTypeSize;
-		} TypeInfo;
-		std::shared_ptr<BYTE> lpParameterValue;
-
-		static ParameterError Create(_In_z_ LPCSTR lpParameterName, _In_ const std::type_info& TypeInfo, _In_ INT nTypeSize, _In_reads_(nTypeSize) LPCVOID lpParameterValue);
-
-		template<typename T>
-		static ParameterError Create(_In_z_ LPCSTR lpParameterName, _In_ const T& Parameter) {
-			Create(lpParameterName, typeid(T), sizeof(T), &Parameter);
-		}
-	};
-
-	struct ARTEMIS_API WindowsError {
-		CHAR szWindowsFunction[MAX_FUNCTION_NAME];
-		DWORD dwWindowsErrorCode;
-		CHAR szWindowsErrorMessage[MAX_ERROR_MESSAGE];
-		CHAR szAdditionalInformation[MAX_ERROR_MESSAGE];
-
-		static WindowsError Create(_In_z_ LPCSTR lpFunction, _In_ DWORD dwErrorCode, _In_opt_z_ LPCSTR lpAdditionalInformation);
-	};
-
-	struct ARTEMIS_API MemoryAccessViolationError {
-		LPVOID lpAddress;
-		MEMORY_BASIC_INFORMATION FaultyPageInformation;
-
-		static MemoryAccessViolationError Create(_In_ LPVOID lpAddress);
+	struct call_stack_entry {
+		std::string _Function;
+		std::string _File;
+		int _Line;
 	};
 	
-	struct ErrorInfo {
-		ErrorCode dwErrorCode;
-		CHAR szErrorMessage[MAX_ERROR_MESSAGE];
-		CHAR szFunction[MAX_FUNCTION_NAME];
+	class call_stack_manager;
 
-		ExtendedErrorType ExtendedErrorType;
-		struct {
-			union {
-				ExtendedError Custom;
-				WindowsError Windows;
-				MemoryAccessViolationError Memory;
-			};
-			ParameterError Parameter; // Non-trivial, cannot be part of the union.
-		} ExtendedErrorInfo;
+	class call_stack {
+		std::vector<call_stack_entry> _StackEntries;
+		call_stack_manager* _Owner;
+		DWORD _ThreadId;
+		bool _IsSnapshot;
+
+	public:
+		call_stack(call_stack_manager* _Owner, DWORD _ThreadId);
+		call_stack(const call_stack&) = delete;
+		call_stack(call_stack&&) = delete;
+
+		void push_back(std::string _Function, std::string _File, int _Line);
+		void pop_back();
+
+		const std::vector<call_stack_entry>& entries() const;
+		DWORD thread_id() const;
+
+		bool is_empty() const;
+		bool is_snapshot() const;
+
+		void for_each(std::function<void(const call_stack_entry* const)> _Callback) const;
+
+		std::string to_string() const;
+
+		void drop();
 	};
 
-	ARTEMIS_API VOID SetLastArtemisError(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode);
+	class call_stack_manager {
+		std::vector<call_stack> _CallStacks;
 
-	ARTEMIS_API VOID SetLastArtemisError(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode, const ExtendedError& CustomExtendedError);
+	public:
+		call_stack_manager();
+		call_stack_manager(const call_stack_manager&) = delete;
+		call_stack_manager(call_stack_manager&&) = delete;
 
-	ARTEMIS_API VOID SetLastArtemisError(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode, const ParameterError& ParameterError);
+		call_stack* record(DWORD _ThreadId, std::string _Function, std::string _File, int _Line);
+		call_stack* record(std::string _Function, std::string _File, int _Line);
 
-	ARTEMIS_API VOID SetLastArtemisError(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode, const WindowsError& WindowsError);
+		call_stack* escape(DWORD _ThreadId);
+		call_stack* escape();
 
-	ARTEMIS_API VOID SetLastArtemisError(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode, const MemoryAccessViolationError& MemoryError);
+		call_stack* fetch(DWORD _ThreadId) const;
+		call_stack* fetch() const;
 
-	ARTEMIS_API const ErrorInfo& GetLastArtemisError() noexcept;
+		void drop(DWORD _ThreadId);
+		void drop();
+
+		static call_stack_manager* global();
+	};
+
+	class exception : std::exception {
+		call_stack _CallStackSnapshot;
+
+	public:
+		exception();
+		exception(const char* const _Message);
+		exception(const char* const _Message, const exception& _InnerException);
+		exception(const char* const _Message, exception&& _InnerException);
+	};
 }
 
 #endif // !ARTEMIS_API_ERROR_HXX

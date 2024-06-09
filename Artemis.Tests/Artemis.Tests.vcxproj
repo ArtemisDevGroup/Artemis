@@ -226,6 +226,7 @@
   <ItemGroup>
     <ClCompile Include="Error.Tests.cxx" />
     <ClCompile Include="Event.Tests.cxx" />
+    <ClCompile Include="Memory.Tests.cxx" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Test|x64'">Create</PrecompiledHeader>

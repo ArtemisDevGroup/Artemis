@@ -14,5 +14,9 @@
 #include <functional>
 #include <type_traits>
 #include <concepts>
+#include <memory>
+#include <typeinfo>
+#include <exception>
+#include <utility>
 
 #endif // !PCH_H

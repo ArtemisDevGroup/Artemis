@@ -2,117 +2,115 @@
 #include "Error.hxx"
 
 namespace Artemis::API {
-	static ErrorInfo g_LastErrorInfo;
+	call_stack::call_stack(call_stack_manager* _Owner, DWORD _ThreadId) : _Owner(_Owner), _ThreadId(_ThreadId), _StackEntries(), _IsSnapshot(false) {}
 
-	static LPCSTR ResolveErrorMessage(_In_ ErrorCode dwErrorCode) {
-		switch (dwErrorCode) {
-		case ErrorCode::Unknown:
-			return "An unknown error has occured.";
-		case ErrorCode::Success:
-			return "An operation was successful.";
-		case ErrorCode::ParameterNull:
-			return "A parameter is null.";
-		case ErrorCode::ParameterInvalid:
-			return "A parameter is invalid.";
-		case ErrorCode::Windows:
-			return "A Windows API function has failed.";
-		case ErrorCode::MemoryAccessViolation:
-			return "A memory access violation has occured.";
-		case ErrorCode::StateInvalid:
-			return "The state of an object was invalid for the specified operation.";
-		default:
-			return "Invalid error code.";
-		}
+	void call_stack::push_back(std::string _Function, std::string _File, int _Line) {
+		call_stack_entry entry;
+		entry._Function = _Function;
+		entry._File = _File;
+		entry._Line = _Line;
+
+		this->_StackEntries.push_back(entry);
 	}
 
-	ExtendedError ExtendedError::Create(_In_ DWORD dwErrorCode, _In_z_ LPCSTR lpErrorMessage) {
-		ExtendedError ee;
-		ee.dwErrorCode = dwErrorCode;
-		strcpy_s(ee.szErrorMessage, lpErrorMessage);
-		return ee;
+	void call_stack::pop_back() {
+		this->_StackEntries.pop_back();
 	}
 
-	ParameterError ParameterError::Create(_In_z_ LPCSTR lpParameterName, _In_ const std::type_info& TypeInfo, _In_ INT nTypeSize, _In_reads_(nTypeSize) LPCVOID lpParameterValue) {
-		ParameterError pe;
-		strcpy_s(pe.szParameterName, lpParameterName);
-		strcpy_s(pe.TypeInfo.szTypeName, TypeInfo.name());
-		pe.TypeInfo.nTypeSize = nTypeSize;
-		pe.lpParameterValue = std::make_shared<BYTE>(nTypeSize);
-		memcpy_s(pe.lpParameterValue.get(), nTypeSize, lpParameterValue, nTypeSize);
-		return pe;
+	const std::vector<call_stack_entry>& call_stack::entries() const { return this->_StackEntries; }
+
+	DWORD call_stack::thread_id() const { return _ThreadId; }
+
+	bool call_stack::is_empty() const { return !(this->_StackEntries.size() > 0); }
+
+	bool call_stack::is_snapshot() const { return this->_IsSnapshot; }
+
+	void call_stack::for_each(std::function<void(const call_stack_entry* const)> _Callback) const {
+		for (const call_stack_entry& entry : this->_StackEntries)
+			_Callback(&entry);
 	}
 
-	WindowsError WindowsError::Create(_In_z_ LPCSTR lpFunction, _In_ DWORD dwErrorCode, _In_opt_z_ LPCSTR lpAdditionalInformation) {
-		WindowsError we;
-		strcpy_s(we.szWindowsFunction, lpFunction);
-		we.dwWindowsErrorCode = dwErrorCode;
-
-		FormatMessageA(
-			FORMAT_MESSAGE_FROM_SYSTEM,
-			nullptr,
-			dwErrorCode,
-			LANG_SYSTEM_DEFAULT,
-			we.szWindowsErrorMessage,
-			sizeof(we.szWindowsErrorMessage),
-			nullptr
-		);
-
-		if (lpAdditionalInformation)
-			strcpy_s(we.szAdditionalInformation, lpAdditionalInformation);
-		else
-			we.szAdditionalInformation[0] = '\0';
-		return we;
+	std::string call_stack::to_string() const {
+#error Implement call_stack::to_string
 	}
 
-	MemoryAccessViolationError MemoryAccessViolationError::Create(_In_ LPVOID lpAddress) {
-		MemoryAccessViolationError mave;
-		mave.lpAddress = lpAddress;
-		
-		VirtualQuery(lpAddress, &mave.FaultyPageInformation, sizeof(mave.FaultyPageInformation));
-		return mave;
+	void call_stack::drop() {
+		this->_Owner->drop(this->_ThreadId);
 	}
 
-	static VOID SetLastArtemisErrorImpl(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode) {
-		strcpy_s(g_LastErrorInfo.szFunction, lpFunction);
-		g_LastErrorInfo.dwErrorCode = dwErrorCode;
-		strcpy_s(g_LastErrorInfo.szErrorMessage, ResolveErrorMessage(dwErrorCode));
+	call_stack_manager::call_stack_manager() : _CallStacks() {}
+
+	call_stack* call_stack_manager::record(DWORD _ThreadId, std::string _Function, std::string _File, int _Line) {
+		for (call_stack& stack : this->_CallStacks)
+			if (stack.thread_id() == _ThreadId) {
+				stack.push_back(_Function, _File, _Line);
+				return &stack;
+			}
+
+		this->_CallStacks.push_back(call_stack(this, _ThreadId));
+		call_stack* stack = &this->_CallStacks[this->_CallStacks.size() - 1];
+		stack->push_back(_Function, _File, _Line);
+		return stack;
 	}
 
-	ARTEMIS_API VOID SetLastArtemisError(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode) {
-		SetLastArtemisErrorImpl(lpFunction, dwErrorCode);
-
-		g_LastErrorInfo.ExtendedErrorType = ExtendedErrorType::None;
+	call_stack* call_stack_manager::record(std::string _Function, std::string _File, int _Line) {
+		return this->record(GetCurrentThreadId(), _Function, _File, _Line);
 	}
 
-	ARTEMIS_API VOID SetLastArtemisError(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode, const ExtendedError& CustomExtendedError) {
-		SetLastArtemisErrorImpl(lpFunction, dwErrorCode);
+	call_stack* call_stack_manager::escape(DWORD _ThreadId) {
+		for (call_stack& stack : this->_CallStacks)
+			if (stack.thread_id() == _ThreadId) {
+				stack.pop_back();
+				
+				if (stack.is_empty()) {
+					stack.drop();
+					return nullptr;
+				}
 
-		g_LastErrorInfo.ExtendedErrorType = ExtendedErrorType::Custom;
-		g_LastErrorInfo.ExtendedErrorInfo.Custom = CustomExtendedError;
+				return &stack;
+			}
+		return nullptr;
 	}
 
-	ARTEMIS_API VOID SetLastArtemisError(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode, const ParameterError& ParameterError) {
-		SetLastArtemisErrorImpl(lpFunction, dwErrorCode);
-
-		g_LastErrorInfo.ExtendedErrorType = ExtendedErrorType::Parameter;
-		g_LastErrorInfo.ExtendedErrorInfo.Parameter = ParameterError;
+	call_stack* call_stack_manager::escape() {
+		return this->escape(GetCurrentThreadId());
 	}
 
-	ARTEMIS_API VOID SetLastArtemisError(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode, const WindowsError& WindowsError) {
-		SetLastArtemisErrorImpl(lpFunction, dwErrorCode);
-
-		g_LastErrorInfo.ExtendedErrorType = ExtendedErrorType::Windows;
-		g_LastErrorInfo.ExtendedErrorInfo.Windows = WindowsError;
+	call_stack* call_stack_manager::fetch(DWORD _ThreadId) const {
+		for (std::vector<call_stack>::const_iterator i = this->_CallStacks.begin(); i != this->_CallStacks.end(); ++i)
+			if (i->thread_id() == _ThreadId)
+				return i._Ptr;
+		return nullptr;
 	}
 
-	ARTEMIS_API VOID SetLastArtemisError(_In_z_ LPCSTR lpFunction, _In_ ErrorCode dwErrorCode, const MemoryAccessViolationError& MemoryError) {
-		SetLastArtemisErrorImpl(lpFunction, dwErrorCode);
+	call_stack* call_stack_manager::fetch() const { return this->fetch(GetCurrentThreadId()); }
 
-		g_LastErrorInfo.ExtendedErrorType = ExtendedErrorType::Memory;
-		g_LastErrorInfo.ExtendedErrorInfo.Memory = MemoryError;
+	void call_stack_manager::drop(DWORD _ThreadId) {
+		for (std::vector<call_stack>::iterator i = this->_CallStacks.begin(); i != this->_CallStacks.end(); ++i)
+			if (i->thread_id() == _ThreadId)
+				this->_CallStacks.erase(i);
 	}
 
-	ARTEMIS_API const ErrorInfo& GetLastArtemisError() noexcept {
-		return g_LastErrorInfo;
+	void call_stack_manager::drop() {
+		this->drop(GetCurrentThreadId());
+	}
+
+	static call_stack_manager g_CallStackManager;
+	call_stack_manager* call_stack_manager::global() { return &g_CallStackManager; }
+
+	exception::exception() : std::exception("An unknown Artemis exception has occured.") {
+
+	}
+
+	exception::exception(const char* const _Message) : std::exception(_Message) {
+
+	}
+
+	exception::exception(const char* const _Message, const exception& _InnerException) {
+
+	}
+
+	exception::exception(const char* const _Message, exception&& _InnerException) {
+
 	}
 }

@@ -2,12 +2,9 @@
 
 #include "API/Error.hxx"
 
+DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule);
+
 #ifndef ARTEMIS_TEST
-
-DWORD APIENTRY Main(_In_ HMODULE hModule) {
-
-    return 0;
-}
 
 BOOL APIENTRY DllMain(_In_ HMODULE hModule, _In_ DWORD dwReasonForCall, _In_ LPVOID lpReserved) {
     HANDLE hThread = nullptr;
@@ -17,7 +14,7 @@ BOOL APIENTRY DllMain(_In_ HMODULE hModule, _In_ DWORD dwReasonForCall, _In_ LPV
         hThread = CreateThread(
             nullptr,
             NULL,
-            (LPTHREAD_START_ROUTINE)Main,
+            (LPTHREAD_START_ROUTINE)ArtemisMain,
             hModule,
             NULL,
             nullptr

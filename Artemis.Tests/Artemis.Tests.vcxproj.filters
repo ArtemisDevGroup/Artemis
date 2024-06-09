@@ -24,6 +24,9 @@
     <ClCompile Include="Error.Tests.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Memory.Tests.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">

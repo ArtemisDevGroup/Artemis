@@ -218,6 +218,7 @@
     <ClCompile Include="API\Error.cxx" />
     <ClCompile Include="API\Memory.cxx" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Main.cxx" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Test|x64'">Create</PrecompiledHeader>
