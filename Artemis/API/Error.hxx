@@ -23,11 +23,12 @@ namespace Artemis::API {
 
 	public:
 		call_stack(call_stack_manager* _Owner, DWORD _ThreadId);
-		call_stack(const call_stack&) = delete;
-		call_stack(call_stack&&) = delete;
 
 		void push_back(std::string _Function, std::string _File, int _Line);
 		void pop_back();
+		void pop_back(int _Count);
+		void pop_until(call_stack_entry _Entry);
+		void pop_until(std::string _Function, std::string _File, int _Line);
 
 		const std::vector<call_stack_entry>& entries() const;
 		DWORD thread_id() const;
@@ -39,6 +40,7 @@ namespace Artemis::API {
 
 		std::string to_string() const;
 
+		call_stack snap() const;
 		void drop();
 	};
 
@@ -69,10 +71,10 @@ namespace Artemis::API {
 		call_stack _CallStackSnapshot;
 
 	public:
-		exception();
-		exception(const char* const _Message);
-		exception(const char* const _Message, const exception& _InnerException);
-		exception(const char* const _Message, exception&& _InnerException);
+		exception(call_stack_entry* _PopUntil = nullptr);
+		exception(const char* const _Message, call_stack_entry* _PopUntil = nullptr);
+		exception(const char* const _Message, const exception& _InnerException, call_stack_entry* _PopUntil = nullptr);
+		exception(const char* const _Message, exception&& _InnerException, call_stack_entry* _PopUntil = nullptr);
 	};
 }
 
