@@ -24,16 +24,34 @@
       <UniqueIdentifier>{8a9ebec5-aada-44ba-9cac-334e026b7e05}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{66c68589-fe79-4ecc-bfb6-b3e8a4db41ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui\Header Files">
+      <UniqueIdentifier>{c53fa097-5f6d-49da-8039-5a6f8342f1ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui\Source Files">
+      <UniqueIdentifier>{8f984b45-462e-4207-8e2c-1e62d91715a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MinHook">
+      <UniqueIdentifier>{0a9a079a-09b4-4344-bb6c-47c981e4426b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MinHook\Header Files">
+      <UniqueIdentifier>{2f7ee2b0-4f0a-417f-b97c-ca2cfdd6990d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MinHook\Source Files">
+      <UniqueIdentifier>{61c47c2d-ae3b-46a0-9d67-20fb9dfd17e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MinHook\Header Files\HDE">
+      <UniqueIdentifier>{d4d5dc92-93bf-4e54-adcc-aa1e04bf286f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MinHook\Source Files\HDE">
+      <UniqueIdentifier>{8de38540-330e-48d0-b9b5-8d49edfbe114}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="API\Memory.hxx">
-      <Filter>API\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="API\Console.hxx">
-      <Filter>API\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="API\Error.hxx">
       <Filter>API\Header Files</Filter>
@@ -44,6 +62,57 @@
     <ClInclude Include="API\Event.hxx">
       <Filter>API\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ImGui\imconfig.h">
+      <Filter>ImGui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui.h">
+      <Filter>ImGui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_impl_dx11.h">
+      <Filter>ImGui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_impl_win32.h">
+      <Filter>ImGui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_internal.h">
+      <Filter>ImGui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imstb_rectpack.h">
+      <Filter>ImGui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imstb_textedit.h">
+      <Filter>ImGui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imstb_truetype.h">
+      <Filter>ImGui\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\buffer.h">
+      <Filter>MinHook\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\MinHook.h">
+      <Filter>MinHook\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\trampoline.h">
+      <Filter>MinHook\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\hde\hde32.h">
+      <Filter>MinHook\Header Files\HDE</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\hde\hde64.h">
+      <Filter>MinHook\Header Files\HDE</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\hde\pstdint.h">
+      <Filter>MinHook\Header Files\HDE</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\hde\table32.h">
+      <Filter>MinHook\Header Files\HDE</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\hde\table64.h">
+      <Filter>MinHook\Header Files\HDE</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Hook.hxx">
+      <Filter>API\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -52,17 +121,50 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="API\Memory.cxx">
-      <Filter>API\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="API\Console.cxx">
-      <Filter>API\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="API\Error.cxx">
       <Filter>API\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Main.cxx">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui.cpp">
+      <Filter>ImGui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_demo.cpp">
+      <Filter>ImGui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_draw.cpp">
+      <Filter>ImGui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_impl_dx11.cpp">
+      <Filter>ImGui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_impl_win32.cpp">
+      <Filter>ImGui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_tables.cpp">
+      <Filter>ImGui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_widgets.cpp">
+      <Filter>ImGui\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MinHook\buffer.c">
+      <Filter>MinHook\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MinHook\hook.c">
+      <Filter>MinHook\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MinHook\trampoline.c">
+      <Filter>MinHook\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MinHook\hde\hde32.c">
+      <Filter>MinHook\Source Files\HDE</Filter>
+    </ClCompile>
+    <ClCompile Include="MinHook\hde\hde64.c">
+      <Filter>MinHook\Source Files\HDE</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Hook.cxx">
+      <Filter>API\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

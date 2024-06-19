@@ -2,11 +2,11 @@
 
 #include "API/Error.hxx"
 
-DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule);
+DWORD APIENTRY ArtemisMain(HMODULE hModule);
 
 #ifndef ARTEMIS_TEST
 
-BOOL APIENTRY DllMain(_In_ HMODULE hModule, _In_ DWORD dwReasonForCall, _In_ LPVOID lpReserved) {
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReasonForCall, LPVOID lpReserved) {
     HANDLE hThread = nullptr;
     
     switch (dwReasonForCall) {
@@ -34,9 +34,8 @@ BOOL APIENTRY DllMain(_In_ HMODULE hModule, _In_ DWORD dwReasonForCall, _In_ LPV
 
 #else
 
-BOOL APIENTRY DllMain(_In_ HMODULE hModule, _In_ DWORD dwReasonForCall, _In_ LPVOID lpReserved) {
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReasonForCall, LPVOID lpReserved) {
     return TRUE;
-
 }
 
 #endif // !ARTEMIS_TEST

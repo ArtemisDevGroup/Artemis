@@ -2,9 +2,17 @@
 #define ARTEMIS_API_ERROR_HXX
 
 #include "Definitions.hxx"
+#include "Event.hxx"
 
-#define stack_record() Artemis::API::call_stack_manager::global()->record(__FUNCTION__, __FILE__, __LINE__)
-#define stack_escape() Artemis::API::call_stack_manager::global()->escape()
+#ifdef ARTEMIS_DISABLE_CALL_STACK
+#define __stack_record()
+#define __stack_escape()
+#else
+#define __stack_record() Artemis::API::call_stack_manager::global()->record(__FUNCTION__, __FILE__, __LINE__)
+#define __stack_escape() Artemis::API::call_stack_manager::global()->escape()
+#define __stack_this_cse() Artemis::API::call_stack_entry{ __FUNCTION__, __FILE__, __LINE__ }
+#endif // ARTEMIS_DISABLE_CALL_STACK
+
 
 namespace Artemis::API {
 	struct call_stack_entry {
@@ -15,7 +23,7 @@ namespace Artemis::API {
 	
 	class call_stack_manager;
 
-	class call_stack {
+	class ARTEMIS_API call_stack {
 		std::vector<call_stack_entry> _StackEntries;
 		call_stack_manager* _Owner;
 		DWORD _ThreadId;
@@ -44,7 +52,7 @@ namespace Artemis::API {
 		void drop();
 	};
 
-	class call_stack_manager {
+	class ARTEMIS_API call_stack_manager {
 		std::vector<call_stack> _CallStacks;
 
 	public:
@@ -67,15 +75,38 @@ namespace Artemis::API {
 		static call_stack_manager* global();
 	};
 
-	class exception : std::exception {
+	class ARTEMIS_API exception : std::exception {
 		call_stack _CallStackSnapshot;
+		std::shared_ptr<exception> _InnerException;
+
+		void event_invoke();
 
 	public:
 		exception(call_stack_entry* _PopUntil = nullptr);
 		exception(const char* const _Message, call_stack_entry* _PopUntil = nullptr);
-		exception(const char* const _Message, const exception& _InnerException, call_stack_entry* _PopUntil = nullptr);
-		exception(const char* const _Message, exception&& _InnerException, call_stack_entry* _PopUntil = nullptr);
+
+		template<class T>
+			requires(std::is_base_of_v<exception, T>)
+		exception(const char* const _Message, const T& _InnerException) : std::exception(_Message), _CallStackSnapshot(nullptr, 0) {
+			this->_InnerException = std::make_shared<T>(_InnerException);
+			this->_CallStackSnapshot = _InnerException._CallStackSnapshot;
+
+			event_invoke();
+		}
+
+		const std::shared_ptr<exception> inner() const;
+
+		template<class T>
+			requires(std::is_base_of_v<exception, T>)
+		const std::shared_ptr<T> inner() const { return (std::shared_ptr<T>)this->inner(); }
+
+		const call_stack* calls() const;
+
+		static event<exception>* throw_event();
 	};
+
+	template<typename T>
+	concept derived_exception_type = std::is_base_of_v<exception, T>;
 }
 
 #endif // !ARTEMIS_API_ERROR_HXX

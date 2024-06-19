@@ -18,5 +18,8 @@
 #include <typeinfo>
 #include <exception>
 #include <utility>
+#include <ranges>
+
+#include "ImGui/imgui.h"
 
 #endif // !PCH_H

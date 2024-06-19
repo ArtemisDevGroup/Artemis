@@ -5,12 +5,7 @@ namespace Artemis::API {
 	call_stack::call_stack(call_stack_manager* _Owner, DWORD _ThreadId) : _Owner(_Owner), _ThreadId(_ThreadId), _StackEntries(), _IsSnapshot(false) {}
 
 	void call_stack::push_back(std::string _Function, std::string _File, int _Line) {
-		call_stack_entry entry;
-		entry._Function = _Function;
-		entry._File = _File;
-		entry._Line = _Line;
-
-		this->_StackEntries.push_back(entry);
+		this->_StackEntries.push_back(call_stack_entry{ _Function, _File, _Line });
 	}
 
 	void call_stack::pop_back() {
@@ -51,7 +46,13 @@ namespace Artemis::API {
 	}
 
 	std::string call_stack::to_string() const {
-#error Implement call_stack::to_string
+		std::string ret = "";
+		for (const call_stack_entry& entry : _StackEntries | std::views::reverse) {
+			ret += "at ";
+			ret += entry._Function;
+			ret += '\n';
+		}
+		return ret;
 	}
 
 	call_stack call_stack::snap() const {
@@ -126,6 +127,10 @@ namespace Artemis::API {
 	static call_stack_manager g_CallStackManager;
 	call_stack_manager* call_stack_manager::global() { return &g_CallStackManager; }
 
+	event<exception> g_ThrowEvent;
+
+	void exception::event_invoke() { g_ThrowEvent.invoke(this, new event_args(), true); }
+
 	exception::exception(call_stack_entry* _PopUntil) : std::exception("An unknown Artemis exception has occured."), _CallStackSnapshot(nullptr, 0) {
 		call_stack* current = call_stack_manager::global()->fetch();
 		this->_CallStackSnapshot = current->snap();
@@ -134,6 +139,8 @@ namespace Artemis::API {
 			current->pop_until(*_PopUntil);
 		else
 			current->drop();
+
+		event_invoke();
 	}
 
 	exception::exception(const char* const _Message, call_stack_entry* _PopUntil) : std::exception(_Message), _CallStackSnapshot(nullptr, 0) {
@@ -144,26 +151,13 @@ namespace Artemis::API {
 			current->pop_until(*_PopUntil);
 		else
 			current->drop();
-			
+		
+		event_invoke();
 	}
 
-	exception::exception(const char* const _Message, const exception& _InnerException, call_stack_entry* _PopUntil) : std::exception(_Message), _CallStackSnapshot(nullptr, 0) {
-		call_stack* current = call_stack_manager::global()->fetch();
-		this->_CallStackSnapshot = current->snap();
+	const std::shared_ptr<exception> exception::inner() const { return this->_InnerException; }
 
-		if (_PopUntil)
-			current->pop_until(*_PopUntil);
-		else
-			current->drop();
-	}
+	const call_stack* exception::calls() const { return &this->_CallStackSnapshot; }
 
-	exception::exception(const char* const _Message, exception&& _InnerException, call_stack_entry* _PopUntil) : std::exception(_Message), _CallStackSnapshot(nullptr, 0) {
-		call_stack* current = call_stack_manager::global()->fetch();
-		this->_CallStackSnapshot = current->snap();
-
-		if (_PopUntil)
-			current->pop_until(*_PopUntil);
-		else
-			current->drop();
-	}
+	event<exception>* exception::throw_event() { return &g_ThrowEvent; }
 }

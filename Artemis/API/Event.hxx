@@ -8,74 +8,55 @@
 #include <type_traits>
 #include <vector>
 #include <functional>
-#include <tuple>
 
 namespace Artemis::API {
-	struct EventArgs {
-		BOOL bHandled;
+	struct event_args {
+		bool _Handled;
 	};
 
-	template<typename T>
-	concept EventArgsType = std::is_base_of_v<EventArgs, T>;
+	template<class _Sender = void, class _Ea = event_args>
+		requires(std::is_base_of_v<event_args, _Ea>)
+	class event {
+		using event_handler = std::function<void(_Sender* _Sender, _Ea* e)>;
 
-	template<EventArgsType InstanceEventArgs = EventArgs>
-	class Event {
-		using EventHandler = std::function<VOID(LPVOID lpSender, EventArgs& e)>;
+		struct _ { event_handler _Handler; uint64_t _Id; };
 
-		static constexpr INT nMaxHandlerCount = 64;
-
-		BOOL rgbOccupied[nMaxHandlerCount];
-		EventHandler rgEventHandlers[nMaxHandlerCount];
+		std::vector<_> _EventHandlers;
+		uint64_t _NextId;
 
 	public:
-		Event() {
-			ZeroMemory(rgbOccupied, sizeof(rgbOccupied));
+		event() : _NextId(0) {}
+
+		uint64_t subscribe(event_handler _Handler) {
+			this->_EventHandlers.push_back(_ { _Handler, this->_NextId });
+			this->_NextId++;
 		}
 
-		DWORD Subscribe(_In_ EventHandler lpHandler) {
-			for (DWORD i = 0; i < nMaxHandlerCount; i++)
-				if (!rgbOccupied[i]) {
-					rgbOccupied[i] = true;
-					rgEventHandlers[i] = lpHandler;
-					return i;
+		void unsubscribe(uint64_t _Id) {
+			for (auto i = this->_EventHandlers.begin(); i != this->_EventHandlers.end(); i++)
+				if (i->_Id == _Id) {
+					this->_EventHandlers.erase(i);
+					return;
 				}
-
-			return -1;
 		}
 
-		VOID Unsubscribe(_In_ DWORD dwIndex) {
-			if (dwIndex >= nMaxHandlerCount)
-				return;
-
-			rgbOccupied[dwIndex] = false;
+		size_t handler_count() const noexcept {
+			return _EventHandlers.size();
 		}
 
-		_Check_return_ INT GetHandlerCount() noexcept {
-			INT nCount = 0;
-
-			for (INT i = 0; i < nMaxHandlerCount; i++)
-				if (rgbOccupied[i])
-					nCount++;
-
-			return nCount;
+		size_t unsubscribe_all() {
+			size_t count = this->handler_count();
+			this->_EventHandlers.clear();
+			return count;
 		}
 
-		INT UnsubscribeAll() {
-			INT nCount = GetHandlerCount();
-			ZeroMemory(rgbOccupied, sizeof(rgbOccupied));
-			return nCount;
-		}
+		void invoke(_Sender* _Sender, _Ea* e, bool _DeleteEventArgs) const {
+			for (const _& handler : this->_EventHandlers)
+				handler._Handler(_Sender, e);
 
-		VOID Invoke(_In_opt_ LPVOID lpSender, _In_ EventArgs* e, _In_ BOOL bDeleteEventArgs) {
-			for (INT i = 0; i < nMaxHandlerCount; i++)
-				if (rgbOccupied[i])
-					rgEventHandlers[i](lpSender, *e);
-
-			if (bDeleteEventArgs)
+			if (_DeleteEventArgs)
 				delete e;
 		}
-
-		VOID Invoke(_In_opt_ LPVOID lpSender, _In_ EventArgs* e) { Invoke(lpSender, e, true); }
 	};
 }
 

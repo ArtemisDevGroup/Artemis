@@ -1,31 +1,34 @@
-#include "pch.h"
 #include "CppUnitTest.h"
 
-#include <API/Error.hxx>
-
-using namespace Artemis::API;
+#include "API/Error.hxx"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+using namespace Artemis::API;
 
 namespace ArtemisTests {
 	TEST_CLASS(ErrorTests) {
 	public:
-		BEGIN_TEST_METHOD_ATTRIBUTE(SetAndGetBasicError)
-			TEST_DESCRIPTION("Sets and gets basic errors with no extended attributes.")
-		END_TEST_METHOD_ATTRIBUTE()
+		TEST_METHOD(RecordAndFetchTest) {
+			call_stack_manager* pGlobal = call_stack_manager::global();
 
-		TEST_METHOD(SetAndGetBasicError) {
-			SetLastArtemisError(__FUNCTION__, ErrorCode::Unknown);
-			ErrorInfo e = GetLastArtemisError();
-			Assert::AreEqual((int)ErrorCode::Unknown, (int)e.dwErrorCode, L"Wrong error code.");
-			Assert::AreEqual("An unknown error has occured.", e.szErrorMessage, L"Wrong error message.");
-			Assert::AreEqual(__FUNCTION__, e.szFunction, L"Wrong function.");
+			call_stack* pCallStack = pGlobal->fetch();
+			Assert::IsNull(pCallStack);
 
-			SetLastArtemisError("MyFunction", ErrorCode::Success);
-			ErrorInfo e2 = GetLastArtemisError();
-			Assert::AreEqual((int)ErrorCode::Success, (int)e2.dwErrorCode, L"Wrong error code.");
-			Assert::AreEqual("An operation was successful.", e2.szErrorMessage, L"Wrong error message.");
-			Assert::AreEqual("MyFunction", e2.szFunction, L"Wrong function.");
+			call_stack* pReturn = pGlobal->record("TestFunction", "TestFile", 1);
+			Assert::IsNotNull(pReturn);
+
+			pCallStack = pGlobal->fetch();
+			Assert::IsNotNull(pCallStack);
+
+			Assert::AreEqual(1ui64, pCallStack->entries().size());
+			
+			const call_stack_entry* pEntry = &pCallStack->entries()[0];
+
+			Assert::AreEqual("TestFunction", pEntry->_Function.c_str());
+			Assert::AreEqual("TestFile", pEntry->_File.c_str());
+			Assert::AreEqual(1, pEntry->_Line);
+
+			pCallStack->drop();
 		}
 	};
 }
