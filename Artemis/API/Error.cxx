@@ -5,7 +5,7 @@ namespace Artemis::API {
 	call_stack::call_stack(call_stack_manager* _Owner, DWORD _ThreadId) : _Owner(_Owner), _ThreadId(_ThreadId), _StackEntries(), _IsSnapshot(false) {}
 
 	void call_stack::push_back(std::string _Function, std::string _File, int _Line) {
-		this->_StackEntries.push_back(call_stack_entry{ _Function, _File, _Line });
+		this->_StackEntries.push_back(call_stack_entry(_Function, _File, _Line));
 	}
 
 	void call_stack::pop_back() {
@@ -17,19 +17,22 @@ namespace Artemis::API {
 			this->_StackEntries.pop_back();
 	}
 
-	void call_stack::pop_until(call_stack_entry _Entry) {
-		while (![_Entry](std::vector<call_stack_entry>& _Entries) -> bool {
-			auto end = _Entries.end();
-			return end->_Function == _Entry._Function && end->_File == _Entry._File && end->_Line == _Entry._Line;
-			}(this->_StackEntries)) this->_StackEntries.pop_back();
+	void call_stack::pop_until(const call_stack_entry& _Entry) {
+		bool run = true;
+
+		while (run) {
+			auto end = std::prev(this->_StackEntries.end());
+
+			if (end->_Function	== _Entry._Function &&
+				end->_File		== _Entry._File		&&
+				end->_Line		== _Entry._Line		  ) { run = false; }
+
+			this->_StackEntries.pop_back();
+		}
 	}
 
 	void call_stack::pop_until(std::string _Function, std::string _File, int _Line) {
-		call_stack_entry entry;
-		entry._Function = _Function;
-		entry._File = _File;
-		entry._Line = _Line;
-		this->pop_until(entry);
+		this->pop_until(call_stack_entry(_Function, _File, _Line));
 	}
 
 	const std::vector<call_stack_entry>& call_stack::entries() const { return this->_StackEntries; }
@@ -77,7 +80,7 @@ namespace Artemis::API {
 			}
 
 		this->_CallStacks.push_back(call_stack(this, _ThreadId));
-		call_stack* stack = this->_CallStacks.end()._Ptr;
+		call_stack* stack = std::prev(this->_CallStacks.end())._Ptr;
 		stack->push_back(_Function, _File, _Line);
 		return stack;
 	}
@@ -106,7 +109,7 @@ namespace Artemis::API {
 	}
 
 	call_stack* call_stack_manager::fetch(DWORD _ThreadId) const {
-		for (std::vector<call_stack>::const_iterator i = this->_CallStacks.begin(); i != this->_CallStacks.end(); ++i)
+		for (auto i = this->_CallStacks.begin(); i != this->_CallStacks.end(); std::next(i))
 			if (i->thread_id() == _ThreadId)
 				return i._Ptr;
 		return nullptr;
@@ -115,9 +118,11 @@ namespace Artemis::API {
 	call_stack* call_stack_manager::fetch() const { return this->fetch(GetCurrentThreadId()); }
 
 	void call_stack_manager::drop(DWORD _ThreadId) {
-		for (std::vector<call_stack>::iterator i = this->_CallStacks.begin(); i != this->_CallStacks.end(); ++i)
-			if (i->thread_id() == _ThreadId)
+		for (auto i = this->_CallStacks.begin(); i != this->_CallStacks.end(); std::next(i))
+			if (i->thread_id() == _ThreadId) {
 				this->_CallStacks.erase(i);
+				break;
+			}
 	}
 
 	void call_stack_manager::drop() {

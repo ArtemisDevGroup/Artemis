@@ -33,7 +33,7 @@ namespace Artemis::API {
 		}
 
 		void unsubscribe(uint64_t _Id) {
-			for (auto i = this->_EventHandlers.begin(); i != this->_EventHandlers.end(); i++)
+			for (auto i = this->_EventHandlers.begin(); i != this->_EventHandlers.end(); std::next(i))
 				if (i->_Id == _Id) {
 					this->_EventHandlers.erase(i);
 					return;

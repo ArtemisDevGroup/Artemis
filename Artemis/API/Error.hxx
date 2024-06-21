@@ -10,7 +10,7 @@
 #else
 #define __stack_record() Artemis::API::call_stack_manager::global()->record(__FUNCTION__, __FILE__, __LINE__)
 #define __stack_escape() Artemis::API::call_stack_manager::global()->escape()
-#define __stack_this_cse() Artemis::API::call_stack_entry{ __FUNCTION__, __FILE__, __LINE__ }
+#define __stack_this_cse() Artemis::API::call_stack_entry(__FUNCTION__, __FILE__, __LINE__)
 #endif // ARTEMIS_DISABLE_CALL_STACK
 
 
@@ -35,7 +35,7 @@ namespace Artemis::API {
 		void push_back(std::string _Function, std::string _File, int _Line);
 		void pop_back();
 		void pop_back(int _Count);
-		void pop_until(call_stack_entry _Entry);
+		void pop_until(const call_stack_entry& _Entry);
 		void pop_until(std::string _Function, std::string _File, int _Line);
 
 		const std::vector<call_stack_entry>& entries() const;

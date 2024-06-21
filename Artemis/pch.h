@@ -19,6 +19,9 @@
 #include <exception>
 #include <utility>
 #include <ranges>
+#include <sstream>
+
+#include <string.h>
 
 #include "ImGui/imgui.h"
 

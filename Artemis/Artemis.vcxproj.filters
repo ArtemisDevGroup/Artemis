@@ -148,6 +148,15 @@
     <ClCompile Include="ImGui\imgui_widgets.cpp">
       <Filter>ImGui\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="API\Hook.cxx">
+      <Filter>API\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MinHook\hde\hde32.c">
+      <Filter>MinHook\Source Files\HDE</Filter>
+    </ClCompile>
+    <ClCompile Include="MinHook\hde\hde64.c">
+      <Filter>MinHook\Source Files\HDE</Filter>
+    </ClCompile>
     <ClCompile Include="MinHook\buffer.c">
       <Filter>MinHook\Source Files</Filter>
     </ClCompile>
@@ -156,15 +165,6 @@
     </ClCompile>
     <ClCompile Include="MinHook\trampoline.c">
       <Filter>MinHook\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MinHook\hde\hde32.c">
-      <Filter>MinHook\Source Files\HDE</Filter>
-    </ClCompile>
-    <ClCompile Include="MinHook\hde\hde64.c">
-      <Filter>MinHook\Source Files\HDE</Filter>
-    </ClCompile>
-    <ClCompile Include="API\Hook.cxx">
-      <Filter>API\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
