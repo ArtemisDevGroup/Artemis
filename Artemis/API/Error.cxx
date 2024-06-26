@@ -20,7 +20,7 @@ namespace Artemis::API {
 	void call_stack::pop_until(const call_stack_entry& _Entry) {
 		bool run = true;
 
-		while (run) {
+		while (run && this->_StackEntries.size() > 0) {
 			auto end = std::prev(this->_StackEntries.end());
 
 			if (end->_Function	== _Entry._Function &&
@@ -109,7 +109,7 @@ namespace Artemis::API {
 	}
 
 	call_stack* call_stack_manager::fetch(DWORD _ThreadId) const {
-		for (auto i = this->_CallStacks.begin(); i != this->_CallStacks.end(); std::next(i))
+		for (auto i = this->_CallStacks.begin(); i != this->_CallStacks.end(); i = std::next(i))
 			if (i->thread_id() == _ThreadId)
 				return i._Ptr;
 		return nullptr;
@@ -118,7 +118,7 @@ namespace Artemis::API {
 	call_stack* call_stack_manager::fetch() const { return this->fetch(GetCurrentThreadId()); }
 
 	void call_stack_manager::drop(DWORD _ThreadId) {
-		for (auto i = this->_CallStacks.begin(); i != this->_CallStacks.end(); std::next(i))
+		for (auto i = this->_CallStacks.begin(); i != this->_CallStacks.end(); i = std::next(i))
 			if (i->thread_id() == _ThreadId) {
 				this->_CallStacks.erase(i);
 				break;

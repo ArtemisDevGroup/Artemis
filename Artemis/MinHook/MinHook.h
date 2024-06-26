@@ -34,6 +34,15 @@
 
 #include <windows.h>
 
+// BEGIN ARTEMIS SPECIFIC
+#ifdef ARTEMIS_EXPORTS
+#define MH_API __declspec(dllexport)
+#else
+#define MH_API __declspec(dllimport)
+#endif // ARTEMIS_EXPORTS
+
+// END ARTEMIS SPECIFIC
+
 // MinHook Error Codes.
 typedef enum MH_STATUS
 {
@@ -93,11 +102,11 @@ extern "C" {
 
     // Initialize the MinHook library. You must call this function EXACTLY ONCE
     // at the beginning of your program.
-    MH_STATUS WINAPI MH_Initialize(VOID);
+    MH_API MH_STATUS WINAPI MH_Initialize(VOID);
 
     // Uninitialize the MinHook library. You must call this function EXACTLY
     // ONCE at the end of your program.
-    MH_STATUS WINAPI MH_Uninitialize(VOID);
+    MH_API MH_STATUS WINAPI MH_Uninitialize(VOID);
 
     // Creates a hook for the specified target function, in disabled state.
     // Parameters:
@@ -108,77 +117,26 @@ extern "C" {
     //   ppOriginal  [out] A pointer to the trampoline function, which will be
     //                     used to call the original target function.
     //                     This parameter can be NULL.
-    MH_STATUS WINAPI MH_CreateHook(LPVOID pTarget, LPVOID pDetour, LPVOID *ppOriginal);
-
-    // Creates a hook for the specified API function, in disabled state.
-    // Parameters:
-    //   pszModule   [in]  A pointer to the loaded module name which contains the
-    //                     target function.
-    //   pszProcName [in]  A pointer to the target function name, which will be
-    //                     overridden by the detour function.
-    //   pDetour     [in]  A pointer to the detour function, which will override
-    //                     the target function.
-    //   ppOriginal  [out] A pointer to the trampoline function, which will be
-    //                     used to call the original target function.
-    //                     This parameter can be NULL.
-    MH_STATUS WINAPI MH_CreateHookApi(
-        LPCWSTR pszModule, LPCSTR pszProcName, LPVOID pDetour, LPVOID *ppOriginal);
-
-    // Creates a hook for the specified API function, in disabled state.
-    // Parameters:
-    //   pszModule   [in]  A pointer to the loaded module name which contains the
-    //                     target function.
-    //   pszProcName [in]  A pointer to the target function name, which will be
-    //                     overridden by the detour function.
-    //   pDetour     [in]  A pointer to the detour function, which will override
-    //                     the target function.
-    //   ppOriginal  [out] A pointer to the trampoline function, which will be
-    //                     used to call the original target function.
-    //                     This parameter can be NULL.
-    //   ppTarget    [out] A pointer to the target function, which will be used
-    //                     with other functions.
-    //                     This parameter can be NULL.
-    MH_STATUS WINAPI MH_CreateHookApiEx(
-        LPCWSTR pszModule, LPCSTR pszProcName, LPVOID pDetour, LPVOID *ppOriginal, LPVOID *ppTarget);
+    MH_API MH_STATUS WINAPI MH_CreateHook(LPVOID pTarget, LPVOID pDetour, LPVOID *ppOriginal);
 
     // Removes an already created hook.
     // Parameters:
     //   pTarget [in] A pointer to the target function.
-    MH_STATUS WINAPI MH_RemoveHook(LPVOID pTarget);
+    MH_API MH_STATUS WINAPI MH_RemoveHook(LPVOID pTarget);
 
     // Enables an already created hook.
     // Parameters:
     //   pTarget [in] A pointer to the target function.
     //                If this parameter is MH_ALL_HOOKS, all created hooks are
     //                enabled in one go.
-    MH_STATUS WINAPI MH_EnableHook(LPVOID pTarget);
+    MH_API MH_STATUS WINAPI MH_EnableHook(LPVOID pTarget);
 
     // Disables an already created hook.
     // Parameters:
     //   pTarget [in] A pointer to the target function.
     //                If this parameter is MH_ALL_HOOKS, all created hooks are
     //                disabled in one go.
-    MH_STATUS WINAPI MH_DisableHook(LPVOID pTarget);
-
-    // Queues to enable an already created hook.
-    // Parameters:
-    //   pTarget [in] A pointer to the target function.
-    //                If this parameter is MH_ALL_HOOKS, all created hooks are
-    //                queued to be enabled.
-    MH_STATUS WINAPI MH_QueueEnableHook(LPVOID pTarget);
-
-    // Queues to disable an already created hook.
-    // Parameters:
-    //   pTarget [in] A pointer to the target function.
-    //                If this parameter is MH_ALL_HOOKS, all created hooks are
-    //                queued to be disabled.
-    MH_STATUS WINAPI MH_QueueDisableHook(LPVOID pTarget);
-
-    // Applies all queued changes in one go.
-    MH_STATUS WINAPI MH_ApplyQueued(VOID);
-
-    // Translates the MH_STATUS to its name as a string.
-    const char * WINAPI MH_StatusToString(MH_STATUS status);
+    MH_API MH_STATUS WINAPI MH_DisableHook(LPVOID pTarget);
 
 #ifdef __cplusplus
 }

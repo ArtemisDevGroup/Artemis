@@ -48,6 +48,15 @@
     <Filter Include="MinHook\Source Files\HDE">
       <UniqueIdentifier>{8de38540-330e-48d0-b9b5-8d49edfbe114}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{735f7ff8-37a2-46f2-8233-da26570b0aeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header Files">
+      <UniqueIdentifier>{af6d2a09-f4e9-40e1-8f11-3f9fb8801170}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Source Files">
+      <UniqueIdentifier>{a2525b51-1c65-4e11-aac5-59bbccf46881}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -113,6 +122,9 @@
     <ClInclude Include="API\Hook.hxx">
       <Filter>API\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Midnight.hxx">
+      <Filter>Framework\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -160,11 +172,17 @@
     <ClCompile Include="MinHook\buffer.c">
       <Filter>MinHook\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MinHook\hook.c">
+    <ClCompile Include="MinHook\MinHook.c">
       <Filter>MinHook\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MinHook\trampoline.c">
       <Filter>MinHook\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PresentHook.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Midnight.cxx">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

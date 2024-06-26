@@ -39,7 +39,7 @@ namespace Artemis::API {
 
 	MH_STATUS minhook_exception::mh_status() const { return this->_Status; }
 
-	ARTEMIS_API void global_hook_alloc() {
+	void global_hook_alloc() {
 		__stack_record();
 
 		MH_STATUS status = MH_Initialize();
@@ -51,7 +51,7 @@ namespace Artemis::API {
 		__stack_escape();
 	}
 
-	ARTEMIS_API void global_hook_release() {
+	void global_hook_release() {
 		__stack_record();
 
 		MH_STATUS status = MH_Uninitialize();
