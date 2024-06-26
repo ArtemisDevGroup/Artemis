@@ -165,4 +165,31 @@ namespace Artemis::API {
 	const call_stack* exception::calls() const { return &this->_CallStackSnapshot; }
 
 	event<exception>* exception::throw_event() { return &g_ThrowEvent; }
+
+	std::string win32_exception::win32_message(DWORD _Win32ErrorCode) {
+		CHAR szBuffer[256];
+
+		DWORD dwReturn = FormatMessageA(
+			FORMAT_MESSAGE_FROM_SYSTEM,
+			nullptr,
+			_Win32ErrorCode,
+			LANG_ENGLISH,
+			szBuffer,
+			sizeof(szBuffer),
+			nullptr
+		);
+
+		if (!dwReturn)
+			lstrcpyA(szBuffer, "Fetching error message failed.");
+
+		return "Win32: " + std::string(szBuffer);
+	}
+
+	win32_exception::win32_exception(const char* const _FunctionName, call_stack_entry* _PopUntil = nullptr) : exception(win32_message(GetLastError()).c_str(), _PopUntil), _Win32Function(_FunctionName), _Win32ErrorCode(GetLastError()) {}
+
+	win32_exception::win32_exception(DWORD _Win32ErrorCode, const char* const _FunctionName, call_stack_entry* _PopUntil) : exception(win32_message(_Win32ErrorCode).c_str(), _PopUntil), _Win32Function(_FunctionName), _Win32ErrorCode(_Win32ErrorCode) {}
+
+	const char* const win32_exception::win32_function() { return this->_Win32Function.c_str(); }
+
+	DWORD win32_exception::win32_error_code() { return this->_Win32ErrorCode; }
 }

@@ -4,9 +4,19 @@
 #include "Definitions.hxx"
 #include "Event.hxx"
 
+#include <exception>	// std::exception
+#include <string>		// std::string
+#include <vector>		// std::vector
+#include <type_traits>	// std::is_base_of_v
+#include <memory>		// std::shared_ptr, std::make_shared
+#include <functional>	// std::function
+
+#include <Windows.h>	// DWORD, GetLastError()
+
 #ifdef ARTEMIS_DISABLE_CALL_STACK
 #define __stack_record()
 #define __stack_escape()
+#error __stack_this_cse() is not defined, and call stack manager pop_until calls are not configured to be disabled in the exception constructor.
 #else
 #define __stack_record() Artemis::API::call_stack_manager::global()->record(__FUNCTION__, __FILE__, __LINE__)
 #define __stack_escape() Artemis::API::call_stack_manager::global()->escape()
@@ -107,6 +117,26 @@ namespace Artemis::API {
 
 	template<typename T>
 	concept derived_exception_type = std::is_base_of_v<exception, T>;
+
+	class win32_exception : public exception {
+		std::string _Win32Function;
+		DWORD _Win32ErrorCode;
+
+		ARTEMIS_API std::string win32_message(DWORD _Win32ErrorCode);
+
+	public:
+		ARTEMIS_API win32_exception(const char* const _FunctionName, call_stack_entry* _PopUntil = nullptr);
+		ARTEMIS_API win32_exception(DWORD _Win32ErrorCode, const char* const _FunctionName, call_stack_entry* _PopUntil = nullptr);
+
+		template<derived_exception_type T>
+		inline win32_exception(const char* const _FunctionName, const T& _InnerException) : exception(win32_message(GetLastError()).c_str(), _InnerException), _Win32Function(_FunctionName), _Win32ErrorCode(GetLastError()) {}
+
+		template<derived_exception_type T>
+		inline win32_exception(DWORD _Win32ErrorCode, const char* const _FunctionName, const T& _InnerException) : exception(win32_message(_Win32ErrorCode).c_str(), _InnerException), _Win32Function(_FunctionName), _Win32ErrorCode(_Win32ErrorCode) {}
+
+		ARTEMIS_API const char* const win32_function();
+		ARTEMIS_API DWORD win32_error_code();
+	};
 }
 
 #endif // !ARTEMIS_API_ERROR_HXX

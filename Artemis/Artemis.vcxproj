@@ -206,6 +206,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="API\Console.hxx" />
     <ClInclude Include="API\Definitions.hxx" />
     <ClInclude Include="API\Error.hxx" />
     <ClInclude Include="API\Event.hxx" />
@@ -230,6 +231,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="API\Console.cxx" />
     <ClCompile Include="API\Error.cxx" />
     <ClCompile Include="API\Hook.cxx" />
     <ClCompile Include="dllmain.cpp" />
