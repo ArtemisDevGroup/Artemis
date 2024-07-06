@@ -6,15 +6,15 @@
 #include "API/Hook.hxx"
 
 namespace Artemis {
-	typedef HRESULT(APIENTRY* present_function)(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags);
+	typedef HRESULT(APIENTRY* TPRESENT)(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags);
 	
 	class midnight {
 	public:
 		struct {
-			API::hook<present_function> hkInstance;
+			API::hook<TPRESENT> hkInstance;
 			HWND hWnd;
 			WNDPROC oWndProc;
-			present_function oPresent;
+			TPRESENT oPresent;
 		} _PresentHook;
 
 		static ARTEMIS_API midnight* global();

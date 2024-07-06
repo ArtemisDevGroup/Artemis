@@ -13,6 +13,10 @@ namespace Artemis::API {
 	ARTEMIS_API bool is_console_open() noexcept;
 
 	ARTEMIS_API HWND console_window_handle();
+
+	ARTEMIS_API void open_console_io();
+
+	ARTEMIS_API void close_console_io();
 }
 
 #endif // !ARTEMIS_API_CONSOLE_HXX

@@ -189,7 +189,21 @@ namespace Artemis::API {
 
 	win32_exception::win32_exception(DWORD _Win32ErrorCode, const char* const _FunctionName, call_stack_entry* _PopUntil) : exception(win32_message(_Win32ErrorCode).c_str(), _PopUntil), _Win32Function(_FunctionName), _Win32ErrorCode(_Win32ErrorCode) {}
 
-	const char* const win32_exception::win32_function() { return this->_Win32Function.c_str(); }
+	const char* const win32_exception::win32_function() const { return this->_Win32Function.c_str(); }
 
-	DWORD win32_exception::win32_error_code() { return this->_Win32ErrorCode; }
+	DWORD win32_exception::win32_error_code() const { return this->_Win32ErrorCode; }
+
+	std::string errno_exception::errno_message(errno_t _ErrnoCode) {
+		char buffer[256];
+		strerror_s(buffer, _ErrnoCode);
+		return std::string(buffer);
+	}
+
+	errno_exception::errno_exception(const char* const _FunctionName, call_stack_entry* _PopUntil) : exception(errno_message(errno).c_str(), _PopUntil), _ErrnoCode(errno), _CStdFunction(_FunctionName) {}
+
+	errno_exception::errno_exception(errno_t _ErrnoCode, const char* const _FunctionName, call_stack_entry* _PopUntil) : exception(errno_message(_ErrnoCode).c_str(), _PopUntil), _ErrnoCode(_ErrnoCode), _CStdFunction(_FunctionName) {}
+
+	const char* const errno_exception::cstd_function() const { return this->_CStdFunction.c_str(); }
+
+	errno_t errno_exception::errno_code() const { return this->_ErrnoCode; }
 }

@@ -112,6 +112,13 @@ namespace Artemis::API {
 
 		ARTEMIS_API const call_stack* calls() const;
 
+		template<typename T>
+			requires(std::is_base_of_v<exception, T>)
+		inline std::remove_reference_t<T> rethrow() {
+			this->_CallStackSnapshot.pop_back();
+			return *this;
+		}
+
 		ARTEMIS_API static event<exception>* throw_event();
 	};
 
@@ -122,7 +129,7 @@ namespace Artemis::API {
 		std::string _Win32Function;
 		DWORD _Win32ErrorCode;
 
-		ARTEMIS_API std::string win32_message(DWORD _Win32ErrorCode);
+		ARTEMIS_API static std::string win32_message(DWORD _Win32ErrorCode);
 
 	public:
 		ARTEMIS_API win32_exception(const char* const _FunctionName, call_stack_entry* _PopUntil = nullptr);
@@ -134,8 +141,29 @@ namespace Artemis::API {
 		template<derived_exception_type T>
 		inline win32_exception(DWORD _Win32ErrorCode, const char* const _FunctionName, const T& _InnerException) : exception(win32_message(_Win32ErrorCode).c_str(), _InnerException), _Win32Function(_FunctionName), _Win32ErrorCode(_Win32ErrorCode) {}
 
-		ARTEMIS_API const char* const win32_function();
-		ARTEMIS_API DWORD win32_error_code();
+		ARTEMIS_API const char* const win32_function() 
+			const;
+		ARTEMIS_API DWORD win32_error_code() const;
+	};
+
+	class errno_exception : public exception {
+		std::string _CStdFunction;
+		errno_t _ErrnoCode;
+
+		ARTEMIS_API static std::string errno_message(errno_t _ErrnoCode);
+
+	public:
+		ARTEMIS_API errno_exception(const char* const _FunctionName, call_stack_entry* _PopUntil = nullptr);
+		ARTEMIS_API errno_exception(errno_t _ErrnoCode, const char* const _FunctionName, call_stack_entry* _PopUntil = nullptr);
+
+		template<derived_exception_type T>
+		inline errno_exception(const char* const _FunctionName, const T& _InnerException) : exception(errno_message(errno).c_str(), _InnerException), _ErrnoCode(errno), _CStdFunction(_FunctionName) {}
+
+		template<derived_exception_type T>
+		inline errno_exception(errno_t _ErrnoCode, const char* const _FunctionName, const T& _InnerException) : exception(errno_message(_ErrnoCode).c_str(), _InnerException), _ErrnoCode(_ErrnoCode), _CStdFunction(_FunctionName) {}
+
+		ARTEMIS_API const char* const cstd_function() const;
+		ARTEMIS_API errno_t errno_code() const;
 	};
 }
 

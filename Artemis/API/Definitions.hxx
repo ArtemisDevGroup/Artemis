@@ -11,6 +11,20 @@
 //		Replaces the default entry point with an entry point that does not create a new main thread.
 //*-----------------*
 
+//*-----------------*
+// Systematic logical rules:
+// - Nested calls HAVE to rethrow exceptions by throwing the object returned by the e.rethrow() method in the catch clause.
+#if 0 // Ex:
+try {
+	nested_call(); // This call potentially throws an Artemis exception.
+}
+catch (exception& e) {
+	throw e.rethrow<decltype(e)>(); // The caller rethrows the exception.
+									// NOTE: The exception event is only invoked for the original throw, and not for the rethrow.
+}
+#endif
+//*-----------------*
+
 #ifdef ARTEMIS_EXPORTS
 #define ARTEMIS_API __declspec(dllexport)
 #else

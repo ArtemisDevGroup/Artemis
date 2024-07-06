@@ -5,7 +5,7 @@
 namespace Artemis { midnight* g_DataInstance = nullptr; }
 
 using Artemis::midnight;
-using Artemis::present_function;
+using Artemis::TPRESENT;
 using Artemis::API::hook;
 
 // Forwarded for initialization of present hook.
@@ -23,7 +23,7 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 	HWND hWnd = GetGameWindow();
 	LPVOID lpPresentFunction = GetPresentFunctionPtr(hWnd);
 
-	Artemis::g_DataInstance = new midnight{ { hook<present_function>(lpPresentFunction, hkPresent) } };
+	Artemis::g_DataInstance = new midnight{ { hook<TPRESENT>(lpPresentFunction, hkPresent) } };
 
 	auto& presentHook = Artemis::g_DataInstance->_PresentHook;
 
