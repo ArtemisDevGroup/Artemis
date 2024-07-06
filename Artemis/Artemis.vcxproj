@@ -211,6 +211,7 @@
     <ClInclude Include="API\Error.hxx" />
     <ClInclude Include="API\Event.hxx" />
     <ClInclude Include="API\Hook.hxx" />
+    <ClInclude Include="API\Logging.hxx" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_impl_dx11.h" />
@@ -234,6 +235,7 @@
     <ClCompile Include="API\Console.cxx" />
     <ClCompile Include="API\Error.cxx" />
     <ClCompile Include="API\Hook.cxx" />
+    <ClCompile Include="API\Logging.cxx" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="ImGui\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Test|x64'">NotUsing</PrecompiledHeader>

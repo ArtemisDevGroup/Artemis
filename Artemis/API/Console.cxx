@@ -45,8 +45,20 @@ namespace Artemis::API {
 			throw exception("Console is not open.");
 		}
 
+		__stack_escape();
 		return GetConsoleWindow();
+	}
 
+	void set_console_window_title(const char* const _Title) {
+		__stack_record();
+		call_stack_entry cse = __stack_this_cse();
+
+		if (!g_ConsoleIsOpen)
+			throw exception("Console is not open.", &cse);
+
+		if (!SetConsoleTitleA(_Title))
+			throw win32_exception("SetConsoleTitleA", &cse);
+			
 		__stack_escape();
 	}
 
@@ -87,4 +99,6 @@ namespace Artemis::API {
 
 		__stack_escape();
 	}
+
+	bool is_console_io_open() noexcept { return g_StdOut && g_StdIn; }
 }
