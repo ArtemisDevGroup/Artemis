@@ -210,6 +210,7 @@
     <ClInclude Include="API\Definitions.hxx" />
     <ClInclude Include="API\Error.hxx" />
     <ClInclude Include="API\Event.hxx" />
+    <ClInclude Include="API\File.hxx" />
     <ClInclude Include="API\Hook.hxx" />
     <ClInclude Include="API\Logging.hxx" />
     <ClInclude Include="ImGui\imconfig.h" />
@@ -234,6 +235,7 @@
   <ItemGroup>
     <ClCompile Include="API\Console.cxx" />
     <ClCompile Include="API\Error.cxx" />
+    <ClCompile Include="API\File.cxx" />
     <ClCompile Include="API\Hook.cxx" />
     <ClCompile Include="API\Logging.cxx" />
     <ClCompile Include="dllmain.cpp" />

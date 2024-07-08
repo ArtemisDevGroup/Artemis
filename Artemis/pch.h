@@ -8,6 +8,9 @@
 #define PCH_H
 
 #include <Windows.h>
+#include <TlHelp32.h>
+#include <Psapi.h>
+#include <Shlwapi.h>
 #include <d3d11.h>
 #include <dxgi.h>
 

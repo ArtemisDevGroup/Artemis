@@ -35,7 +35,7 @@ namespace Artemis::API {
 		}
 	}
 
-	minhook_exception::minhook_exception(MH_STATUS _StatusCode, call_stack_entry* _PopUntil) : exception(message(_StatusCode), _PopUntil), _Status(_StatusCode) {}
+	minhook_exception::minhook_exception(MH_STATUS _StatusCode) : exception(message(_StatusCode)), _Status(_StatusCode) {}
 
 	MH_STATUS minhook_exception::mh_status() const { return this->_Status; }
 
@@ -43,10 +43,8 @@ namespace Artemis::API {
 		__stack_record();
 
 		MH_STATUS status = MH_Initialize();
-		if (status != MH_OK) {
-			call_stack_entry cse = __stack_this_cse();
-			throw minhook_exception(status, &cse);
-		}
+		if (status != MH_OK)
+			throw minhook_exception(status);
 
 		__stack_escape();
 	}
@@ -55,10 +53,8 @@ namespace Artemis::API {
 		__stack_record();
 
 		MH_STATUS status = MH_Uninitialize();
-		if (status != MH_OK) {
-			call_stack_entry cse = __stack_this_cse();
-			throw minhook_exception(status, &cse);
-		}
+		if (status != MH_OK)
+			throw minhook_exception(status);
 
 		__stack_escape();
 	}

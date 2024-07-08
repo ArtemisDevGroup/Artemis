@@ -17,24 +17,6 @@ namespace Artemis::API {
 			this->_StackEntries.pop_back();
 	}
 
-	void call_stack::pop_until(const call_stack_entry& _Entry) {
-		bool run = true;
-
-		while (run && this->_StackEntries.size() > 0) {
-			auto end = std::prev(this->_StackEntries.end());
-
-			if (end->_Function	== _Entry._Function &&
-				end->_File		== _Entry._File		&&
-				end->_Line		== _Entry._Line		  ) { run = false; }
-
-			this->_StackEntries.pop_back();
-		}
-	}
-
-	void call_stack::pop_until(std::string _Function, std::string _File, int _Line) {
-		this->pop_until(call_stack_entry(_Function, _File, _Line));
-	}
-
 	const std::vector<call_stack_entry>& call_stack::entries() const { return this->_StackEntries; }
 
 	DWORD call_stack::thread_id() const { return _ThreadId; }
@@ -136,26 +118,18 @@ namespace Artemis::API {
 
 	void exception::event_invoke() { g_ThrowEvent.invoke(this, new event_args(), true); }
 
-	exception::exception(call_stack_entry* _PopUntil) : std::exception("An unknown Artemis exception has occured."), _CallStackSnapshot(nullptr, 0) {
+	exception::exception() : std::exception("An unknown Artemis exception has occured."), _CallStackSnapshot(nullptr, 0) {
 		call_stack* current = call_stack_manager::global()->fetch();
 		this->_CallStackSnapshot = current->snap();
-
-		if (_PopUntil)
-			current->pop_until(*_PopUntil);
-		else
-			current->drop();
+		current->pop_back();
 
 		event_invoke();
 	}
 
-	exception::exception(const char* const _Message, call_stack_entry* _PopUntil) : std::exception(_Message), _CallStackSnapshot(nullptr, 0) {
+	exception::exception(const char* const _Message) : std::exception(_Message), _CallStackSnapshot(nullptr, 0) {
 		call_stack* current = call_stack_manager::global()->fetch();
 		this->_CallStackSnapshot = current->snap();
-
-		if (_PopUntil)
-			current->pop_until(*_PopUntil);
-		else
-			current->drop();
+		current->pop_back();
 		
 		event_invoke();
 	}
@@ -185,9 +159,9 @@ namespace Artemis::API {
 		return "Win32: " + std::string(szBuffer);
 	}
 
-	win32_exception::win32_exception(const char* const _FunctionName, call_stack_entry* _PopUntil = nullptr) : exception(win32_message(GetLastError()).c_str(), _PopUntil), _Win32Function(_FunctionName), _Win32ErrorCode(GetLastError()) {}
+	win32_exception::win32_exception(const char* const _FunctionName) : exception(win32_message(GetLastError()).c_str()), _Win32Function(_FunctionName), _Win32ErrorCode(GetLastError()) {}
 
-	win32_exception::win32_exception(DWORD _Win32ErrorCode, const char* const _FunctionName, call_stack_entry* _PopUntil) : exception(win32_message(_Win32ErrorCode).c_str(), _PopUntil), _Win32Function(_FunctionName), _Win32ErrorCode(_Win32ErrorCode) {}
+	win32_exception::win32_exception(DWORD _Win32ErrorCode, const char* const _FunctionName) : exception(win32_message(_Win32ErrorCode).c_str()), _Win32Function(_FunctionName), _Win32ErrorCode(_Win32ErrorCode) {}
 
 	const char* const win32_exception::win32_function() const { return this->_Win32Function.c_str(); }
 
@@ -196,12 +170,17 @@ namespace Artemis::API {
 	std::string errno_exception::errno_message(errno_t _ErrnoCode) {
 		char buffer[256];
 		strerror_s(buffer, _ErrnoCode);
+#pragma warning(push)
+#pragma warning(disable:6054)	// String 'buffer' might not be zero-terminated
+								// Disabled due to strerror_s not being SAL-annoted as
+								// guaranteeing null termination, but does.
 		return std::string(buffer);
+#pragma warning(pop)
 	}
 
-	errno_exception::errno_exception(const char* const _FunctionName, call_stack_entry* _PopUntil) : exception(errno_message(errno).c_str(), _PopUntil), _ErrnoCode(errno), _CStdFunction(_FunctionName) {}
+	errno_exception::errno_exception(const char* const _FunctionName) : exception(errno_message(errno).c_str()), _ErrnoCode(errno), _CStdFunction(_FunctionName) {}
 
-	errno_exception::errno_exception(errno_t _ErrnoCode, const char* const _FunctionName, call_stack_entry* _PopUntil) : exception(errno_message(_ErrnoCode).c_str(), _PopUntil), _ErrnoCode(_ErrnoCode), _CStdFunction(_FunctionName) {}
+	errno_exception::errno_exception(errno_t _ErrnoCode, const char* const _FunctionName) : exception(errno_message(_ErrnoCode).c_str()), _ErrnoCode(_ErrnoCode), _CStdFunction(_FunctionName) {}
 
 	const char* const errno_exception::cstd_function() const { return this->_CStdFunction.c_str(); }
 

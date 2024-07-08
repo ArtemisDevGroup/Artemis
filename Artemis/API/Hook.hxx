@@ -13,7 +13,7 @@ namespace Artemis::API {
 		ARTEMIS_API static const char* const message(MH_STATUS _StatusCode);
 
 	public:
-		ARTEMIS_API minhook_exception(MH_STATUS _StatusCode, call_stack_entry* _PopUntil = nullptr);
+		ARTEMIS_API minhook_exception(MH_STATUS _StatusCode);
 
 		template<derived_exception_type T>
 		inline minhook_exception(MH_STATUS _StatusCode, const T& _InnerException) : exception(message(_StatusCode), _InnerException), _Status(_StatusCode) {}
@@ -37,10 +37,8 @@ namespace Artemis::API {
 			__stack_record();
 
 			MH_STATUS status = MH_CreateHook(_Target, _Detour, (LPVOID*)&this->_Original);
-			if (status != MH_OK) {
-				call_stack_entry cse = __stack_this_cse();
-				throw minhook_exception(status, &cse);
-			}
+			if (status != MH_OK)
+				throw minhook_exception(status);
 
 			__stack_escape();
 		}
@@ -60,10 +58,8 @@ namespace Artemis::API {
 			__stack_record();
 
 			MH_STATUS status = MH_EnableHook(this->_Target);
-			if (status != MH_OK) {
-				call_stack_entry cse = __stack_this_cse();
-				throw minhook_exception(status, &cse);
-			}
+			if (status != MH_OK)
+				throw minhook_exception(status);
 
 			__stack_escape();
 		}
@@ -72,10 +68,8 @@ namespace Artemis::API {
 			__stack_record();
 
 			MH_STATUS status = MH_DisableHook(this->_Target);
-			if (status != MH_OK) {
-				call_stack_entry cse = __stack_this_cse();
-				throw minhook_exception(status, &cse);
-			}
+			if (status != MH_OK)
+				throw minhook_exception(status);
 
 			__stack_escape();
 		}

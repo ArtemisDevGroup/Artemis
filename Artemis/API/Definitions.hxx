@@ -13,14 +13,41 @@
 
 //*-----------------*
 // Systematic logical rules:
-// - Nested calls HAVE to rethrow exceptions by throwing the object returned by the e.rethrow() method in the catch clause.
-#if 0 // Ex:
-try {
-	nested_call(); // This call potentially throws an Artemis exception.
+// 1. If __stack_record() is called, __stack_escape() must also be called within the scope of the call.
+//	  This means that __stack_escape() must ALWAYS be called before a return statement.
+//	  This also means that the return statement itself HAS to be non-throwing.
+//	  However, when an exception is thrown, __stack_escape() does not have to be called.
+// 
+// 2. If a function that is potentially throwing an Artemis-exception, it has to be called
+//    inside of a __stack_rethrow() statement in order for the call-stack to be rewound properly.
+//
+#if 0 // Example of 1 and 2:
+int foo() {
+	__stack_record(); // Called in the beginning of every Artemis API function.
+
+	if (error_state)
+		throw exception("An error has occured.");	// Jumps out of the function,
+													// but takes care of the call-stack itself,
+													// so no need to call __stack_escape().
+
+	__stack_escape(); // Called before the return statement.
+	return 0xDEADBEEF;
 }
-catch (exception& e) {
-	throw e.rethrow<decltype(e)>(); // The caller rethrows the exception.
-									// NOTE: The exception event is only invoked for the original throw, and not for the rethrow.
+
+int bar() {
+	__stack_record();
+
+	int ret;
+	__stack_rethrow(ret = foo());	// Since foo is potentially throwing an
+									// Artemis-exception, the statement calling it
+									// is put inside of a rethrow statement.
+									// This makes sure that the call stack is properly
+									// rewound when a throw in a nested function happens.
+
+	__stack_escape();				// __stack_escape() is yet again called right before
+									// the return statement, in order to rewind the call stack
+									// if foo() succeeds.
+	return ret;
 }
 #endif
 //*-----------------*

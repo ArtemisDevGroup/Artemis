@@ -16,12 +16,12 @@
 #ifdef ARTEMIS_DISABLE_CALL_STACK
 #define __stack_record()
 #define __stack_escape()
-#error __stack_this_cse() is not defined, and call stack manager pop_until calls are not configured to be disabled in the exception constructor.
 #else
 #define __stack_record() Artemis::API::call_stack_manager::global()->record(__FUNCTION__, __FILE__, __LINE__)
 #define __stack_escape() Artemis::API::call_stack_manager::global()->escape()
-#define __stack_this_cse() Artemis::API::call_stack_entry(__FUNCTION__, __FILE__, __LINE__)
 #endif // ARTEMIS_DISABLE_CALL_STACK
+
+#define __stack_rethrow(potentially_throwing_call) try { potentially_throwing_call ; } catch (const Artemis::API::exception&) { __stack_escape(); throw; } 
 
 
 namespace Artemis::API {
@@ -45,8 +45,6 @@ namespace Artemis::API {
 		ARTEMIS_API void push_back(std::string _Function, std::string _File, int _Line); 
 		ARTEMIS_API void pop_back();
 		ARTEMIS_API void pop_back(int _Count);
-		ARTEMIS_API void pop_until(const call_stack_entry& _Entry);
-		ARTEMIS_API void pop_until(std::string _Function, std::string _File, int _Line);
 
 		ARTEMIS_API const std::vector<call_stack_entry>& entries() const;
 		ARTEMIS_API DWORD thread_id() const;
@@ -92,8 +90,8 @@ namespace Artemis::API {
 		ARTEMIS_API void event_invoke();
 
 	public:
-		ARTEMIS_API exception(call_stack_entry* _PopUntil = nullptr);
-		ARTEMIS_API exception(const char* const _Message, call_stack_entry* _PopUntil = nullptr);
+		ARTEMIS_API exception();
+		ARTEMIS_API exception(const char* const _Message);
 
 		template<class T>
 			requires(std::is_base_of_v<exception, T>)
@@ -112,13 +110,6 @@ namespace Artemis::API {
 
 		ARTEMIS_API const call_stack* calls() const;
 
-		template<typename T>
-			requires(std::is_base_of_v<exception, T>)
-		inline std::remove_reference_t<T> rethrow() {
-			this->_CallStackSnapshot.pop_back();
-			return *this;
-		}
-
 		ARTEMIS_API static event<exception>* throw_event();
 	};
 
@@ -132,8 +123,8 @@ namespace Artemis::API {
 		ARTEMIS_API static std::string win32_message(DWORD _Win32ErrorCode);
 
 	public:
-		ARTEMIS_API win32_exception(const char* const _FunctionName, call_stack_entry* _PopUntil = nullptr);
-		ARTEMIS_API win32_exception(DWORD _Win32ErrorCode, const char* const _FunctionName, call_stack_entry* _PopUntil = nullptr);
+		ARTEMIS_API win32_exception(const char* const _FunctionName);
+		ARTEMIS_API win32_exception(DWORD _Win32ErrorCode, const char* const _FunctionName);
 
 		template<derived_exception_type T>
 		inline win32_exception(const char* const _FunctionName, const T& _InnerException) : exception(win32_message(GetLastError()).c_str(), _InnerException), _Win32Function(_FunctionName), _Win32ErrorCode(GetLastError()) {}
@@ -153,8 +144,8 @@ namespace Artemis::API {
 		ARTEMIS_API static std::string errno_message(errno_t _ErrnoCode);
 
 	public:
-		ARTEMIS_API errno_exception(const char* const _FunctionName, call_stack_entry* _PopUntil = nullptr);
-		ARTEMIS_API errno_exception(errno_t _ErrnoCode, const char* const _FunctionName, call_stack_entry* _PopUntil = nullptr);
+		ARTEMIS_API errno_exception(const char* const _FunctionName);
+		ARTEMIS_API errno_exception(errno_t _ErrnoCode, const char* const _FunctionName);
 
 		template<derived_exception_type T>
 		inline errno_exception(const char* const _FunctionName, const T& _InnerException) : exception(errno_message(errno).c_str(), _InnerException), _ErrnoCode(errno), _CStdFunction(_FunctionName) {}
