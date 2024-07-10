@@ -156,6 +156,18 @@ namespace Artemis::API {
 		ARTEMIS_API const char* const cstd_function() const;
 		ARTEMIS_API errno_t errno_code() const;
 	};
+
+	class argument_exception : public exception {
+		std::string _ArgumentName;
+
+	public:
+		ARTEMIS_API argument_exception(const char* const _Message, const char* const _ArgumentName);
+
+		template<derived_exception_type T>
+		inline argument_exception(const char* const _Message, const char* const _ArgumentName, const T& _InnerException) : exception(_Message, _InnerException), _ArgumentName(_ArgumentName) {}
+
+		ARTEMIS_API const char* const argument() const;
+	};
 }
 
 #endif // !ARTEMIS_API_ERROR_HXX

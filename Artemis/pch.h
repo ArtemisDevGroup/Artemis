@@ -25,6 +25,7 @@
 #include <utility>
 #include <ranges>
 #include <sstream>
+#include <regex>
 
 #include <string.h>
 

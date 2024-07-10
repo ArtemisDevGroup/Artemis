@@ -185,4 +185,8 @@ namespace Artemis::API {
 	const char* const errno_exception::cstd_function() const { return this->_CStdFunction.c_str(); }
 
 	errno_t errno_exception::errno_code() const { return this->_ErrnoCode; }
+
+	argument_exception::argument_exception(const char* const _Message, const char* const _ArgumentName) : exception(_Message), _ArgumentName(_ArgumentName) {}
+
+	const char* const argument_exception::argument() const { return this->_ArgumentName.c_str(); }
 }

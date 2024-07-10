@@ -3,8 +3,10 @@
 
 #include "Definitions.hxx"
 
-#include <Windows.h>	// DWORD, HANDLE
+#include <Windows.h>	// DWORD, HANDLE, FILE_GENERIC_READ, FILE_GENERIC_WRITE
+
 #include <memory>		// std::unique_ptr
+#include <string>		// std::string
 
 namespace Artemis::API {
 	struct safe_win32_handle_deleter {
@@ -94,6 +96,8 @@ namespace Artemis::API {
 
 	class file_info {
 		std::string _FilePath;
+		std::string _FileName;
+		std::string _FileType;
 
 	public:
 		file_info(std::string _FilePath);
@@ -102,9 +106,10 @@ namespace Artemis::API {
 
 		file open(access_mode _AccessMode, open_mode _OpenMode) const;
 
-		std::string name() const;
-		std::string type() const;
-		std::string path() const;
+		const char* const name() const noexcept;
+		const char* const type() const noexcept;
+		char drive_letter() const noexcept;
+		const char* const qualified_path() const noexcept;
 	};
 
 	class file {
