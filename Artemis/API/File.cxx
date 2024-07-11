@@ -79,4 +79,29 @@ namespace Artemis::API {
 	char file_info::drive_letter() const noexcept { return this->_FilePath[0]; }
 
 	const char* const file_info::qualified_path() const noexcept { return this->_FilePath.c_str(); }
+
+	file::file() noexcept { this->hFile = nullptr; }
+
+	file::file(const std::string& _FilePath, access_mode _AccessMode, open_mode _OpenMode) {
+		__stack_record();
+
+		HANDLE hFile = CreateFileA(
+			_FilePath.c_str(),
+			(DWORD)_AccessMode,
+			0,
+			nullptr,
+			(DWORD)_OpenMode,
+			FILE_ATTRIBUTE_NORMAL,
+			nullptr
+		);
+
+		if (hFile == INVALID_HANDLE_VALUE)
+			throw win32_exception("CreateFileA");
+
+		this->hFile = safe_win32_handle(hFile);
+
+		__stack_escape();
+	}
+
+
 }

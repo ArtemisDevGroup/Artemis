@@ -7,10 +7,12 @@
 
 #include <memory>		// std::unique_ptr
 #include <string>		// std::string
+#include <iterator>		// std::random_access_iterator
+#include <vector>		// std::vector
 
 namespace Artemis::API {
 	struct safe_win32_handle_deleter {
-		void operator()(HANDLE hObject) const;
+		ARTEMIS_API void operator()(HANDLE hObject) const;
 	};
 
 	using safe_win32_handle = std::unique_ptr<void, safe_win32_handle_deleter>;
@@ -19,13 +21,13 @@ namespace Artemis::API {
 
 	};
 
-	enum class access_mode {
+	enum class access_mode : DWORD {
 		read = FILE_GENERIC_READ,
 		write = FILE_GENERIC_WRITE,
 		readwrite = FILE_GENERIC_READ | FILE_GENERIC_WRITE
 	};
 
-	enum class open_mode {
+	enum class open_mode : DWORD{
 		/// <summary>
 		/// <para>Creates a new file, only if it does not already exist.</para>
 		/// <para>
@@ -92,6 +94,31 @@ namespace Artemis::API {
 		truncate_existing = 5
 	};
 
+	enum class attribute : DWORD {
+
+	};
+
+	struct attribute_collection {
+		DWORD dwAttributes;
+
+		ARTEMIS_API attribute_collection(DWORD _Attributes);
+		
+		template<std::input_iterator _It>
+			requires(std::is_same_v<_It::value_type, attribute>)
+		inline attribute_collection(_It _Begin, _It _End) {
+
+		}
+
+		inline attribute_collection(const std::vector<attribute>& _Attributes) {
+			
+		}
+
+		bool is_present(attribute _Attribute) const;
+
+		void add(attribute _Attribute);
+		void remove(attribute _Attribute);
+	};
+
 	class file;
 
 	class file_info {
@@ -100,31 +127,38 @@ namespace Artemis::API {
 		std::string _FileType;
 
 	public:
-		file_info(std::string _FilePath);
+		ARTEMIS_API file_info(std::string _FilePath);
 
-		bool exists() const;
+		ARTEMIS_API bool exists() const;
 
-		file open(access_mode _AccessMode, open_mode _OpenMode) const;
+		ARTEMIS_API file open(access_mode _AccessMode, open_mode _OpenMode) const;
 
-		const char* const name() const noexcept;
-		const char* const type() const noexcept;
-		char drive_letter() const noexcept;
-		const char* const qualified_path() const noexcept;
+		ARTEMIS_API const char* const name() const noexcept;
+		ARTEMIS_API const char* const type() const noexcept;
+		ARTEMIS_API char drive_letter() const noexcept;
+		ARTEMIS_API const char* const qualified_path() const noexcept;
 	};
+
 
 	class file {
 		safe_win32_handle hFile;
 
-		DWORD dwFileSize;
-
 	public:
-		file();
-		file(std::string _FilePath, access_mode _AccessMode, open_mode _OpenMode);
+		ARTEMIS_API file() noexcept;
+		ARTEMIS_API file(const std::string& _FilePath, access_mode _AccessMode, open_mode _OpenMode);
+
 		file(const file&) = delete;
 		file(file&&) = default;
 
 		file& operator=(const file&) = delete;
 		file& operator=(file&&) = default;
+
+		void read() const;
+		void write();
+
+		attribute_collection get_attributes() const;
+		bool has_attribute(attribute _Attribute) const;
+		void set_attributes(attribute_collection _Attributes);
 	};
 }
 
