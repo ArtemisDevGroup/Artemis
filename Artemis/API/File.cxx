@@ -11,10 +11,20 @@ namespace Artemis::API {
 		CloseHandle(hObject);
 	}
 
-	file_info::file_info(std::string _FilePath) {
+	attribute_collection::attribute_collection(DWORD _Attributes) noexcept : dwAttributes(_Attributes) {}
+
+	attribute_collection::attribute_collection(const std::vector<attribute>& _Attributes) noexcept : attribute_collection(_Attributes.begin(), _Attributes.end()) {}
+
+	bool attribute_collection::is_present(attribute _Attribute) const noexcept { return bool(this->dwAttributes & (DWORD)_Attribute); }
+
+	void attribute_collection::add(attribute _Attribute) noexcept { this->dwAttributes |= (DWORD)_Attribute; }
+
+	void attribute_collection::remove(attribute _Attribute) noexcept { this->dwAttributes ^= (DWORD)_Attribute; }
+
+	file_info::file_info(const std::string_view& _FilePath) {
 		__stack_record();
 
-		if (std::regex_match(_FilePath, c_RelativePathRegex)) {
+		if (std::regex_match(_FilePath.data(), c_RelativePathRegex)) {
 			CHAR szBuffer[MAX_PATH];
 
 			DWORD dwSize = GetModuleFileNameA(
@@ -29,20 +39,20 @@ namespace Artemis::API {
 			for (dwSize -= 1; dwSize >= 0 && szBuffer[dwSize] != '\\'; dwSize--)
 				szBuffer[dwSize] = '\0';
 
-			lstrcatA(szBuffer, _FilePath.c_str());
+			lstrcatA(szBuffer, _FilePath.data());
 
 			this->_FilePath = std::string(szBuffer);
 		}
-		else if (std::regex_match(_FilePath, c_AbsolutePathRegex)) {
+		else if (std::regex_match(_FilePath.data(), c_AbsolutePathRegex)) {
 			this->_FilePath = _FilePath;
 		}
 		else throw argument_exception("Path has invalid format.", "_FilePath");
 
-		std::smatch matches;
-		assert(std::regex_match(this->_FilePath, matches, c_FetchingRegex));
+		std::cmatch matches;
+		assert(std::regex_match(this->_FilePath.data(), matches, c_FetchingRegex));
 		
-		this->_FileName = matches[0];
-		this->_FilePath = matches[1];
+		this->_FileName = matches[0].str();
+		this->_FilePath = matches[1].str();
 
 		__stack_escape();
 	}
@@ -50,7 +60,7 @@ namespace Artemis::API {
 	bool file_info::exists() const {
 		__stack_record();
 
-		BOOL bReturn = PathFileExistsA(this->_FilePath.c_str());
+		BOOL bReturn = PathFileExistsA(this->_FilePath.data());
 
 		if (!bReturn) {
 			DWORD dwLastError = GetLastError();
@@ -72,21 +82,21 @@ namespace Artemis::API {
 		return ret;
 	}
 
-	const char* const file_info::name() const noexcept { return this->_FileName.c_str(); }
+	const std::string_view& file_info::name() const noexcept { return this->_FileName; }
 
-	const char* const file_info::type() const noexcept { return this->_FileType.c_str(); }
+	const std::string_view& file_info::type() const noexcept { return this->_FileType; }
 
 	char file_info::drive_letter() const noexcept { return this->_FilePath[0]; }
 
-	const char* const file_info::qualified_path() const noexcept { return this->_FilePath.c_str(); }
+	const std::string_view& file_info::qualified_path() const noexcept { return this->_FilePath; }
 
-	file::file() noexcept { this->hFile = nullptr; }
+	file::file() noexcept : hFile(nullptr), _FilePath("") {}
 
-	file::file(const std::string& _FilePath, access_mode _AccessMode, open_mode _OpenMode) {
+	file::file(const std::string_view& _FilePath, access_mode _AccessMode, open_mode _OpenMode) : _FilePath(_FilePath) {
 		__stack_record();
 
 		HANDLE hFile = CreateFileA(
-			_FilePath.c_str(),
+			this->_FilePath.data(),
 			(DWORD)_AccessMode,
 			0,
 			nullptr,
@@ -103,5 +113,64 @@ namespace Artemis::API {
 		__stack_escape();
 	}
 
+	void file::read(void* const _Buffer, size_t _Size) const {
+		__stack_record();
 
+		if (!ReadFile(
+			this->hFile.get(),
+			_Buffer,
+			_Size,
+			nullptr,
+			nullptr
+		)) throw win32_exception("ReadFile");
+
+		__stack_escape();
+	}
+
+	void file::write(const void* const _Buffer, size_t _Size) {
+		__stack_record();
+
+		if (!WriteFile(
+			this->hFile.get(),
+			_Buffer,
+			_Size,
+			nullptr,
+			nullptr
+		)) throw win32_exception("WriteFile");
+
+		__stack_escape();
+	}
+
+	attribute_collection file::get_attributes() const {
+		__stack_record();
+
+		DWORD dwAttributes = GetFileAttributesA(this->_FilePath.data());
+
+		if (dwAttributes == INVALID_FILE_ATTRIBUTES)
+			throw win32_exception("GetFileAttributesA");
+
+		__stack_escape();
+		return attribute_collection(dwAttributes);
+	}
+
+	bool file::has_attribute(attribute _Attribute) const {
+		__stack_record();
+
+		attribute_collection attributes(0);
+		__stack_rethrow(attributes = this->get_attributes());
+
+		__stack_escape();
+		return attributes.is_present(_Attribute);
+	}
+
+	void file::set_attributes(attribute_collection _Attributes) {
+		__stack_record();
+
+		if (!SetFileAttributesA(
+			this->_FilePath.data(),
+			_Attributes.dwAttributes
+		)) throw win32_exception("SetFileAttributesA");
+
+		__stack_escape();
+	}
 }

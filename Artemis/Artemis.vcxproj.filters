@@ -134,6 +134,9 @@
     <ClInclude Include="API\File.hxx">
       <Filter>API\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="API\Mutex.hxx">
+      <Filter>API\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -200,6 +203,9 @@
       <Filter>API\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="API\File.cxx">
+      <Filter>API\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Mutex.cxx">
       <Filter>API\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

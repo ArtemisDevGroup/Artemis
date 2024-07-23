@@ -213,6 +213,7 @@
     <ClInclude Include="API\File.hxx" />
     <ClInclude Include="API\Hook.hxx" />
     <ClInclude Include="API\Logging.hxx" />
+    <ClInclude Include="API\Mutex.hxx" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_impl_dx11.h" />
@@ -238,6 +239,7 @@
     <ClCompile Include="API\File.cxx" />
     <ClCompile Include="API\Hook.cxx" />
     <ClCompile Include="API\Logging.cxx" />
+    <ClCompile Include="API\Mutex.cxx" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="ImGui\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Test|x64'">NotUsing</PrecompiledHeader>
