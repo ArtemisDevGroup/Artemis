@@ -93,4 +93,40 @@ namespace Artemis::API {
 	}
 
 	bool is_console_io_open() noexcept { return g_StdOut && g_StdIn; }
+
+	void set_console_color(console_color _Color, int _Shift) {
+		__stack_record();
+
+		if (!g_ConsoleIsOpen)
+			throw exception("Console is not open.");
+
+		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+		CONSOLE_SCREEN_BUFFER_INFOEX csbi;
+		ZeroMemory(&csbi, sizeof(csbi));
+
+		if (!GetConsoleScreenBufferInfoEx(hConsole, &csbi))
+			throw win32_exception("GetConsoleScreenBufferInfoEx");
+
+		WORD wAttributes = csbi.wAttributes;
+		wAttributes ^= 0b1111 << _Shift;
+		wAttributes |= static_cast<WORD>(_Color) << _Shift;
+
+		if (!SetConsoleTextAttribute(hConsole, wAttributes))
+			throw win32_exception("SetConsoleTextAttribute");
+
+		__stack_escape();
+	}
+
+	void set_console_foreground_color(console_color _Color) {
+		__stack_record();
+		__stack_rethrow(set_console_color(_Color, 0));
+		__stack_escape();
+	}
+
+	void set_console_background_color(console_color _Color) {
+		__stack_record();
+		__stack_rethrow(set_console_color(_Color, 4));
+		__stack_escape();
+	}
 }
