@@ -131,6 +131,9 @@
     <ClInclude Include="API\Logging.hxx">
       <Filter>API\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="API\Memory.hxx">
+      <Filter>API\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

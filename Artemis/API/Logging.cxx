@@ -133,6 +133,9 @@ namespace Artemis::API {
 
 	logger logger_factory::create() const {
 		logger logger(nullptr);
+		logger._WithTime = this->_WithTime;
+		logger._WithColor = this->_WithColor;
+
 		if (this->_LogToConsole)
 			logger._ConsoleStream = &std::cout;
 		if (this->_LogToFile)

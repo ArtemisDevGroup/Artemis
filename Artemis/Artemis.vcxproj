@@ -212,6 +212,7 @@
     <ClInclude Include="API\Event.hxx" />
     <ClInclude Include="API\Hook.hxx" />
     <ClInclude Include="API\Logging.hxx" />
+    <ClInclude Include="API\Memory.hxx" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_impl_dx11.h" />

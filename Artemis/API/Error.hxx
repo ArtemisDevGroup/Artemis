@@ -5,7 +5,7 @@
 #include "Event.hxx"
 
 #include <exception>	// std::exception
-#include <string>		// std::string
+#include <string_view>	// std::string_view
 #include <vector>		// std::vector
 #include <type_traits>	// std::is_base_of_v
 #include <memory>		// std::shared_ptr, std::make_shared
@@ -26,8 +26,8 @@
 
 namespace Artemis::API {
 	struct call_stack_entry {
-		std::string _Function;
-		std::string _File;
+		std::string_view _Function;
+		std::string_view _File;
 		int _Line;
 	};
 	
@@ -42,7 +42,7 @@ namespace Artemis::API {
 	public:
 		ARTEMIS_API call_stack(call_stack_manager* _Owner, DWORD _ThreadId);
 
-		ARTEMIS_API void push_back(std::string _Function, std::string _File, int _Line); 
+		ARTEMIS_API void push_back(std::string_view&& _Function, std::string_view&& _File, int _Line); 
 		ARTEMIS_API void pop_back();
 		ARTEMIS_API void pop_back(int _Count);
 
@@ -68,8 +68,8 @@ namespace Artemis::API {
 		call_stack_manager(const call_stack_manager&) = delete;
 		call_stack_manager(call_stack_manager&&) = delete;
 
-		ARTEMIS_API call_stack* record(DWORD _ThreadId, std::string _Function, std::string _File, int _Line);
-		ARTEMIS_API call_stack* record(std::string _Function, std::string _File, int _Line);
+		ARTEMIS_API call_stack* record(DWORD _ThreadId, std::string_view&& _Function, std::string_view&& _File, int _Line);
+		ARTEMIS_API call_stack* record(std::string_view&& _Function, std::string_view&& _File, int _Line);
 
 		ARTEMIS_API call_stack* escape(DWORD _ThreadId);
 		ARTEMIS_API call_stack* escape();

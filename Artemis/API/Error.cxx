@@ -4,8 +4,13 @@
 namespace Artemis::API {
 	call_stack::call_stack(call_stack_manager* _Owner, DWORD _ThreadId) : _Owner(_Owner), _ThreadId(_ThreadId), _StackEntries(), _IsSnapshot(false) {}
 
-	void call_stack::push_back(std::string _Function, std::string _File, int _Line) {
-		this->_StackEntries.push_back(call_stack_entry(_Function, _File, _Line));
+	void call_stack::push_back(std::string_view&& _Function, std::string_view&& _File, int _Line) {
+		call_stack_entry cse;
+		cse._Function = std::move(_Function);
+		cse._File = std::move(_File);
+		cse._Line = _Line;
+
+		this->_StackEntries.push_back(std::move(cse));
 	}
 
 	void call_stack::pop_back() {
@@ -54,21 +59,21 @@ namespace Artemis::API {
 
 	call_stack_manager::call_stack_manager() : _CallStacks() {}
 
-	call_stack* call_stack_manager::record(DWORD _ThreadId, std::string _Function, std::string _File, int _Line) {
+	call_stack* call_stack_manager::record(DWORD _ThreadId, std::string_view&& _Function, std::string_view&& _File, int _Line) {
 		for (call_stack& stack : this->_CallStacks)
 			if (stack.thread_id() == _ThreadId) {
-				stack.push_back(_Function, _File, _Line);
+				stack.push_back(std::forward<std::string_view>(_Function), std::forward<std::string_view>(_File), _Line);
 				return &stack;
 			}
 
 		this->_CallStacks.push_back(call_stack(this, _ThreadId));
 		call_stack* stack = std::prev(this->_CallStacks.end())._Ptr;
-		stack->push_back(_Function, _File, _Line);
+		stack->push_back(std::forward<std::string_view>(_Function), std::forward<std::string_view>(_File), _Line);
 		return stack;
 	}
 
-	call_stack* call_stack_manager::record(std::string _Function, std::string _File, int _Line) {
-		return this->record(GetCurrentThreadId(), _Function, _File, _Line);
+	call_stack* call_stack_manager::record(std::string_view&& _Function, std::string_view&& _File, int _Line) {
+		return this->record(GetCurrentThreadId(), std::forward<std::string_view>(_Function), std::forward<std::string_view>(_File), _Line);
 	}
 
 	call_stack* call_stack_manager::escape(DWORD _ThreadId) {
