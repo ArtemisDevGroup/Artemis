@@ -237,6 +237,7 @@
     <ClCompile Include="API\Error.cxx" />
     <ClCompile Include="API\Hook.cxx" />
     <ClCompile Include="API\Logging.cxx" />
+    <ClCompile Include="API\Memory.cxx" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="ImGui\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Test|x64'">NotUsing</PrecompiledHeader>

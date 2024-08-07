@@ -16,12 +16,16 @@
 #ifdef ARTEMIS_DISABLE_CALL_STACK
 #define __stack_record()
 #define __stack_escape()
+#define __stack_rethrow_try()
+#define __stack_rethrow_catch()
+#define __stack_rethrow(potentially_throwing_call) potentially_throwing_call
 #else
-#define __stack_record() Artemis::API::call_stack_manager::global()->record(__FUNCTION__, __FILE__, __LINE__)
+#define __stack_record() Artemis::API::call_stack_manager::global()->record(__FUNCSIG__, __FILE__, __LINE__)
 #define __stack_escape() Artemis::API::call_stack_manager::global()->escape()
+#define __stack_rethrow_try() try {
+#define __stack_rethrow_catch() } catch (const Artemis::API::exception&) { __stack_escape(); throw; }
+#define __stack_rethrow(potentially_throwing_call) __stack_rethrow_try() potentially_throwing_call ; __stack_rethrow_catch()
 #endif // ARTEMIS_DISABLE_CALL_STACK
-
-#define __stack_rethrow(potentially_throwing_call) try { potentially_throwing_call ; } catch (const Artemis::API::exception&) { __stack_escape(); throw; } 
 
 
 namespace Artemis::API {
