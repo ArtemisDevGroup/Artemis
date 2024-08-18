@@ -213,6 +213,9 @@
     <ClInclude Include="API\Hook.hxx" />
     <ClInclude Include="API\Logging.hxx" />
     <ClInclude Include="API\Memory.hxx" />
+    <ClInclude Include="Communications.hxx" />
+    <ClInclude Include="Definitions.hxx" />
+    <ClInclude Include="Extension.hxx" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_impl_dx11.h" />
@@ -221,6 +224,7 @@
     <ClInclude Include="ImGui\imstb_rectpack.h" />
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
+    <ClInclude Include="KeyAction.hxx" />
     <ClInclude Include="Midnight.hxx" />
     <ClInclude Include="MinHook\buffer.h" />
     <ClInclude Include="MinHook\hde\hde32.h" />
@@ -239,6 +243,7 @@
     <ClCompile Include="API\Logging.cxx" />
     <ClCompile Include="API\Memory.cxx" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Extension.cxx" />
     <ClCompile Include="ImGui\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Test|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
@@ -274,6 +279,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="KeyAction.cxx" />
     <ClCompile Include="Main.cxx" />
     <ClCompile Include="Midnight.cxx" />
     <ClCompile Include="MinHook\buffer.c">
@@ -309,7 +315,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="PresentHook.cxx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,8 @@
 #ifndef ARTEMIS_API_HOOK_HXX
 #define ARTEMIS_API_HOOK_HXX
 
+#include <utility>	// std::forward
+
 #include "Definitions.hxx"
 #include "Error.hxx"
 
@@ -10,15 +12,15 @@ namespace Artemis::API {
 	class minhook_exception : public exception {
 		MH_STATUS _Status;
 
-		ARTEMIS_API static const char* const message(MH_STATUS _StatusCode);
+		ARTEMIS_API static const char* const message(MH_STATUS _StatusCode) noexcept;
 
 	public:
-		ARTEMIS_API minhook_exception(MH_STATUS _StatusCode);
+		ARTEMIS_API minhook_exception(MH_STATUS _StatusCode) noexcept;
 
 		template<derived_exception_type T>
-		inline minhook_exception(MH_STATUS _StatusCode, const T& _InnerException) : exception(message(_StatusCode), _InnerException), _Status(_StatusCode) {}
+		inline minhook_exception(MH_STATUS _StatusCode, T&& _InnerException) noexcept : exception(message(_StatusCode), std::forward<T>(_InnerException)), _Status(_StatusCode) {}
 
-		ARTEMIS_API MH_STATUS mh_status() const;
+		ARTEMIS_API MH_STATUS mh_status() const noexcept;
 	};
 
 	ARTEMIS_API void global_hook_alloc();

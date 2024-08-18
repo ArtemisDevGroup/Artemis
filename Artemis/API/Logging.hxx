@@ -84,6 +84,14 @@ namespace Artemis::API {
 
 		ARTEMIS_API logger create() const;
 	};
+
+	class loggable {
+	protected:
+		logger* Log;
+
+	public:
+		ARTEMIS_API void set_instance_logger(logger* _Logger) noexcept;
+	};
 }
 
 #endif // !ARTEMIS_API_LOGGING_HXX

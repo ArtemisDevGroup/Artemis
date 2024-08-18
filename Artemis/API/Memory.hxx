@@ -1,7 +1,7 @@
 #ifndef __ARTEMIS_API_MEMORY_HXX__
 #define __ARTEMIS_API_MEMORY_HXX__
 
-#include <type_traits>	// std::is_pointer_v, std::is_integral_v
+#include <type_traits>	// std::is_pointer_v, std::is_integral_v, std::is_same_v
 #include <vector>		// std::vector
 #include <array>		// std::array
 #include <utility>		// std::move
@@ -13,6 +13,19 @@
 #include "Error.hxx"
 
 namespace Artemis::API {
+#pragma region Concepts.
+	
+	template<typename T>
+	concept pointer_type = std::is_pointer_v<T>;
+
+	template<typename T>
+	concept integral_type = std::is_integral_v<T>;
+
+	template<typename T>
+	concept any_type = !std::is_same_v<T, void>;
+
+#pragma endregion
+
 #pragma region address_t, ptroffset_t, ptrchain_t
 
 	/// <summary>
@@ -50,8 +63,7 @@ namespace Artemis::API {
 		/// </summary>
 		/// <typeparam name="T">The pointer type.</typeparam>
 		/// <param name="_Value">- The instance value.</param>
-		template<typename T>
-			requires(std::is_pointer_v<T>)
+		template<pointer_type T>
 		inline address_t(T _Value) : _Value(reinterpret_cast<value_type>(_Value)) {}
 
 		/// <summary>
@@ -66,7 +78,7 @@ namespace Artemis::API {
 		/// <typeparam name="T">The pointer type.</typeparam>
 		/// <returns>A pointer of type T.</returns>
 		template<typename T>
-		inline T* ptr() const noexcept { return *reinterpret_cast<T*>(this->_Value); }
+		inline T* ptr() const noexcept { return reinterpret_cast<T*>(this->_Value); }
 
 		/// <summary>
 		/// Gets a pointer to the current value buffer.
@@ -83,8 +95,7 @@ namespace Artemis::API {
 		/// Implicit conversion from instance value to pointer of type T.
 		/// </summary>
 		/// <typeparam name="T">The pointer type.</typeparam>
-		template<typename T>
-			requires(std::is_pointer_v<T>)
+		template<pointer_type T>
 		inline operator T () const noexcept { return reinterpret_cast<T>(this->_Value); }
 
 		/// <summary>
@@ -98,8 +109,7 @@ namespace Artemis::API {
 		/// <typeparam name="T">Integral type.</typeparam>
 		/// <param name="_Right">- The value to add.</param>
 		/// <returns>A new object as the result of the operation.</returns>
-		template<typename T>
-			requires(std::is_integral_v<T>)
+		template<integral_type T>
 		constexpr address_t operator+(T _Right) const noexcept { return address_t(this->_Value + _Right); }
 
 		/// <summary>
@@ -108,8 +118,7 @@ namespace Artemis::API {
 		/// <typeparam name="T">Integral type.</typeparam>
 		/// <param name="_Right">- The value to add to the current instance.</param>
 		/// <returns>A reference to the current instance.</returns>
-		template<typename T>
-			requires(std::is_integral_v<T>)
+		template<integral_type T>
 		constexpr address_t& operator+=(T _Right) noexcept {
 			this->_Value += _Right;
 			return *this;
@@ -121,8 +130,7 @@ namespace Artemis::API {
 		/// <typeparam name="T">Integral type.</typeparam>
 		/// <param name="_Right">- The value to subtract.</param>
 		/// <returns>A new object as the result of the operation.</returns>
-		template<typename T>
-			requires(std::is_integral_v<T>)
+		template<integral_type T>
 		constexpr address_t operator-(T _Right) const noexcept { return address_t(this->_Value - _Right); }
 
 		/// <summary>
@@ -131,8 +139,7 @@ namespace Artemis::API {
 		/// <typeparam name="T">Integral type.</typeparam>
 		/// <param name="_Right">- The value to subtract from the current instance.</param>
 		/// <returns>A reference to the current instance.</returns>
-		template<typename T>
-			requires(std::is_integral_v<T>)
+		template<integral_type T>
 		constexpr address_t& operator-=(T _Right) noexcept {
 			this->_Value -= _Right;
 			return *this;
@@ -244,7 +251,7 @@ namespace Artemis::API {
 	/// <param name="_Return">- A pointer to a variable receiving the read value.</param>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T>
+	template<any_type T>
 	inline void read(address_t _Address, T* _Return) {
 		__stack_record();
 
@@ -272,7 +279,7 @@ namespace Artemis::API {
 	/// <param name="_Count">- The number of values to read.</param>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T>
+	template<any_type T>
 	inline void read(address_t _Address, T* _Return, int _Count) {
 		__stack_record();
 
@@ -303,7 +310,7 @@ namespace Artemis::API {
 	/// <param name="_Return">- A reference to a buffer to receive the read values.</param>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T, size_t N>
+	template<any_type T, size_t N>
 		requires(N != 0)
 	inline void read(address_t _Address, T(&_Return)[N]) {
 		__stack_record();
@@ -320,7 +327,7 @@ namespace Artemis::API {
 	/// <param name="_Count">- The number of values to read.</param>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T>
+	template<any_type T>
 	inline void read(address_t _Address, std::vector<T>* _Return, int _Count) {
 		__stack_record();
 
@@ -354,7 +361,7 @@ namespace Artemis::API {
 	/// <param name="_Return">- A pointer to an std::array object to receive the read values.</param>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T, size_t N>
+	template<any_type T, size_t N>
 		requires(N != 0)
 	inline void read(address_t _Address, std::array<T, N>* _Return) {
 		__stack_record();
@@ -366,11 +373,11 @@ namespace Artemis::API {
 
 		std::array<T, N> ret;
 		__try {
-			for (int i = 0; i < _Count; i++)
+			for (int i = 0; i < N; i++)
 				ret[i] = _Address.ptr<T>()[i];
 		}
 		__except (GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH) {
-			throw access_violation_exception(_Address, sizeof(T) * _Count, memory_operation::read);
+			throw access_violation_exception(_Address, sizeof(T) * N, memory_operation::read);
 		}
 
 		_Return->swap(ret);
@@ -390,7 +397,7 @@ namespace Artemis::API {
 	/// <returns>The read value.</returns>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T>
+	template<any_type T>
 	inline T read(address_t _Address) {
 		__stack_record();
 
@@ -413,7 +420,7 @@ namespace Artemis::API {
 	/// <returns>An std::vector object containing the read values.</returns>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T>
+	template<any_type T>
 	inline std::vector<T> read(address_t _Address, int _Count) {
 		__stack_record();
 
@@ -438,7 +445,7 @@ namespace Artemis::API {
 	/// <returns>An std::array object containing the read values.</returns>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T, size_t N>
+	template<any_type T, size_t N>
 		requires(N != 0)
 	inline std::array<T, N> read(address_t _Address) {
 		__stack_record();
@@ -490,7 +497,7 @@ namespace Artemis::API {
 	/// <param name="_Return">A pointer to a variable receiving the read value.</param>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T>
+	template<any_type T>
 	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, T* _Return) {
 		__stack_record();
 
@@ -510,7 +517,7 @@ namespace Artemis::API {
 	/// <param name="_Count">- The number of values to read.</param>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T>
+	template<any_type T>
 	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, T* _Return, int _Count) {
 		__stack_record();
 
@@ -530,7 +537,7 @@ namespace Artemis::API {
 	/// <param name="_Return">- A reference to a buffer to receive the read values.</param>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T, size_t N>
+	template<any_type T, size_t N>
 		requires(N != 0)
 	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, T(&_Return)[N]) {
 		__stack_record();
@@ -548,7 +555,7 @@ namespace Artemis::API {
 	/// <param name="_Count">- The number of values to read.</param>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T>
+	template<any_type T>
 	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, std::vector<T>* _Return, int _Count) {
 		__stack_record();
 
@@ -568,9 +575,9 @@ namespace Artemis::API {
 	/// <param name="_Return">- A pointer to an std::array object to receive the read values.</param>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T, size_t N>
+	template<any_type T, size_t N>
 		requires(N != 0)
-	inline void read_ptr(address_t _Address, ptrchain_t _Offset, std::array<T, N>* _Return) {
+	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, std::array<T, N>* _Return) {
 		__stack_record();
 
 		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
@@ -592,7 +599,7 @@ namespace Artemis::API {
 	/// <returns>The read value.</returns>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T>
+	template<any_type T>
 	inline T read_ptr(address_t _Address, ptrchain_t _Offsets) {
 		__stack_record();
 
@@ -615,7 +622,7 @@ namespace Artemis::API {
 	/// <returns>An std::vector object containing the read values.</returns>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T>
+	template<any_type T>
 	inline std::vector<T> read_ptr(address_t _Address, ptrchain_t _Offsets, int _Count) {
 		__stack_record();
 
@@ -638,7 +645,7 @@ namespace Artemis::API {
 	/// <returns>An std::array object containing the read values.</returns>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T, size_t N>
+	template<any_type T, size_t N>
 		requires(N != 0)
 	inline std::array<T, N> read_ptr(address_t _Address, ptrchain_t _Offsets) {
 		__stack_record();
@@ -664,7 +671,7 @@ namespace Artemis::API {
 	/// <param name="_Value">- The value to write.</param>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T>
+	template<any_type T>
 	inline void write(address_t _Address, const T& _Value) {
 		__stack_record();
 
@@ -689,7 +696,7 @@ namespace Artemis::API {
 	/// <param name="_Value">- The value to write.</param>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T>
+	template<any_type T>
 	inline void write(address_t _Address, T&& _Value) {
 		__stack_record();
 
@@ -715,7 +722,7 @@ namespace Artemis::API {
 	/// <param name="_Count">- The number of values to write.</param>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T>
+	template<any_type T>
 	inline void write(address_t _Address, const T* const _Values, int _Count) {
 		__stack_record();
 
@@ -746,7 +753,7 @@ namespace Artemis::API {
 	/// <param name="_Values">- A reference to an array containing the values to write.</param>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T, size_t N>
+	template<any_type T, size_t N>
 		requires(N != 0)
 	inline void write(address_t _Address, const T(&_Values)[N]) {
 		__stack_record();
@@ -762,7 +769,7 @@ namespace Artemis::API {
 	/// <param name="_Values">- An std::vector containing the values to write.</param>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T>
+	template<any_type T>
 	inline void write(address_t _Address, const std::vector<T>& _Values) {
 		__stack_record();
 
@@ -790,7 +797,7 @@ namespace Artemis::API {
 	/// <param name="_Values">- An std::vector containing the values to write.</param>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T>
+	template<any_type T>
 	inline void write(address_t _Address, std::vector<T>&& _Values) {
 		__stack_record();
 
@@ -819,7 +826,7 @@ namespace Artemis::API {
 	/// <param name="_Values">- An std::array contaning the values to write.</param>
 	/// <exception cref="argument_exception"/>
 	/// <exception cref="access_violation_exception"/>
-	template<typename T, size_t N>
+	template<any_type T, size_t N>
 		requires(N != 0)
 	inline void write(address_t _Address, const std::array<T, N>& _Values) {
 		__stack_record();
@@ -837,6 +844,16 @@ namespace Artemis::API {
 
 		__stack_escape();
 	}
+
+#pragma endregion
+
+#pragma region Overloads of write_ptr.
+
+	template<any_type T>
+	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, const T& _Value);
+
+	template<any_type T>
+	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, T&& _Value);
 
 #pragma endregion
 }

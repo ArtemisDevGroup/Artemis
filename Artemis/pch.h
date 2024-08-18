@@ -27,8 +27,12 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <array>
 #include <functional>
 #include <optional>
+#include <map>
+#include <unordered_map>
+#include <bitset>
 
 // Types
 #include <type_traits>
@@ -43,6 +47,7 @@
 #include <regex>
 #include <chrono>
 #include <format>
+#include <algorithm>
 
 // -- C STL --
 

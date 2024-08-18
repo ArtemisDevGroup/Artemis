@@ -134,6 +134,18 @@
     <ClInclude Include="API\Memory.hxx">
       <Filter>API\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Extension.hxx">
+      <Filter>Framework\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Definitions.hxx">
+      <Filter>Framework\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Communications.hxx">
+      <Filter>Framework\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyAction.hxx">
+      <Filter>Framework\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -187,9 +199,6 @@
     <ClCompile Include="MinHook\trampoline.c">
       <Filter>MinHook\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PresentHook.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Midnight.cxx">
       <Filter>Framework\Source Files</Filter>
     </ClCompile>
@@ -201,6 +210,12 @@
     </ClCompile>
     <ClCompile Include="API\Memory.cxx">
       <Filter>API\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Extension.cxx">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyAction.cxx">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

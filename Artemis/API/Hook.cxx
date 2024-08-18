@@ -3,7 +3,7 @@
 #include "Hook.hxx"
 
 namespace Artemis::API {
-	const char* const minhook_exception::message(MH_STATUS _StatusCode) {
+	const char* const minhook_exception::message(MH_STATUS _StatusCode) noexcept {
 		switch (_StatusCode) {
 		case MH_UNKNOWN:
 		default:
@@ -35,9 +35,9 @@ namespace Artemis::API {
 		}
 	}
 
-	minhook_exception::minhook_exception(MH_STATUS _StatusCode) : exception(message(_StatusCode)), _Status(_StatusCode) {}
+	minhook_exception::minhook_exception(MH_STATUS _StatusCode) noexcept : exception(message(_StatusCode)), _Status(_StatusCode) {}
 
-	MH_STATUS minhook_exception::mh_status() const { return this->_Status; }
+	MH_STATUS minhook_exception::mh_status() const noexcept { return this->_Status; }
 
 	void global_hook_alloc() {
 		__stack_record();

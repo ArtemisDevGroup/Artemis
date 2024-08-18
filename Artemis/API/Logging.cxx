@@ -38,6 +38,7 @@ namespace Artemis::API {
 		std::unique_ptr<std::ofstream> file = std::make_unique<std::ofstream>();
 		file->rdbuf()->pubsetbuf(nullptr, 0); // Disable buffering to not lose log data in case of game crash.
 		file->open(_FileName.data(), std::ios::out | std::ios::trunc);
+		return file;
 	}
 
 	void logger::print(const std::string_view& _Message) const noexcept {
@@ -73,7 +74,7 @@ namespace Artemis::API {
 
 	logger::logger(nullptr_t) noexcept : _ConsoleStream(nullptr), _FileStream(nullptr), _WithTime(false), _WithColor(false) {}
 
-	logger::logger() {
+	logger::logger() : _WithTime(true), _WithColor(true) {
 		_ConsoleStream = &std::cout;
 
 		// Prepare path:	%LOCALAPPDATA%\artemis.log
@@ -126,10 +127,10 @@ namespace Artemis::API {
 		_FileName(""),
 		_WithTime(false) {}
 
-	logger_factory& logger_factory::with_console_logging() { this->_LogToConsole = true; }
-	logger_factory& logger_factory::with_file_logging(const std::string_view& _FileName) { this->_LogToFile = true; this->_FileName = _FileName; }
-	logger_factory& logger_factory::with_time() { this->_WithTime = true; }
-	logger_factory& logger_factory::with_color() { this->_WithColor = true; }
+	logger_factory& logger_factory::with_console_logging() { this->_LogToConsole = true; return *this; }
+	logger_factory& logger_factory::with_file_logging(const std::string_view& _FileName) { this->_LogToFile = true; this->_FileName = _FileName; return *this; }
+	logger_factory& logger_factory::with_time() { this->_WithTime = true; return *this; }
+	logger_factory& logger_factory::with_color() { this->_WithColor = true; return *this; }
 
 	logger logger_factory::create() const {
 		logger logger(nullptr);
@@ -140,5 +141,9 @@ namespace Artemis::API {
 			logger._ConsoleStream = &std::cout;
 		if (this->_LogToFile)
 			logger._FileStream = logger::make_filestream(this->_FileName);
+
+		return logger;
 	}
+
+	void loggable::set_instance_logger(logger* _Logger) noexcept { this->Log = _Logger; }
 }

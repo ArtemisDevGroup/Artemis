@@ -18,10 +18,16 @@
 //	  This also means that the return statement itself HAS to be non-throwing.
 //	  However, when an exception is thrown, __stack_escape() does not have to be called.
 // 
-// 2. If a function that is potentially throwing an Artemis-exception, it has to be called
+// 2. An API function can omit calling __stack_record() and __stack_escape() if the function is non-throwing.
+//    This means that the function does not throw, and does not call any throwing functions, and is declared noexcept.
+// 
+// 3. If a function that is potentially throwing an Artemis-exception, it has to be called
 //    inside of a __stack_rethrow() statement in order for the call-stack to be rewound properly.
 //
-#if 0 // Example of 1 and 2:
+#if 0 // Example of 1, 2 and 3:
+int boo(int x, int y) noexcept { return x * y * y * 0xDEADBEEF; }	// Does not throw, and is marked noexcept,
+																	// so can omit calls to the call stack manager.
+
 int foo() {
 	__stack_record(); // Called in the beginning of every Artemis API function.
 
@@ -31,7 +37,7 @@ int foo() {
 													// so no need to call __stack_escape().
 
 	__stack_escape(); // Called before the return statement.
-	return 0xDEADBEEF;
+	return boo(13, 37);	// Since the function is noexcept it does not have to be rethrown, and can be safely called in a return statement.
 }
 
 int bar() {

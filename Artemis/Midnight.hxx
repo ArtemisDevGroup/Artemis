@@ -1,15 +1,20 @@
 #ifndef ARTEMIS_MIDNIGHT_HXX
 #define ARTEMIS_MIDNIGHT_HXX
 
-#include "pch.h"
+#include <Windows.h>	// HRESULT, APIENTRY, UINT, HWND, WNDPROC
+#include <dxgi.h>		// IDXGISwapChain
+
+#include "Definitions.hxx"
+#include "Extension.hxx"
+#include "KeyAction.hxx"
 
 #include "API/Hook.hxx"
+#include "API/Logging.hxx"
 
 namespace Artemis {
 	typedef HRESULT(APIENTRY* TPRESENT)(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags);
 	
-	class midnight {
-	public:
+	struct midnight {
 		struct {
 			API::hook<TPRESENT> hkInstance;
 			HWND hWnd;
@@ -17,10 +22,12 @@ namespace Artemis {
 			TPRESENT oPresent;
 		} _PresentHook;
 
-		static ARTEMIS_API midnight* global();
+		API::logger Logger;
+		extension_manager Extensions;
+		key_action_manager KeyActions;
 	};
 }
 
-#define athis Artemis::midnight::global()
+ARTEMIS_FRAMEWORK extern ::Artemis::midnight* const athis;
 
 #endif // !ARTEMIS_MIDNIGHT_HXX

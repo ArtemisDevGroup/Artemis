@@ -9,11 +9,11 @@ namespace Artemis::API {
 	FILE*	g_StdIn			= nullptr;
 	FILE*	g_StdOut		= nullptr;
 
-	void console_open() {
+	void open_console() {
 		__stack_record();
 
 		if (g_ConsoleIsOpen)
-			throw exception("Console is already open.");
+			throw invalid_state_exception("Console is already open.");
 
 		if (!AllocConsole())
 			throw win32_exception("AllocConsole");
@@ -21,11 +21,11 @@ namespace Artemis::API {
 		__stack_escape();
 	}
 
-	void console_close() {
+	void close_console() {
 		__stack_record();
 
 		if (!g_ConsoleIsOpen)
-			throw exception("Console is not open.");
+			throw invalid_state_exception("Console is not open.");
 
 		if (!FreeConsole())
 			throw win32_exception("FreeConsole");
@@ -39,7 +39,7 @@ namespace Artemis::API {
 		__stack_record();
 
 		if (!g_ConsoleIsOpen)
-			throw exception("Console is not open.");
+			throw invalid_state_exception("Console is not open.");
 
 		__stack_escape();
 		return GetConsoleWindow();
@@ -49,7 +49,7 @@ namespace Artemis::API {
 		__stack_record();
 
 		if (!g_ConsoleIsOpen)
-			throw exception("Console is not open.");
+			throw invalid_state_exception("Console is not open.");
 
 		if (!SetConsoleTitleA(_Title))
 			throw win32_exception("SetConsoleTitleA");
@@ -61,10 +61,10 @@ namespace Artemis::API {
 		__stack_record();
 
 		if (!g_ConsoleIsOpen)
-			throw exception("Console is not open.");
+			throw invalid_state_exception("Console is not open.");
 
 		if (g_StdOut || g_StdIn)
-			throw exception("Console IO streams are already open.");
+			throw invalid_state_exception("Console IO streams are already open.");
 
 		errno_t e = freopen_s(&g_StdOut, "CONOUT$", "w", stdout);
 		if (e)
@@ -81,7 +81,7 @@ namespace Artemis::API {
 		__stack_record();
 
 		if (!g_StdOut || !g_StdIn)
-			throw exception("Console IO streams are not open.");
+			throw invalid_state_exception("Console IO streams are not open.");
 
 		fclose(g_StdOut);
 		fclose(g_StdIn);
@@ -98,7 +98,7 @@ namespace Artemis::API {
 		__stack_record();
 
 		if (!g_ConsoleIsOpen)
-			throw exception("Console is not open.");
+			throw invalid_state_exception("Console is not open.");
 
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
