@@ -47,7 +47,17 @@ namespace Artemis::API {
 
 		hook(const hook&) = delete;
 
+		hook& operator=(const hook&) = delete;
+
 		inline hook(hook&& _From) noexcept : _Target(_From._Target), _Detour(_From._Detour), _Original(_From._Original), _RemoveHook(true) { _From._RemoveHook = false; }
+
+		inline hook& operator=(hook&& _From) noexcept {
+			this->_Target = _From._Target;
+			this->_Detour = _From._Detour;
+			this->_Original = _From._Original;
+			this->_RemoveHook = true;
+			_From._RemoveHook = false;
+		}
 
 		inline ~hook() noexcept {
 			if (!this->_RemoveHook)

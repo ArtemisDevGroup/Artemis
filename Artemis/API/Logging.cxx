@@ -145,5 +145,5 @@ namespace Artemis::API {
 		return logger;
 	}
 
-	void loggable::set_instance_logger(logger* _Logger) noexcept { this->Log = _Logger; }
+	void loggable::set_instance_logger(std::shared_ptr<logger> _Logger) noexcept { this->Log = _Logger; }
 }

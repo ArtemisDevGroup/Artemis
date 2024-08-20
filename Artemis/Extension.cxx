@@ -121,6 +121,7 @@ namespace Artemis {
 		}
 	}
 
+	const std::string_view& extension::name() const noexcept { return this->_ExtensionName; }
 	HMODULE extension::module_handle() const noexcept { return this->hModule; }
 
 #pragma endregion

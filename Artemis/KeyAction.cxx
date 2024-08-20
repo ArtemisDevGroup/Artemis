@@ -87,7 +87,7 @@ namespace Artemis {
 	}
 
 	template<typename _Ty>
-	static void __invoke(API::logger* _Log, _Ty _Arg) {
+	static void __invoke(std::shared_ptr<API::logger> _Log, _Ty _Arg) {
 		std::stringstream ss;
 
 		try {

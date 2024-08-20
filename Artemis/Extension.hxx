@@ -68,7 +68,7 @@ namespace Artemis {
 		ARTEMIS_FRAMEWORK void eject();
 		ARTEMIS_FRAMEWORK void force_eject() noexcept;
 
-		constexpr const std::string_view& name() const noexcept { this->_ExtensionName; }
+		ARTEMIS_FRAMEWORK const std::string_view& name() const noexcept;
 		ARTEMIS_FRAMEWORK HMODULE module_handle() const noexcept;
 	};
 

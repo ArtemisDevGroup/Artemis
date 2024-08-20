@@ -87,10 +87,10 @@ namespace Artemis::API {
 
 	class loggable {
 	protected:
-		logger* Log;
+		std::shared_ptr<logger> Log;
 
 	public:
-		ARTEMIS_API void set_instance_logger(logger* _Logger) noexcept;
+		ARTEMIS_API void set_instance_logger(std::shared_ptr<logger> _Logger) noexcept;
 	};
 }
 

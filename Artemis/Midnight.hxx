@@ -4,6 +4,8 @@
 #include <Windows.h>	// HRESULT, APIENTRY, UINT, HWND, WNDPROC
 #include <dxgi.h>		// IDXGISwapChain
 
+#include <memory>		// std::unique_ptr, std::shared_ptr
+
 #include "Definitions.hxx"
 #include "Extension.hxx"
 #include "KeyAction.hxx"
@@ -16,15 +18,15 @@ namespace Artemis {
 	
 	struct midnight {
 		struct {
-			API::hook<TPRESENT> hkInstance;
+			std::unique_ptr<API::hook<TPRESENT>> hkInstance;
 			HWND hWnd;
 			WNDPROC oWndProc;
 			TPRESENT oPresent;
 		} _PresentHook;
 
-		API::logger Logger;
-		extension_manager Extensions;
-		key_action_manager KeyActions;
+		std::shared_ptr<API::logger> Logger;
+		std::unique_ptr<extension_manager> Extensions;
+		std::unique_ptr<key_action_manager> KeyActions;
 	};
 }
 

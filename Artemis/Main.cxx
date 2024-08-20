@@ -4,7 +4,10 @@
 
 #include "API/Console.hxx"
 
-namespace Artemis { midnight* g_DataInstance = nullptr; }
+namespace Artemis {
+	void alloc_midnight();
+	void release_midnight();
+}
 
 #pragma region Present hook functionality.
 
@@ -101,9 +104,9 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) return TRUE;
 	
-	Artemis::g_DataInstance->KeyActions.invoke(uMsg, (Artemis::key)wParam);
+	athis->KeyActions->invoke(uMsg, (Artemis::key)wParam);
 
-	return CallWindowProcW(Artemis::g_DataInstance->_PresentHook.oWndProc, hWnd, uMsg, wParam, lParam);
+	return CallWindowProcW(athis->_PresentHook.oWndProc, hWnd, uMsg, wParam, lParam);
 }
 
 #pragma endregion
@@ -123,16 +126,16 @@ HRESULT APIENTRY hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT F
 
 			DXGI_SWAP_CHAIN_DESC sd;
 			pSwapChain->GetDesc(&sd);
-			Artemis::g_DataInstance->_PresentHook.hWnd = sd.OutputWindow;
+			athis->_PresentHook.hWnd = sd.OutputWindow;
 
 			ID3D11Texture2D* pBackBuffer;
 			pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
 			if (!pBackBuffer)
-				return Artemis::g_DataInstance->_PresentHook.oPresent(pSwapChain, SyncInterval, Flags);
+				return athis->_PresentHook.oPresent(pSwapChain, SyncInterval, Flags);
 			pDevice->CreateRenderTargetView(pBackBuffer, NULL, &pRenderTargetView);
 			pBackBuffer->Release();
 
-			Artemis::g_DataInstance->_PresentHook.oWndProc = (WNDPROC)SetWindowLongPtrW(athis->_PresentHook.hWnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
+			athis->_PresentHook.oWndProc = (WNDPROC)SetWindowLongPtrW(athis->_PresentHook.hWnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
 
 			ImGui::CreateContext();
 			ImGuiIO& io = ImGui::GetIO();
@@ -140,12 +143,12 @@ HRESULT APIENTRY hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT F
 			io.WantCaptureMouse = true;
 			io.WantCaptureKeyboard = true;
 
-			ImGui_ImplWin32_Init(Artemis::g_DataInstance->_PresentHook.hWnd);
+			ImGui_ImplWin32_Init(athis->_PresentHook.hWnd);
 			ImGui_ImplDX11_Init(pDevice, pDeviceContext);
 
 			bInitialized = true;
 		}
-		else return Artemis::g_DataInstance->_PresentHook.oPresent(pSwapChain, SyncInterval, Flags);
+		else return athis->_PresentHook.oPresent(pSwapChain, SyncInterval, Flags);
 	}
 
 	ImGui_ImplDX11_NewFrame();
@@ -164,7 +167,7 @@ HRESULT APIENTRY hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT F
 	pDeviceContext->OMSetRenderTargets(1, &pRenderTargetView, nullptr);
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-	return Artemis::g_DataInstance->_PresentHook.oPresent(pSwapChain, SyncInterval, Flags);
+	return athis->_PresentHook.oPresent(pSwapChain, SyncInterval, Flags);
 }
 
 #pragma endregion
@@ -175,11 +178,15 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 #pragma region ----- Initialization -----
 
 	// Initialization order:
-	// 1. Allocate and initalize console.
-	// 2. Initialize keybind manager and keybinds.
-	// 3. Hook present.
-	// 4. Initialize window manager and windows.
-	// 5. Load extensions.
+	// 1. Allocate midnight.
+	// 2. Allocate and initalize console.
+	// 3. Initialize keybind manager and keybinds.
+	// 4. Hook present.
+	// 5. Initialize window manager and windows.
+	// 6. Load extensions.
+
+	Artemis::alloc_midnight();
+	athis->Logger = std::make_shared<Artemis::API::logger>();
 
 #pragma region Allocate and initialize console.
 
@@ -190,11 +197,12 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 
 #pragma region Initialize keybind manager and keybinds.
 
-	auto& keyActions = Artemis::g_DataInstance->KeyActions;
-	keyActions.set_instance_logger(&Artemis::g_DataInstance->Logger);
+	athis->KeyActions = std::make_unique<Artemis::key_action_manager>();
+	auto& keyActions = athis->KeyActions;
+	keyActions->set_instance_logger(athis->Logger);
 
 	bool run = true;
-	keyActions.register_action(Artemis::key::f1, [&run]() { run = false; });
+	keyActions->register_action(Artemis::key::f1, [&run]() { run = false; });
 
 #pragma endregion
 
@@ -202,22 +210,22 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 
 	Artemis::API::global_hook_alloc();
 
+	auto presentHook = &athis->_PresentHook;
+
 	HWND hWnd = GetGameWindow();
 	LPVOID lpPresentFunction = GetPresentFunctionPtr(hWnd);
 
-	Artemis::g_DataInstance = new Artemis::midnight{ { Artemis::API::hook<Artemis::TPRESENT>(lpPresentFunction, hkPresent) } };
-
-	auto& presentHook = Artemis::g_DataInstance->_PresentHook;
-
-	presentHook.oPresent = presentHook.hkInstance.original();
-	presentHook.hkInstance.enable();
+	presentHook->hkInstance = std::make_unique<Artemis::API::hook<Artemis::TPRESENT>>(lpPresentFunction, hkPresent);
+	presentHook->oPresent = presentHook->hkInstance->original();
+	presentHook->hkInstance->enable();
 
 #pragma endregion
 
 #pragma region Loading extensions.
 
-	Artemis::extension_manager& extensions = Artemis::g_DataInstance->Extensions;
-	extensions.set_instance_logger(&Artemis::g_DataInstance->Logger);
+	athis->Extensions = std::make_unique<Artemis::extension_manager>();
+	auto& extensions = athis->Extensions;
+	extensions->set_instance_logger(athis->Logger);
 
 	// Set up message handler for extension messages.
 
@@ -235,10 +243,9 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 
 	// Swap WndProc for original.
 
-	SetWindowLongPtrW(presentHook.hWnd, GWLP_WNDPROC, (LONG_PTR)presentHook.oWndProc);
+	SetWindowLongPtrW(presentHook->hWnd, GWLP_WNDPROC, (LONG_PTR)presentHook->oWndProc);
 
-	delete Artemis::g_DataInstance;
-	Artemis::g_DataInstance = nullptr;
+	presentHook->hkInstance.release();
 
 	Artemis::API::global_hook_release();
 
@@ -248,6 +255,8 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 	Artemis::API::close_console();
 
 #pragma endregion
+
+	Artemis::release_midnight();
 
 	FreeLibraryAndExitThread(hModule, 0);
 	return 0;
