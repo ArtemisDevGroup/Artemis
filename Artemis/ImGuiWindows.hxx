@@ -71,23 +71,64 @@ namespace Artemis {
 
 		ARTEMIS_FRAMEWORK ~window_manager() noexcept;
 
+		/// <summary>
+		/// Registers a window instance to be presented to the screen.
+		/// </summary>
+		/// <param name="_WindowInstance">- A newly allocated pointer to the window instance.</param>
+		/// <returns>The registered window instance pointer.</returns>
+		/// <exception cref="argument_exception"/>
 		ARTEMIS_FRAMEWORK iwindow* register_window(iwindow* _WindowInstance);
 
+		/// <summary>
+		/// Registers a window instance to be presented to the screen.
+		/// </summary>
+		/// <typeparam name="_WndTy">The derived window instance type.</typeparam>
+		/// <typeparam name="_Types">The derived window instance constructor types.</typeparam>
+		/// <param name="_Args">- Arguments to be passed to the derived window type's constructor.</param>
+		/// <returns>The registered window instance pointer.</returns>
+		/// <exception cref="argument_exception"/>
 		template<derived_window_type _WndTy, typename... _Types>
 		inline iwindow* register_window(_Types&&... _Args) {
 			return this->register_window(new _WndTy(std::forward<_Types>(_Args)...));
 		}
 
+		/// <summary>
+		/// Gets a pointer from a window instance from the window name.
+		/// </summary>
+		/// <param name="_WindowName">The window name. Note that the window name is case sensitive.</param>
+		/// <returns>The found window instance pointer.</returns>
+		/// <exception cref="argument_exception"/>
 		ARTEMIS_FRAMEWORK iwindow* get_window(std::string_view&& _WindowName);
 		
+		/// <summary>
+		/// Gets a pointer from a window instance from the window name.
+		/// </summary>
+		/// <typeparam name="_WndTy">The derived window type.</typeparam>
+		/// <param name="_WindowName">The window name. Note that the window name is case sensitive.</param>
+		/// <returns>The found window instance pointer.</returns>
+		/// <exception cref="argument_exception"/>
 		template<derived_window_type _WndTy>
 		inline _WndTy* get_window(std::string_view&& _WindowName) {
 			return (_WndTy*)this->get_window(std::forward<std::string_view>(_WindowName));
 		}
 
+		/// <summary>
+		/// Removes a window from the stack of presentable windows.
+		/// </summary>
+		/// <param name="_WindowInstance">- A pointer to the window instance to remove.</param>
+		/// <exception cref="argument_exception"/>
 		ARTEMIS_FRAMEWORK void remove_window(iwindow* _WindowInstance);
+
+		/// <summary>
+		/// Removes a window from the stack of presentable windows.
+		/// </summary>
+		/// <param name="_WindowName">- The name of the window to remove.</param>
+		/// <exception cref="argument_exception"/>
 		ARTEMIS_FRAMEWORK void remove_window(std::string_view&& _WindowName);
 
+		/// <summary>
+		/// Presents all registered windows. Is only intended to be called by the DirectX hook.
+		/// </summary>
 		ARTEMIS_FRAMEWORK void present_all() noexcept;
 
 		window_manager& operator=(const window_manager&) = delete;

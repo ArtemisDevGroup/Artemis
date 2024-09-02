@@ -2,7 +2,7 @@
 #include "ExceptionFrames.hxx"
 
 namespace Artemis::_ {
-	void __safe_exception_propagator::exec_l1cxx(std::function<void()> _Fn) const {
+	void __safe_exception_propagator::exec_l1cxx(const std::function<void()>& _Fn) const {
 		API::call_stack* p = API::call_stack_manager::global()->fetch();
 		assert(p != nullptr);
 		assert(!p->is_empty());
@@ -10,7 +10,7 @@ namespace Artemis::_ {
 		try {
 			_Fn();
 		}
-		catch (const API::exception& e) {
+		catch (const API::exception&) {
 			throw;
 		}
 		catch (const std::exception& e) {
@@ -21,7 +21,7 @@ namespace Artemis::_ {
 		}
 	}
 
-	void __safe_exception_propagator::exec_l1seh(std::function<void()> _Fn, bool _LetThroughCxxExceptions) const {
+	void __safe_exception_propagator::exec_l1seh(const std::function<void()>& _Fn, bool _LetThroughCxxExceptions) const {
 		API::call_stack* p = API::call_stack_manager::global()->fetch();
 		assert(p != nullptr);
 		assert(!p->is_empty());
@@ -34,11 +34,11 @@ namespace Artemis::_ {
 		}
 	}
 
-	void __safe_exception_propagator::exec_l2(std::function<void()> _Fn) const {
-		this->exec_l1cxx([this, _Fn]() { this->exec_l1seh(_Fn, true); });
+	void __safe_exception_propagator::exec_l2(const std::function<void()>& _Fn) const {
+		this->exec_l1cxx([this, &_Fn]() { this->exec_l1seh(std::move(_Fn), true); });
 	}
 
-	void __safe_exception_net::exec_l1cxx(std::function<void()> _Fn) const noexcept {
+	void __safe_exception_net::exec_l1cxx(const std::function<void()>& _Fn) const noexcept {
 		assert(this->Log != nullptr);
 		
 		try {
@@ -68,20 +68,22 @@ namespace Artemis::_ {
 		}
 	}
 
-	void __safe_exception_net::exec_l1seh(std::function<void()> _Fn) const noexcept {
+	void __safe_exception_net::exec_l1seh(const std::function<void()>& _Fn) const noexcept {
 		__try {
 			_Fn();
 		}
 		__except (API::seh_filter(GetExceptionInformation()).handle_always()) {
 			API::seh_data* data = API::get_thread_seh_data();
-			Log->error(std::format("SEH exception handler caught system exception (code {}) at address '{}'",
-				data->_Record.ExceptionCode,
-				data->_Record.ExceptionAddress
-			));
+			[this, data]() {
+				Log->error(std::format("SEH exception handler caught system exception (code {}) at address '{}'",
+					data->_Record.ExceptionCode,
+					data->_Record.ExceptionAddress
+				));	
+			}();
 		}
 	}
 
-	void __safe_exception_net::exec_l2(std::function<void()> _Fn) const noexcept {
+	void __safe_exception_net::exec_l2(const std::function<void()>& _Fn) const noexcept {
 		__stack_record();
 
 		this->exec_l1cxx([_Fn]() {

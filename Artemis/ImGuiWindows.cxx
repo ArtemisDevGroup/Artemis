@@ -56,6 +56,24 @@ namespace Artemis {
 		__stack_escape();
 		return _WindowInstance;
 	}
+	
+	iwindow* window_manager::get_window(std::string_view&& _WindowName) {
+		__stack_record();
+
+		iwindow* ret = nullptr;
+
+		for (iwindow* p : this->_WindowInstances)
+			if (p->name() == _WindowName) {
+				ret = p;
+				break;
+			}
+
+		if (!ret)
+			throw API::argument_exception("No window with specified name found.", "_WindowName");
+
+		__stack_escape();
+		return ret;
+	}
 
 	void window_manager::remove_window(iwindow* _WindowInstance) {
 		__stack_record();
@@ -84,6 +102,8 @@ namespace Artemis {
 
 	window_manager& window_manager::operator=(window_manager&& _Other) noexcept {
 		this->_WindowInstances = std::move(_Other._WindowInstances);
+
+		return *this;
 	}
 
 #pragma endregion

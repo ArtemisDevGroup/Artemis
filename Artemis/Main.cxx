@@ -97,7 +97,7 @@ static LPVOID GetPresentFunctionPtr(HWND hGameWnd) {
 	ID3D11Device* pDevice;
 	ID3D11DeviceContext* pDeviceContext;
 
-	const D3D_FEATURE_LEVEL szFeatureLevels[2] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
+	const D3D_FEATURE_LEVEL szFeatureLevels[2] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0 };
 	if (SUCCEEDED(D3D11CreateDeviceAndSwapChain(
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,

@@ -222,8 +222,6 @@ namespace Artemis::API {
 		call_stack _CallStackSnapshot;
 		std::shared_ptr<exception> _InnerException;
 
-		ARTEMIS_API void event_invoke();
-
 	public:
 		ARTEMIS_API exception() noexcept;
 
@@ -244,8 +242,6 @@ namespace Artemis::API {
 		inline exception(std::string_view&& _Message, T&& _InnerException) noexcept : std::exception(_Message.data()), _CallStackSnapshot(nullptr, 0) {
 			this->_CallStackSnapshot = _InnerException._CallStackSnapshot;
 			this->_InnerException = std::make_shared<T>(std::forward<T>(_InnerException));
-
-			event_invoke();
 		}
 
 		/// <summary>
@@ -268,12 +264,6 @@ namespace Artemis::API {
 		/// </summary>
 		/// <returns>A pointer to a snapshot of the call stack at the time the exception was thrown.</returns>
 		ARTEMIS_API const call_stack* calls() const noexcept;
-
-		/// <summary>
-		/// Gets a pointer to the event invoked when an Artemis exception is constructed.
-		/// </summary>
-		/// <returns>A pointer to the throw event.</returns>
-		ARTEMIS_API static event<exception>* throw_event() noexcept;
 	};
 
 	/// <summary>

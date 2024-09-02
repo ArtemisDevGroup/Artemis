@@ -77,12 +77,16 @@ namespace Artemis {
 		return (bool)this->pMessageBody->type();
 	}
 
+	message* message_recipent::get_message_body() noexcept { return this->pMessageBody; }
+
 	message_recipent& message_recipent::operator=(message_recipent&& _Other) noexcept {
 		if (_Other.hPipeInbound && _Other.hPipeInbound != INVALID_HANDLE_VALUE) {
 			this->hPipeInbound = _Other.hPipeInbound;
 			_Other.hPipeInbound = nullptr;
 		}
 		else this->hPipeInbound = nullptr;
+
+		return *this;
 	}
 
 #pragma endregion
@@ -145,6 +149,8 @@ namespace Artemis {
 			_Other.hPipeOutbound = nullptr;
 		}
 		else this->hPipeOutbound = nullptr;
+
+		return *this;
 	}
 
 #pragma endregion

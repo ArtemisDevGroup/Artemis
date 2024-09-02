@@ -14,20 +14,20 @@ namespace Artemis::_ {
 	public:
 		__safe_exception_propagator() = default;
 
-		void exec_l1cxx(std::function<void()> _Fn) const;
-		void exec_l1seh(std::function<void()> _Fn, bool _LetThroughCxxExceptions = false) const;
+		void exec_l1cxx(const std::function<void()>& _Fn) const;
+		void exec_l1seh(const std::function<void()>& _Fn, bool _LetThroughCxxExceptions = false) const;
 
-		void exec_l2(std::function<void()> _Fn) const;
+		void exec_l2(const std::function<void()>& _Fn) const;
 	};
 
 	class __safe_exception_net : public API::loggable {
 	public:
 		__safe_exception_net() = default;
 
-		void exec_l1cxx(std::function<void()> _Fn) const noexcept;
-		void exec_l1seh(std::function<void()> _Fn) const noexcept;
+		void exec_l1cxx(const std::function<void()>& _Fn) const noexcept;
+		void exec_l1seh(const std::function<void()>& _Fn) const noexcept;
 
-		void exec_l2(std::function<void()> _Fn) const noexcept;
+		void exec_l2(const std::function<void()>& _Fn) const noexcept;
 	};
 }
 
