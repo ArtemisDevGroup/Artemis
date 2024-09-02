@@ -52,6 +52,7 @@
 // -- C STL --
 
 #include <string.h>
+#include <assert.h>
 
 // -- EXT --
 

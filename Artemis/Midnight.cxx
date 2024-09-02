@@ -16,4 +16,4 @@ namespace Artemis {
 	}
 }
 
-ARTEMIS_FRAMEWORK extern ::Artemis::midnight* const athis = ::Artemis::g_DataInstance;
+extern ::Artemis::midnight* const athis = ::Artemis::g_DataInstance;

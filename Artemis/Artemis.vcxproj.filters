@@ -146,6 +146,12 @@
     <ClInclude Include="KeyAction.hxx">
       <Filter>Framework\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ImGuiWindows.hxx">
+      <Filter>Framework\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ExceptionFrames.hxx">
+      <Filter>Framework\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -215,6 +221,15 @@
       <Filter>Framework\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="KeyAction.cxx">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Communications.cxx">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiWindows.cxx">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ExceptionFrames.cxx">
       <Filter>Framework\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

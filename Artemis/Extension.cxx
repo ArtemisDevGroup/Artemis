@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Extension.hxx"
 
+#include "ExceptionFrames.hxx"
+
 using namespace std::literals::string_literals;
 
 namespace Artemis {
@@ -36,30 +38,7 @@ namespace Artemis {
 
 		bool status = false;
 
-		[aext_initialize, &status]() -> void { // Work around C2712 "Cannot use __try in functions that require object unwinding"
-			__try {
-				[aext_initialize, &status]() -> void { // Work around C2713 "Only one form of exception handling permitted per function"
-					try {
-						status = aext_initialize();
-					}
-					catch (API::exception&) {
-						API::call_stack_manager::global()->escape();
-						throw;
-					}
-					catch (std::exception& e) {
-						throw API::load_exception("C++ std exception thrown when initializing extension.", API::exception(e.what()));
-					}
-					catch (...) {
-						throw API::load_exception("Unknown C++ exception thrown when initializing extension.");
-					}
-				}();
-			}
-			__except (API::seh_filter(GetExceptionInformation()).continue_on(EXCEPTION_CXX)) { // Ignores the exception if it is a C++ exception.
-				[]() -> void { // Work around C2712 "Cannot use __try in functions that require object unwinding"
-					throw API::load_exception("System exception thrown when initializing extension.", API::system_exception());
-				}();
-			}
-		}();
+		_::__safe_exception_propagator().exec_l2([aext_initialize, &status]() { status = aext_initialize(); });
 
 		if (!status)
 			throw API::load_exception("Function 'aext_initialize' failed.");
@@ -81,30 +60,7 @@ namespace Artemis {
 		if (!aext_uninitialize)
 			throw API::load_exception("Function 'aext_uninitialize' is not found in module export table.", API::win32_exception("GetProcAddress"));
 
-		[aext_uninitialize]() -> void { // Work around C2712 "Cannot use __try in functions that require object unwinding"
-			__try {
-				[aext_uninitialize]() -> void { // Work around C2713 "Only one form of exception handling permitted per function"
-					try {
-						aext_uninitialize();
-					}
-					catch (API::exception&) {
-						API::call_stack_manager::global()->escape();
-						throw;
-					}
-					catch (std::exception& e) {
-						throw API::load_exception("C++ std exception thrown when uninitializing extension.", API::exception(e.what()));
-					}
-					catch (...) {
-						throw API::load_exception("Unknown C++ exception thrown when uninitializing extension.");
-					}
-				}();
-			}
-			__except (API::seh_filter(GetExceptionInformation()).continue_on(EXCEPTION_CXX)) {
-				[]() -> void { // Work around C2712 "Cannot use __try in functions that require object unwinding"
-					throw API::load_exception("System exception thrown when uninitializing extension.", API::system_exception());
-				}();
-			}
-		}();
+		_::__safe_exception_propagator().exec_l2(aext_uninitialize);
 
 		if (!FreeLibrary(this->hModule))
 			throw API::load_exception("Failed to eject extension dll.", API::win32_exception("FreeLibrary"));

@@ -215,7 +215,9 @@
     <ClInclude Include="API\Memory.hxx" />
     <ClInclude Include="Communications.hxx" />
     <ClInclude Include="Definitions.hxx" />
+    <ClInclude Include="ExceptionFrames.hxx" />
     <ClInclude Include="Extension.hxx" />
+    <ClInclude Include="ImGuiWindows.hxx" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_impl_dx11.h" />
@@ -242,8 +244,11 @@
     <ClCompile Include="API\Hook.cxx" />
     <ClCompile Include="API\Logging.cxx" />
     <ClCompile Include="API\Memory.cxx" />
+    <ClCompile Include="Communications.cxx" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="ExceptionFrames.cxx" />
     <ClCompile Include="Extension.cxx" />
+    <ClCompile Include="ImGuiWindows.cxx" />
     <ClCompile Include="ImGui\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Test|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>

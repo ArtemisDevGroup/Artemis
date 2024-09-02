@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "KeyAction.hxx"
 
+#include "ExceptionFrames.hxx"
+
 namespace Artemis {
 #pragma region Class key_action_manager
 
@@ -51,92 +53,33 @@ namespace Artemis {
 		assert(false && "If this statement is reached, the KeyAction bitset is edited in a way that is not intended.");
 	}
 
-#pragma region Function key_action_manager::invoke
-
-	static void __invoke(_::__key_down_action* _Action) {
-		__try {
-			_Action->on_key_down();
-		}
-		__except (API::seh_filter(GetExceptionInformation()).continue_on(EXCEPTION_CXX)) {
-			__stack_record();
-			throw API::system_exception();
-			__stack_escape();
-		}
-	}
-
-	static void __invoke(_::__key_up_action* _Action) {
-		__try {
-			_Action->on_key_up();
-		}
-		__except (API::seh_filter(GetExceptionInformation()).continue_on(EXCEPTION_CXX)) {
-			__stack_record();
-			throw API::system_exception();
-			__stack_escape();
-		}
-	}
-
-	static void __invoke(const std::function<void()>& _Action) {
-		__try {
-			_Action();
-		}
-		__except (API::seh_filter(GetExceptionInformation()).continue_on(EXCEPTION_CXX)) {
-			__stack_record();
-			throw API::system_exception();
-			__stack_escape();
-		}
-	}
-
-	template<typename _Ty>
-	static void __invoke(std::shared_ptr<API::logger> _Log, _Ty _Arg) {
-		std::stringstream ss;
-
-		try {
-			__invoke(_Arg);
-		}
-		catch (const API::system_exception& e) {
-			ss << "Artemis system_exception thrown when invoking keybind handler: " << e.what() << std::endl << e.calls()->to_string();
-			_Log->error(ss.str());
-		}
-		catch (const API::exception& e) {
-			ss << "Artemis exception thrown when invoking keybind handler: " << e.what() << std::endl << e.calls()->to_string();
-			_Log->error(ss.str());
-		}
-		catch (const std::exception& e) {
-			ss << "C++ std::exception thrown when invoking keybind handler: " << e.what() << std::endl;
-			_Log->error(ss.str());
-		}
-		catch (...) {
-			ss << "Unknown C++ exception thrown when invoking keybind handler.";
-			_Log->error(ss.str());
-		}
-	}
-
 	void key_action_manager::invoke(UINT _WindowMessage, key _Key) const noexcept {
+		_::__safe_exception_net net;
+		net.set_instance_logger(this->Log);
+
 		switch (_WindowMessage) {
 		case WM_KEYDOWN:
 			for (const auto& o : this->_KeyDownActions)
 				if (o.second->key() == _Key)
-					__invoke(this->Log, o.second);
+					net.exec_l2([&o]() { o.second->on_key_down(); });
 			for (const auto& o : this->_KeyActions)
 				if (o.second->key() == _Key)
-					__invoke<_::__key_down_action*>(this->Log, o.second);
+					net.exec_l2([&o]() { o.second->on_key_down(); });
 			for (const auto& o : this->_DirectKeyActions)
 				if (o.second.first == _Key)
-					__invoke(this->Log, o.second.second);
+					net.exec_l2(o.second.second);
 			break;
 
 		case WM_KEYUP:
 			for (const auto& o : this->_KeyUpActions)
 				if (o.second->key() == _Key)
-					__invoke(this->Log, o.second);
+					net.exec_l2([&o]() { o.second->on_key_up(); });
 			for (const auto& o : this->_KeyActions)
 				if (o.second->key() == _Key)
-					__invoke<_::__key_up_action*>(this->Log, o.second);
+					net.exec_l2([&o]() { o.second->on_key_up(); });
 			break;
 		}
 	}
-
-#pragma endregion
 
 #pragma endregion
 }

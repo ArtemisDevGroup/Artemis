@@ -4,6 +4,33 @@
 
 #include "API/Console.hxx"
 
+// Namespaces:
+//	Artemis::		is the namespace for basic interactions with the client. It contains things like for example IWindow which is used for creating an ImGui window.
+//	Artemis::Game:: is the namespace for interactable implementations of different mods.
+//	Artemis::API::	is the namespace for API features like Read, Hook and so on.
+//	scimitar::		contains everything we have reversed written as close to the original source code as possible.
+
+// To-Do:
+// 
+// - ImGuiWindows.cxx:
+//  * Create a Window interface.
+//  * Create a Window Manager.
+// 
+// >> Drawing.cxx: ...
+// 
+// - Main.cxx:
+//  * Create Extension load and unload logic.
+//		¤ Will require heavy lifting in Communications.cxx && Extensions.cxx && Artemis-Loader.
+//  * Add Window Manager.
+// 
+// - Whole Project:
+//  * Inline document.
+//  * Finish some API modules.
+//  * Add color structs.
+//  * Tidy up files by making sure regions and other structure is clear.
+//  * Double-check move semantics.
+//  * Double-check move constructors and assignment operators.
+
 namespace Artemis {
 	void alloc_midnight();
 	void release_midnight();
@@ -36,7 +63,7 @@ static BOOL WINAPI EnumWindowsCallback(HWND hWnd, LPARAM lParam) {
 	return FALSE;
 }
 
-HWND GetGameWindow() {
+static HWND GetGameWindow() {
 	ENUMWINDOWSPARAM EnumWindowsParam;
 	EnumWindowsParam.dwProcessId = GetCurrentProcessId();
 	EnumWindowsParam.hWnd = nullptr;
@@ -49,7 +76,7 @@ HWND GetGameWindow() {
 
 #pragma region Function for retrieving the Present function pointer.
 
-LPVOID GetPresentFunctionPtr(HWND hGameWnd) {
+static LPVOID GetPresentFunctionPtr(HWND hGameWnd) {
 	DXGI_SWAP_CHAIN_DESC sd;
 	ZeroMemory(&sd, sizeof(sd));
 	sd.BufferCount = 2;
@@ -117,7 +144,7 @@ ID3D11DeviceContext* pDeviceContext = nullptr;
 ID3D11RenderTargetView* pRenderTargetView = nullptr;
 
 bool bInitialized = false;
-HRESULT APIENTRY hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags) {
+static HRESULT APIENTRY hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags) {
 	if (!bInitialized) {
 		ID3D11Device* pDevice = nullptr;
 
@@ -160,6 +187,8 @@ HRESULT APIENTRY hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT F
 	ImGui::ShowStyleEditor();
 	ImGui::ShowDemoWindow();
 
+	athis->Windows->present_all();
+
 	//!<--APPEND HERE-->
 
 	ImGui::EndFrame();
@@ -180,33 +209,33 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 	// Initialization order:
 	// 1. Allocate midnight.
 	// 2. Allocate and initalize console.
-	// 3. Initialize keybind manager and keybinds.
-	// 4. Hook present.
-	// 5. Initialize window manager and windows.
-	// 6. Load extensions.
+	// 3. Initialize communication pipelines.
+	// 4. Initialize keybind manager and keybinds.
+	// 5. Hook present.
+	// 6. Initialize window manager and windows.
+	// 7. Load extensions.
 
 	Artemis::alloc_midnight();
-	athis->Logger = std::make_shared<Artemis::API::logger>();
-
-#pragma region Allocate and initialize console.
+	athis->Logger = new Artemis::API::logger();
 
 	Artemis::API::open_console();
 	Artemis::API::open_console_io();
 
-#pragma endregion
+	// Creates the necessary server side of the message pipelines.
+	// In the end, this is a task the Loader will have the responsibility of doing.
+	// FOR DEBUG PURPOSES ONLY
+	Artemis::_::__debug_message_host* dmh = new Artemis::_::__debug_message_host();
+	athis->ClientMessageRecipent = new Artemis::message_recipent(Artemis::ClientInboundPipeName);
+	athis->MainRemoteDispatcher = new Artemis::message_dispatcher("Artemis Client Primary Remote Dispatcher", Artemis::ClientOutboundPipeName);
+	athis->MainInternalDispatcher = new Artemis::message_dispatcher("Artemis Client Primary Internal Dispatcher", Artemis::ClientInboundPipeName);
 
-#pragma region Initialize keybind manager and keybinds.
+	athis->KeyActions = new Artemis::key_action_manager();
+	athis->KeyActions->set_instance_logger(athis->Logger);
 
-	athis->KeyActions = std::make_unique<Artemis::key_action_manager>();
-	auto& keyActions = athis->KeyActions;
-	keyActions->set_instance_logger(athis->Logger);
-
-	bool run = true;
-	keyActions->register_action(Artemis::key::f1, [&run]() { run = false; });
-
-#pragma endregion
-
-#pragma region Hook present.
+	athis->KeyActions->register_action(Artemis::key::f1, []() {
+		Artemis::message exitMessage(Artemis::message_type::exit);
+		athis->MainInternalDispatcher->dispatch_message(&exitMessage);
+		});
 
 	Artemis::API::global_hook_alloc();
 
@@ -215,47 +244,67 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 	HWND hWnd = GetGameWindow();
 	LPVOID lpPresentFunction = GetPresentFunctionPtr(hWnd);
 
-	presentHook->hkInstance = std::make_unique<Artemis::API::hook<Artemis::TPRESENT>>(lpPresentFunction, hkPresent);
+	presentHook->hkInstance = new Artemis::API::hook<Artemis::TPRESENT>(lpPresentFunction, hkPresent);
 	presentHook->oPresent = presentHook->hkInstance->original();
 	presentHook->hkInstance->enable();
 
-#pragma endregion
+	athis->Windows = new Artemis::window_manager();
+	athis->Windows->set_instance_logger(athis->Logger);
 
-#pragma region Loading extensions.
+	// Append windows here.
 
-	athis->Extensions = std::make_unique<Artemis::extension_manager>();
-	auto& extensions = athis->Extensions;
-	extensions->set_instance_logger(athis->Logger);
+	athis->Extensions = new Artemis::extension_manager();
+	athis->Extensions->set_instance_logger(athis->Logger);
 
 	// Set up message handler for extension messages.
 
 #pragma endregion
 
-#pragma endregion
-
 #pragma region ----- Main loop -----
 
-	while (run) { }
+	while (athis->ClientMessageRecipent->await_message()) {
+		Artemis::message* msg = athis->ClientMessageRecipent->get_message_body();
+
+		switch (msg->type()) {
+
+		}
+	}
+
+	athis->Logger->info(std::format("Communications pipeline received 'exit' message from dispatcher '{}'.", athis->ClientMessageRecipent->get_message_body()->dispatcher_name()));
+	athis->Logger->info("Starting uninitialization procedure...");
 
 #pragma endregion
 
 #pragma region ----- Uninitialization -----
 
-	// Swap WndProc for original.
+	// Uninitialization order:
+	// 1. Release extensions.
+	// 2. Release windows and window manager.
+	// 3. Restore present to its original state.
+	// 4. Release keybinds and keybind manager.
+	// 5. Release communication pipelines.
+	// 6. Release console.
+	// 7. Release midnight and exit.
 
-	SetWindowLongPtrW(presentHook->hWnd, GWLP_WNDPROC, (LONG_PTR)presentHook->oWndProc);
+	delete athis->Windows;
 
-	presentHook->hkInstance.release();
+	SetWindowLongPtrW(presentHook->hWnd, GWLP_WNDPROC, (LONG_PTR)presentHook->oWndProc); // Swap WndProc for original.
+
+	delete presentHook->hkInstance;
 
 	Artemis::API::global_hook_release();
 
-#pragma region Free console.
+	delete athis->KeyActions;
+
+	delete athis->ClientMessageRecipent;
+	delete athis->MainRemoteDispatcher;
+	delete athis->MainInternalDispatcher;
+	delete dmh; // SEE ABOVE REMARKS
 
 	Artemis::API::close_console_io();
 	Artemis::API::close_console();
 
-#pragma endregion
-
+	delete athis->Logger;
 	Artemis::release_midnight();
 
 	FreeLibraryAndExitThread(hModule, 0);

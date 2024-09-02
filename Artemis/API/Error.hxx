@@ -380,6 +380,8 @@ namespace Artemis::API {
 
 		ARTEMIS_API int continue_on(DWORD _ExceptionCode) noexcept;
 		ARTEMIS_API int handle_on(DWORD _ExceptionCode) noexcept;
+
+		ARTEMIS_API int handle_always() noexcept;
 	};
 
 	class system_exception : public exception {

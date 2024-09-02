@@ -129,31 +129,21 @@ namespace Artemis::API {
 
 #pragma region Class exception
 
-	event<exception> g_ThrowEvent;
-
-	void exception::event_invoke() { g_ThrowEvent.invoke(this, new event_args(), true); }
-
 	exception::exception() noexcept : std::exception("An unknown Artemis exception has occured."), _CallStackSnapshot(nullptr, 0) {
 		call_stack* current = call_stack_manager::global()->fetch();
 		this->_CallStackSnapshot = current->snap();
 		current->pop_back();
-
-		event_invoke();
 	}
 
 	exception::exception(std::string_view&& _Message) noexcept : std::exception(_Message.data()), _CallStackSnapshot(nullptr, 0) {
 		call_stack* current = call_stack_manager::global()->fetch();
 		this->_CallStackSnapshot = current->snap();
 		current->pop_back();
-		
-		event_invoke();
 	}
 
 	const std::shared_ptr<exception> exception::inner() const noexcept { return this->_InnerException; }
 
 	const call_stack* exception::calls() const noexcept { return &this->_CallStackSnapshot; }
-
-	event<exception>* exception::throw_event() noexcept { return &g_ThrowEvent; }
 
 #pragma endregion
 
@@ -249,6 +239,8 @@ namespace Artemis::API {
 	int seh_filter::handle_on(DWORD _ExceptionCode) noexcept {
 		return this->_Data->_Record.ExceptionCode == _ExceptionCode ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH;
 	}
+
+	int seh_filter::handle_always() noexcept { return EXCEPTION_EXECUTE_HANDLER; }
 
 #pragma endregion
 
