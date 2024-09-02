@@ -256,8 +256,6 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 	athis->Extensions = new Artemis::extension_manager();
 	athis->Extensions->set_instance_logger(athis->Logger);
 
-	// Set up message handler for extension messages.
-
 #pragma endregion
 
 #pragma region ----- Main loop -----
@@ -266,7 +264,7 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 		Artemis::message* msg = athis->ClientMessageRecipent->get_message_body();
 
 		switch (msg->type()) {
-
+			// Set up message handler for extension messages.
 		}
 	}
 
