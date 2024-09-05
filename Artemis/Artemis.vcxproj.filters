@@ -57,6 +57,15 @@
     <Filter Include="Framework\Source Files">
       <UniqueIdentifier>{a2525b51-1c65-4e11-aac5-59bbccf46881}</UniqueIdentifier>
     </Filter>
+    <Filter Include="API\Header Files\gcem">
+      <UniqueIdentifier>{c4a3a3b6-65b4-4e4a-acd9-4c8dbaa7bcd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="API\Header Files\gcem\gcem_incl">
+      <UniqueIdentifier>{035fd50d-904b-49c2-bd4b-fb2408029611}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="API\Header Files\gcem\gcem_incl\quadrature">
+      <UniqueIdentifier>{f5749947-0013-43a4-a776-f079de050d1c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -151,6 +160,204 @@
     </ClInclude>
     <ClInclude Include="ExceptionFrames.hxx">
       <Filter>Framework\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Color.hxx">
+      <Filter>API\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem.hpp">
+      <Filter>API\Header Files\gcem</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\abs.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\acos.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\acosh.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\asin.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\asinh.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\atan.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\atan2.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\atanh.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\beta.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\binomial_coef.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\ceil.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\copysign.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\cos.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\cosh.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\erf.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\erf_inv.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\exp.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\expm1.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\factorial.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\find_exponent.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\find_fraction.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\find_whole.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\floor.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\fmod.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\gcd.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\gcem_options.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\hypot.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\incomplete_beta.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\incomplete_beta_inv.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\incomplete_gamma.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\incomplete_gamma_inv.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\inv_sqrt.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\is_even.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\is_finite.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\is_inf.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\is_nan.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\is_odd.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\lbeta.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\lcm.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\lgamma.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\lmgamma.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\log.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\log_binomial_coef.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\log1p.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\log2.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\log10.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\mantissa.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\max.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\min.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\neg_zero.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\pow.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\pow_integral.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\round.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\sgn.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\signbit.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\sin.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\sinh.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\sqrt.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\tan.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\tanh.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\tgamma.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\trunc.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\quadrature\gauss_legendre_30.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl\quadrature</Filter>
+    </ClInclude>
+    <ClInclude Include="API\gcem\gcem_incl\quadrature\gauss_legendre_50.hpp">
+      <Filter>API\Header Files\gcem\gcem_incl\quadrature</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -149,7 +149,7 @@ namespace Artemis::API {
 
 #pragma region Class win32_exception
 
-	std::string win32_exception::win32_message(DWORD _Win32ErrorCode) noexcept {
+	std::string_view win32_exception::win32_message(DWORD _Win32ErrorCode) noexcept {
 		CHAR szBuffer[256];
 
 		DWORD dwReturn = FormatMessageA(
@@ -165,7 +165,7 @@ namespace Artemis::API {
 		if (!dwReturn)
 			lstrcpyA(szBuffer, "Fetching error message failed.");
 
-		return "Win32: " + std::string(szBuffer);
+		return std::string_view(szBuffer);
 	}
 
 	win32_exception::win32_exception(std::string_view&& _FunctionName) noexcept : exception(win32_message(GetLastError())), _Win32Function(std::forward<std::string_view>(_FunctionName)), _Win32ErrorCode(GetLastError()) {}
@@ -180,18 +180,18 @@ namespace Artemis::API {
 
 #pragma region Class errno_exception
 
-	std::string errno_exception::errno_message(errno_t _ErrnoCode) {
+	std::string_view errno_exception::errno_message(errno_t _ErrnoCode) {
 		char buffer[256];
 		strerror_s(buffer, _ErrnoCode);
 #pragma warning(push)
 #pragma warning(disable:6054)	// String 'buffer' might not be zero-terminated
 								// Disabled due to strerror_s not being SAL-annoted as
 								// guaranteeing null termination, but does.
-		return std::string(buffer);
+		return std::string_view(buffer);
 #pragma warning(pop)
 	}
 
-	errno_exception::errno_exception(std::string_view&& _FunctionName) noexcept : exception(errno_message(errno).c_str()), _ErrnoCode(errno), _CStdFunction(std::forward<std::string_view>(_FunctionName)) {}
+	errno_exception::errno_exception(std::string_view&& _FunctionName) noexcept : exception(errno_message(errno)), _ErrnoCode(errno), _CStdFunction(std::forward<std::string_view>(_FunctionName)) {}
 
 	errno_exception::errno_exception(errno_t _ErrnoCode, std::string_view&& _FunctionName) noexcept : exception(errno_message(_ErrnoCode)), _ErrnoCode(_ErrnoCode), _CStdFunction(std::forward<std::string_view>(_FunctionName)) {}
 

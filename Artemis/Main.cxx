@@ -11,17 +11,11 @@
 //	scimitar::		contains everything we have reversed written as close to the original source code as possible.
 
 // To-Do:
-// 
-// - ImGuiWindows.cxx:
-//  * Create a Window interface.
-//  * Create a Window Manager.
-// 
 // >> Drawing.cxx: ...
 // 
 // - Main.cxx:
 //  * Create Extension load and unload logic.
 //		¤ Will require heavy lifting in Communications.cxx && Extensions.cxx && Artemis-Loader.
-//  * Add Window Manager.
 // 
 // - Whole Project:
 //  * Inline document.
