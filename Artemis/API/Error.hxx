@@ -213,57 +213,47 @@ namespace Artemis::API {
 		/// </summary>
 		/// <returns>A pointer to the global call stack manager.</returns>
 		ARTEMIS_API static call_stack_manager* global();
+
+		call_stack_manager& operator=(const call_stack_manager&) = delete;
+		call_stack_manager& operator=(call_stack_manager&&) = delete;
 	};
 
-	/// <summary>
-	/// A base exception type for all Artemis exceptions. Inherits std::exception for compatibility.
-	/// </summary>
 	class exception : public std::exception {
 		call_stack _CallStackSnapshot;
-		std::shared_ptr<exception> _InnerException;
+		exception* _InnerException;
 
 	public:
 		ARTEMIS_API exception() noexcept;
 
-		/// <summary>
-		/// Initializes an exception with a message.
-		/// </summary>
-		/// <param name="_Message">- The exception message.</param>
 		ARTEMIS_API exception(std::string_view&& _Message) noexcept;
 
-		/// <summary>
-		/// Initializes an exception with a message and an inner exception.
-		/// </summary>
-		/// <typeparam name="T">The inner exception type.</typeparam>
-		/// <param name="_Message">- The exception message.</param>
-		/// <param name="_InnerException">- The inner exception type.</param>
 		template<class T>
 			requires(std::is_base_of_v<exception, T>)
 		inline exception(std::string_view&& _Message, T&& _InnerException) noexcept : std::exception(_Message.data()), _CallStackSnapshot(nullptr, 0) {
 			this->_CallStackSnapshot = _InnerException._CallStackSnapshot;
-			this->_InnerException = std::make_shared<T>(std::forward<T>(_InnerException));
+			this->_InnerException = new T(std::forward<T>(_InnerException));
 		}
 
-		/// <summary>
-		/// Gets a pointer to the inner exception type. Note that this is a pointer to the base exception type, when in reality the object pointed to can be any exception type.
-		/// </summary>
-		/// <returns>A shared pointer to the inner exception.</returns>
-		ARTEMIS_API const std::shared_ptr<exception> inner() const noexcept;
-
-		/// <summary>
-		/// Gets a const pointer to the inner exception object.
-		/// </summary>
-		/// <typeparam name="T">The inner exception type.</typeparam>
-		/// <returns>A shared pointer to the inner exception.</returns>
 		template<class T>
 			requires(std::is_base_of_v<exception, T>)
-		inline const std::shared_ptr<T> inner() const noexcept { return (std::shared_ptr<T>)this->inner(); }
+		inline exception(T&& _InnerException) noexcept : exception("An unknown Artemis exception has occured.", std::forward<T>(_InnerException)) {}
 
-		/// <summary>
-		/// Gets a pointer to the current exception's call stack snapshot.
-		/// </summary>
-		/// <returns>A pointer to a snapshot of the call stack at the time the exception was thrown.</returns>
+		exception(const exception&) = delete;
+
+		ARTEMIS_API exception(exception&&) noexcept;
+
+		ARTEMIS_API ~exception() noexcept;
+
+		ARTEMIS_API const exception* inner() const noexcept;
+
+		template<class T>
+			requires(std::is_base_of_v<exception, T>)
+		inline const T* inner() const noexcept { return (T*)this->inner(); }
+
 		ARTEMIS_API const call_stack* calls() const noexcept;
+
+		exception& operator=(const exception&) = delete;
+		ARTEMIS_API exception& operator=(exception&&) noexcept;
 	};
 
 	/// <summary>
@@ -272,9 +262,6 @@ namespace Artemis::API {
 	template<typename T>
 	concept derived_exception_type = std::is_base_of_v<exception, T>;
 
-	/// <summary>
-	/// An exception type thrown when a function in the Windows API fails.
-	/// </summary>
 	class win32_exception : public exception {
 		std::string_view _Win32Function;
 		DWORD _Win32ErrorCode;
@@ -282,54 +269,21 @@ namespace Artemis::API {
 		ARTEMIS_API static std::string_view win32_message(DWORD _Win32ErrorCode) noexcept;
 
 	public:
-		/// <summary>
-		/// Initializes a windows exception using the last error code for the specified function.
-		/// </summary>
-		/// <param name="_FunctionName">- The name of the function that failed.</param>
 		ARTEMIS_API win32_exception(std::string_view&& _FunctionName) noexcept;
 
-		/// <summary>
-		/// Initializes a windows exception using the specified error code for the specified function.
-		/// </summary>
-		/// <param name="_Win32ErrorCode">- The error code.</param>
-		/// <param name="_FunctionName">- The name of the function that failed.</param>
 		ARTEMIS_API win32_exception(DWORD _Win32ErrorCode, std::string_view&& _FunctionName) noexcept;
 
-		/// <summary>
-		/// Initializes a windows exception using the last error code for the specified function.
-		/// </summary>
-		/// <typeparam name="T">- The inner exception type.</typeparam>
-		/// <param name="_FunctionName">- The name of the function that failed.</param>
-		/// <param name="_InnerException">- The inner exception.</param>
-		template<derived_exception_type T>
-		inline win32_exception(std::string_view&& _FunctionName, T&& _InnerException) noexcept : exception(win32_message(GetLastError()), std::forward<T>(_InnerException)), _Win32Function(std::forward<std::string_view>(_FunctionName)), _Win32ErrorCode(GetLastError()) {}
-
-		/// <summary>
-		/// Initializes a windows exception using the specified error code for the specified function.
-		/// </summary>
-		/// <typeparam name="T">- The inner exception type.</typeparam>
-		/// <param name="_Win32ErrorCode">- The error code.</param>
-		/// <param name="_FunctionName">- The name of the function that failed.</param>
-		/// <param name="_InnerException">- The inner exception.</param>
 		template<derived_exception_type T>
 		inline win32_exception(DWORD _Win32ErrorCode, std::string_view&& _FunctionName, T&& _InnerException) noexcept : exception(win32_message(_Win32ErrorCode), _InnerException), _Win32Function(std::forward<std::string_view>(_FunctionName)), _Win32ErrorCode(_Win32ErrorCode) {}
 
-		/// <summary>
-		/// Gets the name of the Windows API function that failed.
-		/// </summary>
-		/// <returns>The name of the function that failed.</returns>
+		template<derived_exception_type T>
+		inline win32_exception(std::string_view&& _FunctionName, T&& _InnerException) noexcept : win32_exception(GetLastError(), std::forward<std::string_view>(_FunctionName), std::forward<T>(_InnerException)) {}
+
 		ARTEMIS_API const std::string_view& win32_function() const noexcept;
 
-		/// <summary>
-		/// Gets the error code of the current instance.
-		/// </summary>
-		/// <returns>The error code.</returns>
 		ARTEMIS_API DWORD win32_error_code() const noexcept;
 	};
 
-	/// <summary>
-	/// An exception type thrown when a C standard function returns an error state in the form of an errno code.
-	/// </summary>
 	class errno_exception : public exception {
 		std::string_view _CStdFunction;
 		errno_t _ErrnoCode;
@@ -337,48 +291,18 @@ namespace Artemis::API {
 		ARTEMIS_API static std::string_view errno_message(errno_t _ErrnoCode);
 
 	public:
-		/// <summary>
-		/// Initializes an errno exception using the current errno code and the specified function.
-		/// </summary>
-		/// <param name="_FunctionName">- The name of the errno function that failed.</param>
 		ARTEMIS_API errno_exception(std::string_view&& _FunctionName) noexcept;
 
-		/// <summary>
-		/// Initializes an errno exception using the specified errno code and the specified function.
-		/// </summary>
-		/// <param name="_ErrnoCode">- The errno code returned by the failing function.</param>
-		/// <param name="_FunctionName">- The name of the errno function that failed.</param>
 		ARTEMIS_API errno_exception(errno_t _ErrnoCode, std::string_view&& _FunctionName) noexcept;
 
-		/// <summary>
-		/// Initializes an errno exception using the current errno code and the specified function.
-		/// </summary>
-		/// <typeparam name="T">- The inner exception type.</typeparam>
-		/// <param name="_FunctionName">- The name of the errno function that failed.</param>
-		/// <param name="_InnerException">- The inner exception.</param>
 		template<derived_exception_type T>
 		inline errno_exception(std::string_view&& _FunctionName, T&& _InnerException) : exception(errno_message(errno), std::forward<T>(_InnerException)), _ErrnoCode(errno), _CStdFunction(std::move(_FunctionName)) {}
 
-		/// <summary>
-		/// Initializes an errno exception using the current errno code and the specified function.
-		/// </summary>
-		/// <typeparam name="T">- The inner exception type.</typeparam>
-		/// <param name="_ErrnoCode">- The errno code returned by the failing function.</param>
-		/// <param name="_FunctionName">- The name of the errno function that failed.</param>
-		/// <param name="_InnerException">- The inner exception.</param>
 		template<derived_exception_type T>
 		inline errno_exception(errno_t _ErrnoCode, std::string_view&& _FunctionName, T&& _InnerException) : exception(errno_message(_ErrnoCode), std::forward<T>(_InnerException)), _ErrnoCode(_ErrnoCode), _CStdFunction(_FunctionName) {}
 
-		/// <summary>
-		/// Gets the name of the errno function that failed.
-		/// </summary>
-		/// <returns>The function name.</returns>
 		ARTEMIS_API const std::string_view& cstd_function() const noexcept;
 
-		/// <summary>
-		/// Gets the errno code reported by the function that failed.
-		/// </summary>
-		/// <returns>The errno code.</returns>
 		ARTEMIS_API errno_t errno_code() const noexcept;
 	};
 
@@ -457,9 +381,6 @@ namespace Artemis::API {
 		ARTEMIS_API int handle_always() noexcept;
 	};
 
-	/// <summary>
-	/// An exception type thrown when an SEH exception handler is executed.
-	/// </summary>
 	class system_exception : public exception {
 		EXCEPTION_RECORD _Record;
 		CONTEXT _Context;
@@ -468,18 +389,8 @@ namespace Artemis::API {
 	public:
 		ARTEMIS_API system_exception() noexcept;
 
-		/// <summary>
-		/// Initializes a system exception with the specified message.
-		/// </summary>
-		/// <param name="_Message">- The exception message.</param>
 		ARTEMIS_API system_exception(std::string_view&& _Message) noexcept;
 
-		/// <summary>
-		/// Initializes a system exception with the specified message.
-		/// </summary>
-		/// <typeparam name="T">- The inner exception type.</typeparam>
-		/// <param name="_Message">- The exception message.</param>
-		/// <param name="_InnerException">- The inner exception.</param>
 		template<derived_exception_type T>
 		inline system_exception(std::string_view&& _Message, T&& _InnerException) noexcept : exception(std::forward<std::string_view>(_Message), std::forward<T>(_InnerException)) {
 			seh_data* data = get_thread_seh_data();
@@ -488,76 +399,36 @@ namespace Artemis::API {
 			this->_InnerRecords = data->_InnerRecords;
 		}
 
-		/// <summary>
-		/// Initializes a system exception with the default message.
-		/// </summary>
-		/// <typeparam name="T">- The inner exception type.</typeparam>
-		/// <param name="_InnerException">- The inner exception.</param>
 		template<derived_exception_type T>
 		inline system_exception(T&& _InnerException) noexcept : system_exception("A system exception has occured.", std::forward<T>(_InnerException)) {}
 
-		/// <summary>
-		/// Gets a reference to the exception record.
-		/// </summary>
-		/// <returns>The exception record.</returns>
-		ARTEMIS_API const EXCEPTION_RECORD& record() const noexcept;
+		ARTEMIS_API const EXCEPTION_RECORD* record() const noexcept;
 
-		/// <summary>
-		/// Gets a reference to the exception context, which contains the value of every processor register at the time of the exception.
-		/// </summary>
-		/// <returns>The exception context.</returns>
-		ARTEMIS_API const CONTEXT& context() const noexcept;
+		ARTEMIS_API const CONTEXT* context() const noexcept;
 
-		/// <summary>
-		/// Gets a reference to a vector containing the records of any additional inner exceptions.
-		/// </summary>
-		/// <returns>The additional exception records.</returns>
 		ARTEMIS_API const std::vector<EXCEPTION_RECORD>& inner_records() const noexcept;
 	};
 
-	/// <summary>
-	/// An exception type thrown when an argument is null or contains an invalid value.
-	/// </summary>
 	class argument_exception : public exception {
 		std::string_view _ArgumentName;
 
 	public:
-		/// <summary>
-		/// Initializes an argument exception with the provided message for the provided argument.
-		/// </summary>
-		/// <param name="_Message">- The exception message.</param>
-		/// <param name="_ArgumentName">- The name of the argument containing an invalid value.</param>
 		ARTEMIS_API argument_exception(std::string_view&& _Message, std::string_view&& _ArgumentName) noexcept;
 
-		/// <summary>
-		/// Initializes an argument exception with the provided message for the provided argument.
-		/// </summary>
-		/// <typeparam name="T">- The inner exception type.</typeparam>
-		/// <param name="_Message">- The exception message.</param>
-		/// <param name="_ArgumentName">- The name of the argument containing an invalid value.</param>
-		/// <param name="_InnerException">- The inner exception.</param>
 		template<derived_exception_type T>
 		inline argument_exception(std::string_view&& _Message, std::string_view&& _ArgumentName, T&& _InnerException) noexcept : exception(std::forward<std::string_view>(_Message), std::forward<T>(_InnerException)), _ArgumentName(std::forward<std::string_view>(_ArgumentName)) {}
 
-		/// <summary>
-		/// Gets a reference to the name of the argument containing an invalid value.
-		/// </summary>
-		/// <returns>The name of the invalid argument.</returns>
 		ARTEMIS_API const std::string_view& argument() const noexcept;
 	};
 
-	/// <summary>
-	/// An exception type thrown when the state of an object is invalid in order to preform the specified operation.
-	/// </summary>
 	class invalid_state_exception : public exception {
 	public:
 		ARTEMIS_API invalid_state_exception() noexcept;
 
-		/// <summary>
-		/// Initializes an invalid state exception with the specified message.
-		/// </summary>
-		/// <param name="_Message">- The exception message.</param>
 		ARTEMIS_API invalid_state_exception(std::string_view&& _Message) noexcept;
+
+		template<derived_exception_type T>
+		inline invalid_state_exception(std::string_view&& _Message, T&& _InnerException) noexcept : exception(std::forward<std::string_view>(_Message), std::forward<T>(_InnerException)) {}
 	};
 }
 

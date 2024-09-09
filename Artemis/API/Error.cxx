@@ -129,21 +129,48 @@ namespace Artemis::API {
 
 #pragma region Class exception
 
-	exception::exception() noexcept : std::exception("An unknown Artemis exception has occured."), _CallStackSnapshot(nullptr, 0) {
+	exception::exception() noexcept : std::exception("An unknown Artemis exception has occured."), _CallStackSnapshot(nullptr, 0), _InnerException(nullptr) {
 		call_stack* current = call_stack_manager::global()->fetch();
 		this->_CallStackSnapshot = current->snap();
 		current->pop_back();
 	}
 
-	exception::exception(std::string_view&& _Message) noexcept : std::exception(_Message.data()), _CallStackSnapshot(nullptr, 0) {
+	exception::exception(std::string_view&& _Message) noexcept : std::exception(_Message.data()), _CallStackSnapshot(nullptr, 0), _InnerException(nullptr) {
 		call_stack* current = call_stack_manager::global()->fetch();
 		this->_CallStackSnapshot = current->snap();
 		current->pop_back();
 	}
 
-	const std::shared_ptr<exception> exception::inner() const noexcept { return this->_InnerException; }
+	exception::exception(exception&& _Other) noexcept : _CallStackSnapshot(std::move(_Other._CallStackSnapshot)) {
+		if (_Other._InnerException) {
+			this->_InnerException = _Other._InnerException;
+			_Other._InnerException = nullptr;
+		}
+		else this->_InnerException = nullptr;
+	}
+
+	exception::~exception() noexcept {
+		if (this->_InnerException) {
+			delete this->_InnerException;
+			this->_InnerException = nullptr;
+		}
+	}
+
+	const exception* exception::inner() const noexcept { return this->_InnerException; }
 
 	const call_stack* exception::calls() const noexcept { return &this->_CallStackSnapshot; }
+
+	exception& exception::operator=(exception&& _Other) noexcept {
+		this->_CallStackSnapshot = std::move(_Other._CallStackSnapshot);
+
+		if (_Other._InnerException) {
+			this->_InnerException = _Other._InnerException;
+			_Other._InnerException = nullptr;
+		}
+		else this->_InnerException = nullptr;
+
+		return *this;
+	}
 
 #pragma endregion
 
@@ -156,7 +183,7 @@ namespace Artemis::API {
 			FORMAT_MESSAGE_FROM_SYSTEM,
 			nullptr,
 			_Win32ErrorCode,
-			LANG_ENGLISH,
+			MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),
 			szBuffer,
 			sizeof(szBuffer),
 			nullptr
@@ -168,9 +195,9 @@ namespace Artemis::API {
 		return std::string_view(szBuffer);
 	}
 
-	win32_exception::win32_exception(std::string_view&& _FunctionName) noexcept : exception(win32_message(GetLastError())), _Win32Function(std::forward<std::string_view>(_FunctionName)), _Win32ErrorCode(GetLastError()) {}
+	win32_exception::win32_exception(std::string_view&& _FunctionName) noexcept : win32_exception(GetLastError(), std::forward<std::string_view>(_FunctionName)) {}
 
-	win32_exception::win32_exception(DWORD _Win32ErrorCode, std::string_view&& _FunctionName) noexcept : exception(win32_message(_Win32ErrorCode)), _Win32Function(std::forward<std::string_view>(_FunctionName)), _Win32ErrorCode(_Win32ErrorCode) {}
+	win32_exception::win32_exception(DWORD _Win32ErrorCode, std::string_view&& _FunctionName) noexcept : exception(win32_message(_Win32ErrorCode)), _Win32Function(std::move(_FunctionName)), _Win32ErrorCode(_Win32ErrorCode) {}
 
 	const std::string_view& win32_exception::win32_function() const noexcept { return this->_Win32Function; }
 
@@ -260,8 +287,8 @@ namespace Artemis::API {
 		this->_InnerRecords = data->_InnerRecords;
 	}
 
-	const EXCEPTION_RECORD& system_exception::record() const noexcept { return this->_Record; }
-	const CONTEXT& system_exception::context() const noexcept { return this->_Context; }
+	const EXCEPTION_RECORD* system_exception::record() const noexcept { return &this->_Record; }
+	const CONTEXT* system_exception::context() const noexcept { return &this->_Context; }
 	const std::vector<EXCEPTION_RECORD>& system_exception::inner_records() const noexcept { return this->_InnerRecords; }
 
 #pragma endregion

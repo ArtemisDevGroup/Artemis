@@ -66,6 +66,12 @@
     <Filter Include="API\Header Files\gcem\gcem_incl\quadrature">
       <UniqueIdentifier>{f5749947-0013-43a4-a776-f079de050d1c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Header Files\Internal">
+      <UniqueIdentifier>{cf7e01c0-5d8d-4d53-80b9-a09a55ebc379}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Source Files\Internal">
+      <UniqueIdentifier>{0182d3f5-c9bb-45e0-a2e4-eb22c573a7e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -156,9 +162,6 @@
       <Filter>Framework\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImGuiWindows.hxx">
-      <Filter>Framework\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ExceptionFrames.hxx">
       <Filter>Framework\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="API\Color.hxx">
@@ -359,6 +362,12 @@
     <ClInclude Include="API\gcem\gcem_incl\quadrature\gauss_legendre_50.hpp">
       <Filter>API\Header Files\gcem\gcem_incl\quadrature</Filter>
     </ClInclude>
+    <ClInclude Include="ExceptionFrames.hxx">
+      <Filter>Framework\Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="ExecutionContext.hxx">
+      <Filter>Framework\Header Files\Internal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -437,7 +446,10 @@
       <Filter>Framework\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ExceptionFrames.cxx">
-      <Filter>Framework\Source Files</Filter>
+      <Filter>Framework\Source Files\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="ExecutionContext.cxx">
+      <Filter>Framework\Source Files\Internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

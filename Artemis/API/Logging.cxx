@@ -49,9 +49,10 @@ namespace Artemis::API {
 	}
 
 	void logger::log(
-		std::optional<std::chrono::system_clock::time_point> _Time,
-		const std::string_view& _LogSeverity,
-		std::optional<console_color> _SeverityColor,
+		std::optional<std::chrono::system_clock::time_point>&& _Time,
+		std::optional<std::string_view>&& _Sender,
+		std::string_view&& _LogSeverity,
+		std::optional<console_color>&& _SeverityColor,
 		const std::string_view& _Message
 	) const {
 		__stack_record();
@@ -59,13 +60,19 @@ namespace Artemis::API {
 		if (_Time.has_value())
 			print(std::format("[{:%T}] ", _Time.value()));
 
-		if (_SeverityColor.has_value())
+		if (_Sender.has_value())
+			print(std::format("[{}/", _Sender.value()));
+		else
+			print("[");
+
+		if (_SeverityColor.has_value()) {
 			__stack_rethrow(set_console_foreground_color(_SeverityColor.value()));
-
-		print(std::format("[{}] ", _LogSeverity));
-
-		if (_SeverityColor.has_value())
+			print(_LogSeverity);
 			__stack_rethrow(set_console_foreground_color(console_color::gray));
+			print("] ");
+		}
+		else
+			print(std::format("{}] ", _LogSeverity));
 
 		print(std::format("{}\n", _Message));
 
@@ -99,6 +106,14 @@ namespace Artemis::API {
 
 	void logger::error(const std::string_view& _Message) const { this->operator()(log_severity::error, _Message); }
 
+	void logger::set_sender_fetch_callback(std::function<std::optional<std::string_view>()> _Callback) noexcept { this->_FetchSenderCallback = _Callback; }
+
+	void logger::reset_sender_fetch_callback() noexcept { this->_FetchSenderCallback = nullptr; }
+
+	bool logger::has_sender_fetch_callback() noexcept { return this->_FetchSenderCallback.operator bool(); }
+
+	void logger::set_sender(std::string_view&& _Sender) noexcept { this->_Sender = std::move(_Sender); }
+
 	void logger::operator()(log_severity _Severity, const std::string_view& _Message) const {
 		__stack_record();
 
@@ -110,10 +125,19 @@ namespace Artemis::API {
 		if (_WithColor)
 			color = _Severity.color();
 
+		std::optional<std::string_view> sender;
+		if (this->_FetchSenderCallback)
+			sender = this->_FetchSenderCallback();
+		else if (!this->_Sender.empty())
+			sender = this->_Sender;
+		else
+			sender = std::nullopt;
+
 		__stack_rethrow(this->log(
-			time,
+			std::move(time),
+			std::move(sender),
 			_Severity.str(),
-			color,
+			std::move(color),
 			_Message
 		));
 

@@ -282,6 +282,7 @@
     <ClInclude Include="Communications.hxx" />
     <ClInclude Include="Definitions.hxx" />
     <ClInclude Include="ExceptionFrames.hxx" />
+    <ClInclude Include="ExecutionContext.hxx" />
     <ClInclude Include="Extension.hxx" />
     <ClInclude Include="ImGuiWindows.hxx" />
     <ClInclude Include="ImGui\imconfig.h" />
@@ -313,6 +314,7 @@
     <ClCompile Include="Communications.cxx" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="ExceptionFrames.cxx" />
+    <ClCompile Include="ExecutionContext.cxx" />
     <ClCompile Include="Extension.cxx" />
     <ClCompile Include="ImGuiWindows.cxx" />
     <ClCompile Include="ImGui\imgui.cpp">

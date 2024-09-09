@@ -46,8 +46,8 @@ namespace Artemis::_ {
 		}
 		catch (const API::system_exception& e) {
 			Log->error(std::format("Artemis system_exception caught (code {}) at address '{}': {}\n{}",
-				e.record().ExceptionCode,
-				e.record().ExceptionAddress,
+				e.record()->ExceptionCode,
+				e.record()->ExceptionAddress,
 				e.what(),
 				e.calls()->to_string()
 			));

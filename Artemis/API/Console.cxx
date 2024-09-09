@@ -18,6 +18,8 @@ namespace Artemis::API {
 		if (!AllocConsole())
 			throw win32_exception("AllocConsole");
 
+		g_ConsoleIsOpen = true;
+
 		__stack_escape();
 	}
 
@@ -29,6 +31,8 @@ namespace Artemis::API {
 
 		if (!FreeConsole())
 			throw win32_exception("FreeConsole");
+
+		g_ConsoleIsOpen = false;
 
 		__stack_escape();
 	}
@@ -63,7 +67,7 @@ namespace Artemis::API {
 		if (!g_ConsoleIsOpen)
 			throw invalid_state_exception("Console is not open.");
 
-		if (g_StdOut || g_StdIn)
+		if (g_StdIn != nullptr || g_StdOut != nullptr)
 			throw invalid_state_exception("Console IO streams are already open.");
 
 		errno_t e = freopen_s(&g_StdOut, "CONOUT$", "w", stdout);
@@ -80,7 +84,7 @@ namespace Artemis::API {
 	void close_console_io() {
 		__stack_record();
 
-		if (!g_StdOut || !g_StdIn)
+		if (g_StdIn == nullptr || g_StdOut == nullptr)
 			throw invalid_state_exception("Console IO streams are not open.");
 
 		fclose(g_StdOut);
@@ -102,12 +106,12 @@ namespace Artemis::API {
 
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
-		CONSOLE_SCREEN_BUFFER_INFOEX csbi;
+		CONSOLE_SCREEN_BUFFER_INFO csbi;
 		ZeroMemory(&csbi, sizeof(csbi));
-
-		if (!GetConsoleScreenBufferInfoEx(hConsole, &csbi))
-			throw win32_exception("GetConsoleScreenBufferInfoEx");
-
+		
+		if (!GetConsoleScreenBufferInfo(hConsole, &csbi))
+			throw win32_exception("GetConsoleScreenBufferInfo");
+		
 		WORD wAttributes = csbi.wAttributes;
 		wAttributes ^= 0b1111 << _Shift;
 		wAttributes |= static_cast<WORD>(_Color) << _Shift;

@@ -7,6 +7,7 @@
 #include <string_view>	// std::string_view
 #include <optional>		// std::optional
 #include <chrono>		// std::chrono::system_clock::time_point
+#include <functional>	// std::function
 
 #include "Definitions.hxx"
 #include "Console.hxx"	// console_color
@@ -30,6 +31,9 @@ namespace Artemis::API {
 		std::ostream* _ConsoleStream;
 		std::unique_ptr<std::ofstream> _FileStream;
 
+		std::function<std::optional<std::string_view>()> _FetchSenderCallback;
+		std::string_view _Sender;
+
 		bool _WithTime;
 		bool _WithColor;
 
@@ -41,9 +45,10 @@ namespace Artemis::API {
 		ARTEMIS_API void print(const std::string_view& _Message) const noexcept;
 
 		ARTEMIS_API virtual void log(
-			std::optional<std::chrono::system_clock::time_point> _Time,
-			const std::string_view& _LogSeverity,
-			std::optional<console_color> _SeverityColor,
+			std::optional<std::chrono::system_clock::time_point>&& _Time,
+			std::optional<std::string_view>&& _Sender,
+			std::string_view&& _LogSeverity,
+			std::optional<console_color>&& _SeverityColor,
 			const std::string_view& _Message
 		) const;
 
@@ -56,6 +61,12 @@ namespace Artemis::API {
 		ARTEMIS_API void success(const std::string_view& _Message) const;
 		ARTEMIS_API void warning(const std::string_view& _Message) const;
 		ARTEMIS_API void error(const std::string_view& _Message) const;
+
+		ARTEMIS_API void set_sender_fetch_callback(std::function<std::optional<std::string_view>()> _Callback) noexcept;
+		ARTEMIS_API void reset_sender_fetch_callback() noexcept;
+		ARTEMIS_API bool has_sender_fetch_callback() noexcept;
+
+		ARTEMIS_API void set_sender(std::string_view&& _Sender) noexcept;
 
 		ARTEMIS_API void operator()(log_severity _Severity, const std::string_view& _Message) const;
 

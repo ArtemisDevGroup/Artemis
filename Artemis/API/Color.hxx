@@ -172,7 +172,7 @@ namespace Artemis::API {
 	};
 
 	/// <summary>
-	/// Represents a color composed of a hue shift aswell as a saturation, lightness and alpha percentage.
+	/// Represents a color composed of a hue shift, a saturation percentage, a lightness percentage and an alpha percentage.
 	/// </summary>
 	struct hsl {
 		/// <summary>

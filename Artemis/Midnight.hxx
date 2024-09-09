@@ -49,9 +49,14 @@ namespace Artemis {
 		window_manager* Windows;
 
 		/// <summary>
-		/// A message recipent receiving all messages dispatched for the Artemis client.
+		/// A message recipent receiving all messages dispatched for the Artemis client remotely.
 		/// </summary>
-		message_recipent* ClientMessageRecipent;
+		message_recipent* ClientRemoteMessageRecipent;
+
+		/// <summary>
+		/// A message recipent receiving all messages dispatched for the Artemis client internally.
+		/// </summary>
+		message_recipent* ClientInternalMessageRecipent;
 
 		/// <summary>
 		/// A message dispatcher sending messages to the Artemis Loader.

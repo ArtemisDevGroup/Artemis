@@ -52,7 +52,7 @@ namespace Artemis {
 					ClientOutboundPipeName,
 					PIPE_ACCESS_INBOUND,
 					PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT | PIPE_ACCEPT_REMOTE_CLIENTS,
-					PIPE_UNLIMITED_INSTANCES,
+					1,
 					MaximumMessageSize,
 					MaximumMessageSize,
 					NULL,
@@ -63,7 +63,7 @@ namespace Artemis {
 					ClientInboundPipeName,
 					PIPE_ACCESS_DUPLEX,
 					PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT | PIPE_ACCEPT_REMOTE_CLIENTS,
-					PIPE_UNLIMITED_INSTANCES,
+					1,
 					MaximumMessageSize,
 					MaximumMessageSize,
 					NULL,
@@ -78,11 +78,15 @@ namespace Artemis {
 		};
 	}
 
+	class message_dispatcher;
+
 	class message_recipent {
 		HANDLE hPipeInbound;
 		message* pMessageBody;
 
 	public:
+		ARTEMIS_FRAMEWORK message_recipent() noexcept;
+
 		ARTEMIS_FRAMEWORK message_recipent(const char* const _MessagePipeName);
 
 		message_recipent(const message_recipent&) = delete;
@@ -99,6 +103,8 @@ namespace Artemis {
 
 		message_recipent& operator=(const message_recipent&) = delete;
 		ARTEMIS_FRAMEWORK message_recipent& operator=(message_recipent&&) noexcept;
+
+		ARTEMIS_FRAMEWORK friend std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view&& _DispatcherName);
 	};
 
 	class message_dispatcher {
@@ -106,6 +112,8 @@ namespace Artemis {
 		std::string_view _DispatcherName;
 
 	public:
+		ARTEMIS_FRAMEWORK message_dispatcher(std::string_view&& _DispatcherName) noexcept;
+
 		ARTEMIS_FRAMEWORK message_dispatcher(std::string_view&& _DispatcherName, const char* const _MessagePipeName);
 
 		message_dispatcher(const message_dispatcher&) = delete;
@@ -125,7 +133,11 @@ namespace Artemis {
 
 		message_dispatcher& operator=(const message_dispatcher&) = delete;
 		message_dispatcher& operator=(message_dispatcher&&) noexcept;
+
+		ARTEMIS_FRAMEWORK friend std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view&& _DispatcherName);
 	};
+
+	ARTEMIS_FRAMEWORK std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view&& _DispatcherName);
 }
 
 #endif // !ARTEMIS_COMMUNICATIONS_HXX

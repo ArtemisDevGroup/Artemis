@@ -21,6 +21,8 @@ namespace Artemis {
 
 #pragma region Class message_recipent
 
+	message_recipent::message_recipent() noexcept : hPipeInbound(nullptr), pMessageBody(nullptr) {}
+
 	message_recipent::message_recipent(const char* const _MessagePipeName) : pMessageBody(nullptr) {
 		__stack_record();
 
@@ -92,6 +94,8 @@ namespace Artemis {
 #pragma endregion
 
 #pragma region Class message_dispatcher
+	
+	message_dispatcher::message_dispatcher(std::string_view&& _DispatcherName) noexcept : hPipeOutbound(nullptr), _DispatcherName(std::move(_DispatcherName)) {}
 
 	message_dispatcher::message_dispatcher(std::string_view&& _DispatcherName, const char* const _MessagePipeName) : _DispatcherName(std::move(_DispatcherName)) {
 		__stack_record();
@@ -154,4 +158,26 @@ namespace Artemis {
 	}
 
 #pragma endregion
+
+	std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view&& _DispatcherName) {
+		__stack_record();
+
+		message_dispatcher* dispatcher = new message_dispatcher(std::forward<std::string_view>(_DispatcherName));
+		message_recipent* recipent = new message_recipent();
+
+		if (!CreatePipe(
+			&recipent->hPipeInbound,
+			&dispatcher->hPipeOutbound,
+			nullptr,
+			MaximumMessageSize
+		)) {
+			DWORD dwLastError = GetLastError();
+			delete dispatcher;
+			delete recipent;
+			throw API::win32_exception(dwLastError, "CreatePipe");
+		}
+
+		__stack_escape();
+		return std::make_pair(dispatcher, recipent);
+	}
 }

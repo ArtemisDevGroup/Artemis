@@ -1,6 +1,7 @@
 #include "pch.h"
 
 #include "Midnight.hxx"
+#include "ExecutionContext.hxx"
 
 #include "API/Console.hxx"
 
@@ -25,11 +26,6 @@
 //  * Double-check move semantics.
 //  * Double-check move constructors and assignment operators.
 
-namespace Artemis {
-	void alloc_midnight();
-	void release_midnight();
-}
-
 #pragma region Present hook functionality.
 
 #include "ImGui/imgui.h"
@@ -39,6 +35,8 @@ namespace Artemis {
 #pragma comment(lib, "d3d11.lib")
 
 #pragma region Functions for retrieving the game window handle.
+
+/*
 
 typedef struct _ENUMWINDOWSPARAM {
 	DWORD dwProcessId;
@@ -57,13 +55,17 @@ static BOOL WINAPI EnumWindowsCallback(HWND hWnd, LPARAM lParam) {
 	return FALSE;
 }
 
-static HWND GetGameWindow() {
-	ENUMWINDOWSPARAM EnumWindowsParam;
-	EnumWindowsParam.dwProcessId = GetCurrentProcessId();
-	EnumWindowsParam.hWnd = nullptr;
+*/
 
-	EnumWindows(EnumWindowsCallback, (LPARAM)&EnumWindowsParam);
-	return EnumWindowsParam.hWnd;
+static HWND GetGameWindow() {
+	// ENUMWINDOWSPARAM EnumWindowsParam;
+	// EnumWindowsParam.dwProcessId = GetCurrentProcessId();
+	// EnumWindowsParam.hWnd = nullptr;
+	// 
+	// EnumWindows(EnumWindowsCallback, (LPARAM)&EnumWindowsParam);
+	// return EnumWindowsParam.hWnd;
+
+	return FindWindowA("R6Game", nullptr);
 }
 
 #pragma endregion
@@ -209,19 +211,36 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 	// 6. Initialize window manager and windows.
 	// 7. Load extensions.
 
-	Artemis::alloc_midnight();
 	athis->Logger = new Artemis::API::logger();
+	athis->Logger->set_sender_fetch_callback([]() -> std::optional<std::string_view> {
+		if (Artemis::extension* ext = Artemis::_::__execution_context::get())
+			return ext->name();
+		else
+			return "Artemis";
+		});
 
 	Artemis::API::open_console();
 	Artemis::API::open_console_io();
+
+	athis->Logger->info("Welcome to Artemis!");
+	athis->Logger->info("Opening messaging pipelines...");
 
 	// Creates the necessary server side of the message pipelines.
 	// In the end, this is a task the Loader will have the responsibility of doing.
 	// FOR DEBUG PURPOSES ONLY
 	Artemis::_::__debug_message_host* dmh = new Artemis::_::__debug_message_host();
-	athis->ClientMessageRecipent = new Artemis::message_recipent(Artemis::ClientInboundPipeName);
-	athis->MainRemoteDispatcher = new Artemis::message_dispatcher("Artemis Client Primary Remote Dispatcher", Artemis::ClientOutboundPipeName);
-	athis->MainInternalDispatcher = new Artemis::message_dispatcher("Artemis Client Primary Internal Dispatcher", Artemis::ClientInboundPipeName);
+	auto ipipes = Artemis::create_anonymous_pipeline("Artemis Client Primary Internal Dispatcher");
+
+	// athis->ClientRemoteMessageRecipent = new Artemis::message_recipent(Artemis::ClientInboundPipeName);
+	athis->Logger->success("ClientRemoteMessageRecipent: OK (1/4)");
+	// athis->MainRemoteDispatcher = new Artemis::message_dispatcher("Artemis Client Primary Remote Dispatcher", Artemis::ClientOutboundPipeName);
+	athis->Logger->success("MainRemoteDispatcher: OK (2/4)");
+	athis->ClientInternalMessageRecipent = ipipes.second;
+	athis->Logger->success("ClientInternalMessageRecipent: OK (3/4)");
+	athis->MainInternalDispatcher = ipipes.first;
+	athis->Logger->success("MainInternalDispatcher: OK (4/4)");
+
+	athis->Logger->info("Initializing key actions...");
 
 	athis->KeyActions = new Artemis::key_action_manager();
 	athis->KeyActions->set_instance_logger(athis->Logger);
@@ -231,21 +250,35 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 		athis->MainInternalDispatcher->dispatch_message(&exitMessage);
 		});
 
+	athis->Logger->success("Registered exit keybind: F1 (1/1)");
+
+	athis->Logger->info("Initializing hooking library and hooking present...");
+
 	Artemis::API::global_hook_alloc();
+
+	athis->Logger->success("Initialized hooking library.");
 
 	auto presentHook = &athis->_PresentHook;
 
 	HWND hWnd = GetGameWindow();
 	LPVOID lpPresentFunction = GetPresentFunctionPtr(hWnd);
 
+	athis->Logger->success(std::format("Fetched function pointer: {}", lpPresentFunction));
+
 	presentHook->hkInstance = new Artemis::API::hook<Artemis::TPRESENT>(lpPresentFunction, hkPresent);
 	presentHook->oPresent = presentHook->hkInstance->original();
 	presentHook->hkInstance->enable();
+
+	athis->Logger->success("Hooked present.");
+
+	athis->Logger->info("Initializing window manager...");
 
 	athis->Windows = new Artemis::window_manager();
 	athis->Windows->set_instance_logger(athis->Logger);
 
 	// Append windows here.
+
+	athis->Logger->info("Initializing extension manager...");
 
 	athis->Extensions = new Artemis::extension_manager();
 	athis->Extensions->set_instance_logger(athis->Logger);
@@ -254,15 +287,17 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 
 #pragma region ----- Main loop -----
 
-	while (athis->ClientMessageRecipent->await_message()) {
-		Artemis::message* msg = athis->ClientMessageRecipent->get_message_body();
+	athis->Logger->success("Artemis initialization finished successfully!");
+
+	while (athis->ClientInternalMessageRecipent->await_message()) {
+		Artemis::message* msg = athis->ClientInternalMessageRecipent->get_message_body();
 
 		switch (msg->type()) {
 			// Set up message handler for extension messages.
 		}
 	}
 
-	athis->Logger->info(std::format("Communications pipeline received 'exit' message from dispatcher '{}'.", athis->ClientMessageRecipent->get_message_body()->dispatcher_name()));
+	athis->Logger->info(std::format("Communications pipeline received 'exit' message from dispatcher '{}'.", athis->ClientInternalMessageRecipent->get_message_body()->dispatcher_name()));
 	athis->Logger->info("Starting uninitialization procedure...");
 
 #pragma endregion
@@ -288,8 +323,9 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 
 	delete athis->KeyActions;
 
-	delete athis->ClientMessageRecipent;
-	delete athis->MainRemoteDispatcher;
+	// delete athis->ClientRemoteMessageRecipent;
+	// delete athis->MainRemoteDispatcher;
+	delete athis->ClientInternalMessageRecipent;
 	delete athis->MainInternalDispatcher;
 	delete dmh; // SEE ABOVE REMARKS
 
@@ -297,7 +333,8 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 	Artemis::API::close_console();
 
 	delete athis->Logger;
-	Artemis::release_midnight();
+
+	delete athis;
 
 	FreeLibraryAndExitThread(hModule, 0);
 	return 0;
