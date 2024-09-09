@@ -238,6 +238,7 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 	athis->ClientInternalMessageRecipent = ipipes.second;
 	athis->Logger->success("ClientInternalMessageRecipent: OK (3/4)");
 	athis->MainInternalDispatcher = ipipes.first;
+	// athis->MainInternalDispatcher->relay_messages_from_recipent(athis->ClientRemoteMessageRecipent);
 	athis->Logger->success("MainInternalDispatcher: OK (4/4)");
 
 	athis->Logger->info("Initializing key actions...");

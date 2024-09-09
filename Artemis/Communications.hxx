@@ -6,16 +6,9 @@
 
 #include <type_traits>	// std::is_base_of_v
 #include <string_view>  // std::string_view
+#include <thread>		// std::thread
 
 namespace Artemis {
-
-	// Permission logic for named pipes used for messaging:
-	// - Client Inbound Pipe: PIPE_ACCESS_DUPLEX
-	//  * Message recipent specifies GENERIC_READ when opening the pipe.
-	//  * Message internal dispatcher specifies GENERIC_WRITE when opening the pipe.
-	// - Client Outbound Pipe: PIPE_ACCESS_INBOUND
-	//  * Message remote dispatcher specifies GENERIC_WRITE when opening the pipe.
-
 	constexpr const char* ClientInboundPipeName = "\\\\.\\pipe\\ArtemisClientInboundMessagePipe";
 	constexpr const char* ClientOutboundPipeName = "\\\\.\\pipe\\ArtemisClientOutboundMessagePipe";
 
@@ -37,6 +30,8 @@ namespace Artemis {
 		ARTEMIS_FRAMEWORK message_type type() const noexcept;
 		ARTEMIS_FRAMEWORK const char* const dispatcher_name() const noexcept;
 	};
+
+	static_assert(sizeof(message) <= MaximumMessageSize, "Message struct is too large.");
 
 	template<typename T>
 	concept derived_message_type = std::is_base_of_v<message, T>;
@@ -61,7 +56,7 @@ namespace Artemis {
 
 				this->hServerOutbound = CreateNamedPipeA(
 					ClientInboundPipeName,
-					PIPE_ACCESS_DUPLEX,
+					PIPE_ACCESS_OUTBOUND,
 					PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT | PIPE_ACCEPT_REMOTE_CLIENTS,
 					1,
 					MaximumMessageSize,
@@ -111,6 +106,8 @@ namespace Artemis {
 		HANDLE hPipeOutbound;
 		std::string_view _DispatcherName;
 
+		std::thread _RelayThread;
+
 	public:
 		ARTEMIS_FRAMEWORK message_dispatcher(std::string_view&& _DispatcherName) noexcept;
 
@@ -130,6 +127,8 @@ namespace Artemis {
 			static_assert(sizeof(T) <= MaximumMessageSize);
 			this->dispatch_message((message*)_Message, sizeof(T));
 		}
+
+		ARTEMIS_FRAMEWORK void relay_messages_from_recipent(message_recipent* _Recipent);
 
 		message_dispatcher& operator=(const message_dispatcher&) = delete;
 		message_dispatcher& operator=(message_dispatcher&&) noexcept;

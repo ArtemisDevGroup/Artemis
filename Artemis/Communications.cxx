@@ -96,6 +96,7 @@ namespace Artemis {
 #pragma region Class message_dispatcher
 	
 	message_dispatcher::message_dispatcher(std::string_view&& _DispatcherName) noexcept : hPipeOutbound(nullptr), _DispatcherName(std::move(_DispatcherName)) {}
+	// !! ^^ DOES NOT MAKE SURE LEN OF _DispatcherName <= 128
 
 	message_dispatcher::message_dispatcher(std::string_view&& _DispatcherName, const char* const _MessagePipeName) : _DispatcherName(std::move(_DispatcherName)) {
 		__stack_record();
@@ -132,6 +133,8 @@ namespace Artemis {
 			CloseHandle(this->hPipeOutbound);
 			this->hPipeOutbound = nullptr;
 		}
+
+		this->_RelayThread.join();
 	}
 
 	void message_dispatcher::dispatch_message(message* _Message, size_t _Size) {
@@ -141,6 +144,23 @@ namespace Artemis {
 
 		if (!WriteFile(this->hPipeOutbound, _Message, _Size, nullptr, nullptr))
 			throw API::win32_exception("WriteFile");
+
+		__stack_escape();
+	}
+
+	void message_dispatcher::relay_messages_from_recipent(message_recipent* _Recipent) {
+		__stack_record();
+
+		try {
+			this->_RelayThread = std::thread([this, _Recipent]() {
+				while (_Recipent->await_message())
+					this->dispatch_message(_Recipent->get_message_body());
+				this->dispatch_message(_Recipent->get_message_body());
+				});
+		}
+		catch (const std::exception& e) {
+			throw API::exception(e.what());
+		}
 
 		__stack_escape();
 	}
