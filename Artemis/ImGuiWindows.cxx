@@ -13,7 +13,7 @@ namespace Artemis {
 	void iwindow::present() noexcept {
 		if (!HideAllWindows && this->IsWindowVisible) {
 			if (ImGui::Begin(this->_WindowName.data(), &this->IsWindowVisible)) {
-				_::__safe_exception_net net;
+				_::__safe_exception_net net{};
 				net.set_instance_logger(this->Log);
 				net.exec_l2([this]() { this->window(); });
 			}
@@ -35,8 +35,8 @@ namespace Artemis {
 
 	window_manager::~window_manager() noexcept {
 		if (this->_WindowInstances.size() > 0) {
-			for (iwindow* p : this->_WindowInstances)
-				delete p;
+			for (auto p : this->_WindowInstances)
+				delete p._Object;
 			this->_WindowInstances.clear();
 		}
 	} 
@@ -44,14 +44,14 @@ namespace Artemis {
 	iwindow* window_manager::register_window(iwindow* _WindowInstance) {
 		__stack_record();
 
-		for (iwindow* p : this->_WindowInstances)
-			if (p->name() == _WindowInstance->name()) {
+		for (auto p : this->_WindowInstances)
+			if (p._Object->name() == _WindowInstance->name()) {
 				delete _WindowInstance;
 				throw API::argument_exception("Window shares name with an already existing window.", "_WindowInstance");
 			}
 
 		_WindowInstance->set_instance_logger(this->Log);
-		this->_WindowInstances.push_back(_WindowInstance);
+		this->_WindowInstances.push_back({ _::__execution_context::get(), _WindowInstance });
 
 		__stack_escape();
 		return _WindowInstance;
@@ -62,9 +62,9 @@ namespace Artemis {
 
 		iwindow* ret = nullptr;
 
-		for (iwindow* p : this->_WindowInstances)
-			if (p->name() == _WindowName) {
-				ret = p;
+		for (auto p : this->_WindowInstances)
+			if (p._Object->name() == _WindowName) {
+				ret = p._Object;
 				break;
 			}
 
@@ -79,7 +79,7 @@ namespace Artemis {
 		__stack_record();
 
 		for (auto it = this->_WindowInstances.begin(); it != this->_WindowInstances.end(); ++it)
-			if (*it == _WindowInstance) {
+			if (it->_Object == _WindowInstance) {
 				delete _WindowInstance;
 				this->_WindowInstances.erase(it);
 				__stack_escape();
@@ -91,13 +91,13 @@ namespace Artemis {
 
 	void window_manager::remove_window(std::string_view&& _WindowName) {
 		__stack_record();
-		__stack_rethrow(this->remove_window(this->get_window(std::forward<std::string_view>(_WindowName))));
+		__stack_rethrow(this->remove_window(this->get_window(std::move(_WindowName))));
 		__stack_escape();
 	}
 
 	void window_manager::present_all() noexcept {
-		for (iwindow* p : this->_WindowInstances)
-			p->present();
+		for (auto p : this->_WindowInstances)
+			p._Object->present();
 	}
 
 	window_manager& window_manager::operator=(window_manager&& _Other) noexcept {

@@ -6,7 +6,7 @@
 
 namespace Artemis {
 	namespace API {
-		load_exception::load_exception(std::string_view&& _Message) noexcept : exception(std::forward<std::string_view>(_Message)) {}
+		load_exception::load_exception(std::string_view&& _Message) noexcept : exception(std::move(_Message)) {}
 	}
 
 	extension::~extension() noexcept {

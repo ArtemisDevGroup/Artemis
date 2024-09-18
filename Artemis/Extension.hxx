@@ -18,7 +18,7 @@ namespace Artemis {
 			ARTEMIS_API load_exception(std::string_view&& _Message) noexcept;
 
 			template<derived_exception_type T>
-			inline load_exception(std::string_view&& _Message, T&& _InnerException) noexcept : exception(std::forward<std::string_view>(_Message), std::forward<T>(_InnerException)) {}
+			inline load_exception(std::string_view&& _Message, T&& _InnerException) noexcept : exception(std::move(_Message), std::forward<T>(_InnerException)) {}
 		};
 	}
 

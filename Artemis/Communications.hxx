@@ -15,7 +15,8 @@ namespace Artemis {
 	constexpr int MaximumMessageSize = 1024;
 	
 	enum class message_type {
-		exit
+		exit,
+		thread_exit
 	};
 
 	class message {
@@ -36,48 +37,16 @@ namespace Artemis {
 	template<typename T>
 	concept derived_message_type = std::is_base_of_v<message, T>;
 
-	namespace _ {
-		class __debug_message_host {
-			HANDLE hServerInbound;
-			HANDLE hServerOutbound;
-
-		public:
-			inline __debug_message_host() {
-				this->hServerInbound = CreateNamedPipeA(
-					ClientOutboundPipeName,
-					PIPE_ACCESS_INBOUND,
-					PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT | PIPE_ACCEPT_REMOTE_CLIENTS,
-					1,
-					MaximumMessageSize,
-					MaximumMessageSize,
-					NULL,
-					nullptr
-				);
-
-				this->hServerOutbound = CreateNamedPipeA(
-					ClientInboundPipeName,
-					PIPE_ACCESS_OUTBOUND,
-					PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT | PIPE_ACCEPT_REMOTE_CLIENTS,
-					1,
-					MaximumMessageSize,
-					MaximumMessageSize,
-					NULL,
-					nullptr
-				);
-			}
-
-			inline ~__debug_message_host() {
-				CloseHandle(this->hServerInbound);
-				CloseHandle(this->hServerOutbound);
-			}
-		};
-	}
-
 	class message_dispatcher;
 
 	class message_recipent {
 		HANDLE hPipeInbound;
 		message* pMessageBody;
+
+		std::thread _WatchThread;
+		std::function<void(message*)> _OnMessageCallback;
+
+		ARTEMIS_FRAMEWORK bool await_message(nullptr_t _InternalTransaction);
 
 	public:
 		ARTEMIS_FRAMEWORK message_recipent() noexcept;
@@ -96,6 +65,8 @@ namespace Artemis {
 		template<derived_message_type T>
 		inline T* get_message_body() noexcept { return (T*)this->get_message_body(); }
 
+		ARTEMIS_FRAMEWORK void set_onmessage_callback(std::function<void(message*)>&& _Callback) noexcept;
+
 		message_recipent& operator=(const message_recipent&) = delete;
 		ARTEMIS_FRAMEWORK message_recipent& operator=(message_recipent&&) noexcept;
 
@@ -105,8 +76,6 @@ namespace Artemis {
 	class message_dispatcher {
 		HANDLE hPipeOutbound;
 		std::string_view _DispatcherName;
-
-		std::thread _RelayThread;
 
 	public:
 		ARTEMIS_FRAMEWORK message_dispatcher(std::string_view&& _DispatcherName) noexcept;

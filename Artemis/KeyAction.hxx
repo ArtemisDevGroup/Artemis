@@ -3,13 +3,15 @@
 
 #include <Windows.h> // UINT, WORD, VK_*
 
-#include <type_traits>	// std::is_base_of_v
+#include <type_traits>	// std::is_base_of_v, std::remove_reference_t
 #include <vector>		// std::vector
 #include <functional>	// std::function
 #include <utility>		// std::pair, std::forward
 #include <bitset>		// std::bitset
 
 #include "Definitions.hxx"
+
+#include "ExecutionContext.hxx"
 
 #include "API/Error.hxx"
 #include "API/Logging.hxx"
@@ -173,77 +175,83 @@ namespace Artemis {
 	class key_action_manager : public API::loggable {
 		std::bitset<2048> _IdMap;
 
-		std::vector<std::pair<short, key_down_action*>> _KeyDownActions;
-		std::vector<std::pair<short, key_up_action*>> _KeyUpActions;
-		std::vector<std::pair<short, key_action*>> _KeyActions;
+		template<typename _Ty>
+		struct _identifiable_object {
+			short _Id;
+			_Ty _Object;
+		};
 
-		std::vector<std::pair<short, std::pair<key, std::function<void()>>>> _DirectKeyActions;
+		std::vector<_identifiable_object<_::__contextualized_object<key_down_action*>>> _KeyDownActions;
+		std::vector<_identifiable_object<_::__contextualized_object<key_up_action*>>> _KeyUpActions;
+		std::vector<_identifiable_object<_::__contextualized_object<key_action*>>> _KeyActions;
+
+		std::vector<_identifiable_object<_::__contextualized_object<std::pair<key, std::function<void()>>>>> _DirectKeyActions;
 
 	public:
-		template<class T>
-			requires(std::is_base_of_v<key_down_action, T>)
-		inline short register_action(T&& _KeyDownAction) noexcept {
+		template<class _Ty>
+			requires(std::is_base_of_v<key_down_action, std::remove_reference_t<_Ty>>)
+		inline short register_action(_Ty&& _KeyDownAction) noexcept {
 			for (short i = 0; i < this->_IdMap.size(); i++)
 				if (!this->_IdMap.test(i)) {
 					this->_IdMap.set(i);
-					this->_KeyDownActions.push_back(std::make_pair(i, new T(std::forward<T>(_KeyDownAction))));
+					this->_KeyDownActions.push_back({ i, { _::__execution_context::get(), new _Ty(std::forward<_Ty>(_KeyDownAction)) }});
 					return i;
 				}
 			return -1;
 		}
 
-		template<typename T>
-			requires(std::is_base_of_v<key_up_action, T>)
-		inline short register_action(T&& _KeyUpAction) noexcept {
+		template<typename _Ty>
+			requires(std::is_base_of_v<key_up_action, std::remove_reference_t<_Ty>>)
+		inline short register_action(_Ty&& _KeyUpAction) noexcept {
 			for (short i = 0; i < this->_IdMap.size(); i++)
 				if (!this->_IdMap.test(i)) {
 					this->_IdMap.set(i);
-					this->_KeyUpActions.push_back(std::make_pair(i, new T(std::forward<T>(_KeyUpAction))));
+					this->_KeyUpActions.push_back({ i, { _::__execution_context::get(), new _Ty(std::forward<_Ty>(_KeyUpAction)) }});
 					return i;
 				}
 			return -1;
 		}
 
-		template<typename T>
-			requires(std::is_base_of_v<key_action, T>)
-		inline short register_action(T&& _KeyAction) noexcept {
+		template<typename _Ty>
+			requires(std::is_base_of_v<key_action, std::remove_reference_t<_Ty>>)
+		inline short register_action(_Ty&& _KeyAction) noexcept {
 			for (short i = 0; i < this->_IdMap.size(); i++)
 				if (!this->_IdMap.test(i)) {
 					this->_IdMap.set(i);
-					this->_KeyActions.push_back(std::make_pair(i, new T(std::forward<T>(_KeyAction))));
+					this->_KeyActions.push_back({ i, { _::__execution_context::get(), new _Ty(std::forward<_Ty>(_KeyAction)) }});
 					return i;
 				}
 			return -1;
 		}
 
-		ARTEMIS_FRAMEWORK short register_action(key _Key, std::function<void()> _Action) noexcept;
+		ARTEMIS_FRAMEWORK short register_action(key _Key, std::function<void()>&& _Action) noexcept;
 
-		template<typename T>
-		inline T* get(short _Id) const {
+		template<typename _Ty>
+		inline _Ty* get(short _Id) const {
 			__stack_record();
 
 			if (!this->_IdMap.test(_Id))
 				throw API::argument_exception("Argument contains an invalid id.", "_Id");
 
-			T* ret = nullptr;
+			_Ty* ret = nullptr;
 
 			for (const auto& o : this->_KeyDownActions)
-				if (o.first == _Id) {
-					ret = (T*)o.second;
+				if (o._Id == _Id) {
+					ret = (_Ty*)o._Object._Object;
 					break;
 				}
 
 			if (!ret) {
 				for (const auto& o : this->_KeyUpActions)
-					if (o.first == _Id) {
-						ret = (T*)o.second;
+					if (o._Id == _Id) {
+						ret = (_Ty*)o._Object._Object;
 						break;
 					}
 
 				if (!ret) {
 					for (const auto& o : this->_KeyActions)
-						if (o.first == _Id) {
-							ret = (T*)o.second;
+						if (o._Id == _Id) {
+							ret = (_Ty*)o._Object._Object;
 							break;
 						}
 

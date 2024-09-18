@@ -3,6 +3,8 @@
 
 #include "Definitions.hxx"
 
+#include "ExecutionContext.hxx"
+
 #include "API/Logging.hxx"
 
 #include <string_view>	// std::string_view
@@ -61,7 +63,7 @@ namespace Artemis {
 	/// Manages ImGui windows.
 	/// </summary>
 	class window_manager : public API::loggable{
-		std::vector<iwindow*> _WindowInstances;
+		std::vector<_::__contextualized_object<iwindow*>> _WindowInstances;
 
 	public:
 		ARTEMIS_FRAMEWORK window_manager() noexcept;
@@ -109,7 +111,7 @@ namespace Artemis {
 		/// <exception cref="argument_exception"/>
 		template<derived_window_type _WndTy>
 		inline _WndTy* get_window(std::string_view&& _WindowName) {
-			return (_WndTy*)this->get_window(std::forward<std::string_view>(_WindowName));
+			return (_WndTy*)this->get_window(std::move(_WindowName));
 		}
 
 		/// <summary>

@@ -68,18 +68,18 @@ namespace Artemis::API {
 	call_stack* call_stack_manager::record(DWORD _ThreadId, std::string_view&& _Function, std::string_view&& _File, int _Line) {
 		for (call_stack& stack : this->_CallStacks)
 			if (stack.thread_id() == _ThreadId) {
-				stack.push_back(std::forward<std::string_view>(_Function), std::forward<std::string_view>(_File), _Line);
+				stack.push_back(std::move(_Function), std::move(_File), _Line);
 				return &stack;
 			}
 
 		this->_CallStacks.push_back(call_stack(this, _ThreadId));
 		call_stack* stack = std::prev(this->_CallStacks.end())._Ptr;
-		stack->push_back(std::forward<std::string_view>(_Function), std::forward<std::string_view>(_File), _Line);
+		stack->push_back(std::move(_Function), std::move(_File), _Line);
 		return stack;
 	}
 
 	call_stack* call_stack_manager::record(std::string_view&& _Function, std::string_view&& _File, int _Line) {
-		return this->record(GetCurrentThreadId(), std::forward<std::string_view>(_Function), std::forward<std::string_view>(_File), _Line);
+		return this->record(GetCurrentThreadId(), std::move(_Function), std::move(_File), _Line);
 	}
 
 	call_stack* call_stack_manager::escape(DWORD _ThreadId) {
@@ -195,7 +195,7 @@ namespace Artemis::API {
 		return std::string_view(szBuffer);
 	}
 
-	win32_exception::win32_exception(std::string_view&& _FunctionName) noexcept : win32_exception(GetLastError(), std::forward<std::string_view>(_FunctionName)) {}
+	win32_exception::win32_exception(std::string_view&& _FunctionName) noexcept : win32_exception(GetLastError(), std::move(_FunctionName)) {}
 
 	win32_exception::win32_exception(DWORD _Win32ErrorCode, std::string_view&& _FunctionName) noexcept : exception(win32_message(_Win32ErrorCode)), _Win32Function(std::move(_FunctionName)), _Win32ErrorCode(_Win32ErrorCode) {}
 
@@ -218,9 +218,9 @@ namespace Artemis::API {
 #pragma warning(pop)
 	}
 
-	errno_exception::errno_exception(std::string_view&& _FunctionName) noexcept : exception(errno_message(errno)), _ErrnoCode(errno), _CStdFunction(std::forward<std::string_view>(_FunctionName)) {}
+	errno_exception::errno_exception(std::string_view&& _FunctionName) noexcept : exception(errno_message(errno)), _ErrnoCode(errno), _CStdFunction(std::move(_FunctionName)) {}
 
-	errno_exception::errno_exception(errno_t _ErrnoCode, std::string_view&& _FunctionName) noexcept : exception(errno_message(_ErrnoCode)), _ErrnoCode(_ErrnoCode), _CStdFunction(std::forward<std::string_view>(_FunctionName)) {}
+	errno_exception::errno_exception(errno_t _ErrnoCode, std::string_view&& _FunctionName) noexcept : exception(errno_message(_ErrnoCode)), _ErrnoCode(_ErrnoCode), _CStdFunction(std::move(_FunctionName)) {}
 
 	const std::string_view& errno_exception::cstd_function() const noexcept { return this->_CStdFunction; }
 
@@ -280,7 +280,7 @@ namespace Artemis::API {
 		this->_InnerRecords = data->_InnerRecords;
 	}
 
-	system_exception::system_exception(std::string_view&& _Message) noexcept : exception(std::forward<std::string_view>(_Message)) {
+	system_exception::system_exception(std::string_view&& _Message) noexcept : exception(std::move(_Message)) {
 		seh_data* data = get_thread_seh_data();
 		this->_Record = data->_Record;
 		this->_Context = data->_Context;
@@ -295,7 +295,7 @@ namespace Artemis::API {
 
 #pragma region Class argument_exception
 
-	argument_exception::argument_exception(std::string_view&& _Message, std::string_view&& _ArgumentName) noexcept : exception(std::forward<std::string_view>(_Message)), _ArgumentName(std::forward<std::string_view>(_ArgumentName)) {}
+	argument_exception::argument_exception(std::string_view&& _Message, std::string_view&& _ArgumentName) noexcept : exception(std::move(_Message)), _ArgumentName(std::move(_ArgumentName)) {}
 
 	const std::string_view& argument_exception::argument() const noexcept { return this->_ArgumentName; }
 
@@ -305,7 +305,7 @@ namespace Artemis::API {
 
 	invalid_state_exception::invalid_state_exception() noexcept : exception("Object has an invalid state to preform this operation.") {}
 
-	invalid_state_exception::invalid_state_exception(std::string_view&& _Message) noexcept : exception(std::forward<std::string_view>(_Message)) {}
+	invalid_state_exception::invalid_state_exception(std::string_view&& _Message) noexcept : exception(std::move(_Message)) {}
 
 #pragma endregion
 }

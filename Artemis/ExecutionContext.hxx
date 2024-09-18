@@ -2,7 +2,6 @@
 #define __ARTEMIS_EXECUTION_CONTEXT_HXX__
 
 #include "Definitions.hxx"
-ARTEMIS_INTERNAL_HEADER
 
 #include "Extension.hxx"
 
@@ -11,13 +10,19 @@ ARTEMIS_INTERNAL_HEADER
 namespace Artemis::_ {
 	class __execution_context {
 	public:
-		static void set(DWORD _ThreadId, extension* _Extension) noexcept;
-		static void set(extension* _Extension) noexcept;
+		ARTEMIS_FRAMEWORK static void set(DWORD _ThreadId, extension* _Extension) noexcept;
+		ARTEMIS_FRAMEWORK static void set(extension* _Extension) noexcept;
 
-		static extension* get(DWORD _ThreadId) noexcept;
-		static extension* get() noexcept;
+		ARTEMIS_FRAMEWORK static extension* get(DWORD _ThreadId) noexcept;
+		ARTEMIS_FRAMEWORK static extension* get() noexcept;
 
-		static void invalidate(extension* _Extension) noexcept;
+		ARTEMIS_FRAMEWORK static void invalidate(extension* _Extension) noexcept;
+	};
+
+	template<typename _Ty>
+	struct __contextualized_object {
+		extension* _LoadedObjectOwner;
+		_Ty _Object;
 	};
 }
 

@@ -62,11 +62,11 @@ namespace Artemis {
 		}
 	}
 
-	bool message_recipent::await_message() {
+	bool message_recipent::await_message(nullptr_t) {
 		__stack_record();
 
 		if (this->pMessageBody) {
-			delete[] (char*)this->pMessageBody;
+			delete[](char*)this->pMessageBody;
 			this->pMessageBody = nullptr;
 		}
 
@@ -79,7 +79,43 @@ namespace Artemis {
 		return (bool)this->pMessageBody->type();
 	}
 
+	bool message_recipent::await_message() {
+		__stack_record();
+
+		if (this->_OnMessageCallback)
+			throw API::invalid_state_exception("Cannot await message due to an on message callback already awaiting a message for this instance.");
+
+		bool result;
+		__stack_rethrow(result = this->await_message(nullptr));
+
+		__stack_escape();
+		return result;
+	}
+
 	message* message_recipent::get_message_body() noexcept { return this->pMessageBody; }
+
+	void message_recipent::set_onmessage_callback(std::function<void(message*)>&& _Callback) noexcept {
+		__stack_record();
+
+		this->_OnMessageCallback = std::move(_Callback);
+
+		try {
+			this->_WatchThread = std::thread([this]() {
+				while (this->await_message(nullptr)) {
+					message* msg = this->get_message_body();
+					if (msg->type() == message_type::thread_exit)
+						return;
+					this->_OnMessageCallback(msg);
+				}
+				this->_OnMessageCallback(this->get_message_body());
+				});
+		}
+		catch (const std::exception& e) {
+			throw API::exception(e.what());
+		}
+
+		__stack_escape();
+	}
 
 	message_recipent& message_recipent::operator=(message_recipent&& _Other) noexcept {
 		if (_Other.hPipeInbound && _Other.hPipeInbound != INVALID_HANDLE_VALUE) {
@@ -133,8 +169,6 @@ namespace Artemis {
 			CloseHandle(this->hPipeOutbound);
 			this->hPipeOutbound = nullptr;
 		}
-
-		this->_RelayThread.join();
 	}
 
 	void message_dispatcher::dispatch_message(message* _Message, size_t _Size) {
@@ -150,18 +184,7 @@ namespace Artemis {
 
 	void message_dispatcher::relay_messages_from_recipent(message_recipent* _Recipent) {
 		__stack_record();
-
-		try {
-			this->_RelayThread = std::thread([this, _Recipent]() {
-				while (_Recipent->await_message())
-					this->dispatch_message(_Recipent->get_message_body());
-				this->dispatch_message(_Recipent->get_message_body());
-				});
-		}
-		catch (const std::exception& e) {
-			throw API::exception(e.what());
-		}
-
+		__stack_rethrow(_Recipent->set_onmessage_callback([this](message* _Msg) { this->dispatch_message(_Msg); }));
 		__stack_escape();
 	}
 
@@ -182,7 +205,7 @@ namespace Artemis {
 	std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view&& _DispatcherName) {
 		__stack_record();
 
-		message_dispatcher* dispatcher = new message_dispatcher(std::forward<std::string_view>(_DispatcherName));
+		message_dispatcher* dispatcher = new message_dispatcher(std::move(_DispatcherName));
 		message_recipent* recipent = new message_recipent();
 
 		if (!CreatePipe(

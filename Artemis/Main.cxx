@@ -21,7 +21,6 @@
 // - Whole Project:
 //  * Inline document.
 //  * Finish some API modules.
-//  * Add color structs.
 //  * Tidy up files by making sure regions and other structure is clear.
 //  * Double-check move semantics.
 //  * Double-check move constructors and assignment operators.
@@ -33,42 +32,6 @@
 #include "ImGui/imgui_impl_win32.h"
 
 #pragma comment(lib, "d3d11.lib")
-
-#pragma region Functions for retrieving the game window handle.
-
-/*
-
-typedef struct _ENUMWINDOWSPARAM {
-	DWORD dwProcessId;
-	HWND hWnd;
-} ENUMWINDOWSPARAM, * PENUMWINDOWSPARAM;
-
-static BOOL WINAPI EnumWindowsCallback(HWND hWnd, LPARAM lParam) {
-	PENUMWINDOWSPARAM pEnumWindowsParam = (PENUMWINDOWSPARAM)lParam;
-
-	DWORD dwProcessId = 0;
-	GetWindowThreadProcessId(hWnd, &dwProcessId);
-
-	if (pEnumWindowsParam->dwProcessId != dwProcessId || !IsWindowVisible(hWnd))
-		return TRUE;
-	pEnumWindowsParam->hWnd = hWnd;
-	return FALSE;
-}
-
-*/
-
-static HWND GetGameWindow() {
-	// ENUMWINDOWSPARAM EnumWindowsParam;
-	// EnumWindowsParam.dwProcessId = GetCurrentProcessId();
-	// EnumWindowsParam.hWnd = nullptr;
-	// 
-	// EnumWindows(EnumWindowsCallback, (LPARAM)&EnumWindowsParam);
-	// return EnumWindowsParam.hWnd;
-
-	return FindWindowA("R6Game", nullptr);
-}
-
-#pragma endregion
 
 #pragma region Function for retrieving the Present function pointer.
 
@@ -202,15 +165,6 @@ static HRESULT APIENTRY hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval,
 DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 #pragma region ----- Initialization -----
 
-	// Initialization order:
-	// 1. Allocate midnight.
-	// 2. Allocate and initalize console.
-	// 3. Initialize communication pipelines.
-	// 4. Initialize keybind manager and keybinds.
-	// 5. Hook present.
-	// 6. Initialize window manager and windows.
-	// 7. Load extensions.
-
 	athis->Logger = new Artemis::API::logger();
 	athis->Logger->set_sender_fetch_callback([]() -> std::optional<std::string_view> {
 		if (Artemis::extension* ext = Artemis::_::__execution_context::get())
@@ -225,15 +179,11 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 	athis->Logger->info("Welcome to Artemis!");
 	athis->Logger->info("Opening messaging pipelines...");
 
-	// Creates the necessary server side of the message pipelines.
-	// In the end, this is a task the Loader will have the responsibility of doing.
-	// FOR DEBUG PURPOSES ONLY
-	Artemis::_::__debug_message_host* dmh = new Artemis::_::__debug_message_host();
-	auto ipipes = Artemis::create_anonymous_pipeline("Artemis Client Primary Internal Dispatcher");
+	auto ipipes = Artemis::create_anonymous_pipeline("Artemis Client Internal Dispatcher");
 
 	// athis->ClientRemoteMessageRecipent = new Artemis::message_recipent(Artemis::ClientInboundPipeName);
 	athis->Logger->success("ClientRemoteMessageRecipent: OK (1/4)");
-	// athis->MainRemoteDispatcher = new Artemis::message_dispatcher("Artemis Client Primary Remote Dispatcher", Artemis::ClientOutboundPipeName);
+	// athis->MainRemoteDispatcher = new Artemis::message_dispatcher("Artemis Client Remote Dispatcher", Artemis::ClientOutboundPipeName);
 	athis->Logger->success("MainRemoteDispatcher: OK (2/4)");
 	athis->ClientInternalMessageRecipent = ipipes.second;
 	athis->Logger->success("ClientInternalMessageRecipent: OK (3/4)");
@@ -261,7 +211,7 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 
 	auto presentHook = &athis->_PresentHook;
 
-	HWND hWnd = GetGameWindow();
+	HWND hWnd = FindWindowA("R6Game", nullptr);
 	LPVOID lpPresentFunction = GetPresentFunctionPtr(hWnd);
 
 	athis->Logger->success(std::format("Fetched function pointer: {}", lpPresentFunction));
@@ -305,15 +255,6 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 
 #pragma region ----- Uninitialization -----
 
-	// Uninitialization order:
-	// 1. Release extensions.
-	// 2. Release windows and window manager.
-	// 3. Restore present to its original state.
-	// 4. Release keybinds and keybind manager.
-	// 5. Release communication pipelines.
-	// 6. Release console.
-	// 7. Release midnight and exit.
-
 	delete athis->Windows;
 
 	SetWindowLongPtrW(presentHook->hWnd, GWLP_WNDPROC, (LONG_PTR)presentHook->oWndProc); // Swap WndProc for original.
@@ -328,7 +269,6 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 	// delete athis->MainRemoteDispatcher;
 	delete athis->ClientInternalMessageRecipent;
 	delete athis->MainInternalDispatcher;
-	delete dmh; // SEE ABOVE REMARKS
 
 	Artemis::API::close_console_io();
 	Artemis::API::close_console();

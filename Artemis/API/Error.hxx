@@ -228,14 +228,14 @@ namespace Artemis::API {
 		ARTEMIS_API exception(std::string_view&& _Message) noexcept;
 
 		template<class T>
-			requires(std::is_base_of_v<exception, T>)
+			requires(std::is_base_of_v<exception, std::remove_reference_t<T>>)
 		inline exception(std::string_view&& _Message, T&& _InnerException) noexcept : std::exception(_Message.data()), _CallStackSnapshot(nullptr, 0) {
 			this->_CallStackSnapshot = _InnerException._CallStackSnapshot;
 			this->_InnerException = new T(std::forward<T>(_InnerException));
 		}
 
 		template<class T>
-			requires(std::is_base_of_v<exception, T>)
+			requires(std::is_base_of_v<exception, std::remove_reference_t<T>>)
 		inline exception(T&& _InnerException) noexcept : exception("An unknown Artemis exception has occured.", std::forward<T>(_InnerException)) {}
 
 		exception(const exception&) = delete;
@@ -260,7 +260,7 @@ namespace Artemis::API {
 	/// A class type that implements the Artemis exception base class.
 	/// </summary>
 	template<typename T>
-	concept derived_exception_type = std::is_base_of_v<exception, T>;
+	concept derived_exception_type = std::is_base_of_v<exception, std::remove_reference_t<T>>;
 
 	class win32_exception : public exception {
 		std::string_view _Win32Function;
@@ -274,10 +274,10 @@ namespace Artemis::API {
 		ARTEMIS_API win32_exception(DWORD _Win32ErrorCode, std::string_view&& _FunctionName) noexcept;
 
 		template<derived_exception_type T>
-		inline win32_exception(DWORD _Win32ErrorCode, std::string_view&& _FunctionName, T&& _InnerException) noexcept : exception(win32_message(_Win32ErrorCode), _InnerException), _Win32Function(std::forward<std::string_view>(_FunctionName)), _Win32ErrorCode(_Win32ErrorCode) {}
+		inline win32_exception(DWORD _Win32ErrorCode, std::string_view&& _FunctionName, T&& _InnerException) noexcept : exception(win32_message(_Win32ErrorCode), _InnerException), _Win32Function(std::move(_FunctionName)), _Win32ErrorCode(_Win32ErrorCode) {}
 
 		template<derived_exception_type T>
-		inline win32_exception(std::string_view&& _FunctionName, T&& _InnerException) noexcept : win32_exception(GetLastError(), std::forward<std::string_view>(_FunctionName), std::forward<T>(_InnerException)) {}
+		inline win32_exception(std::string_view&& _FunctionName, T&& _InnerException) noexcept : win32_exception(GetLastError(), std::move(_FunctionName), std::forward<T>(_InnerException)) {}
 
 		ARTEMIS_API const std::string_view& win32_function() const noexcept;
 
@@ -392,7 +392,7 @@ namespace Artemis::API {
 		ARTEMIS_API system_exception(std::string_view&& _Message) noexcept;
 
 		template<derived_exception_type T>
-		inline system_exception(std::string_view&& _Message, T&& _InnerException) noexcept : exception(std::forward<std::string_view>(_Message), std::forward<T>(_InnerException)) {
+		inline system_exception(std::string_view&& _Message, T&& _InnerException) noexcept : exception(std::move(_Message), std::forward<T>(_InnerException)) {
 			seh_data* data = get_thread_seh_data();
 			this->_Record = data->_Record;
 			this->_Context = data->_Context;
@@ -416,7 +416,7 @@ namespace Artemis::API {
 		ARTEMIS_API argument_exception(std::string_view&& _Message, std::string_view&& _ArgumentName) noexcept;
 
 		template<derived_exception_type T>
-		inline argument_exception(std::string_view&& _Message, std::string_view&& _ArgumentName, T&& _InnerException) noexcept : exception(std::forward<std::string_view>(_Message), std::forward<T>(_InnerException)), _ArgumentName(std::forward<std::string_view>(_ArgumentName)) {}
+		inline argument_exception(std::string_view&& _Message, std::string_view&& _ArgumentName, T&& _InnerException) noexcept : exception(std::move(_Message), std::forward<T>(_InnerException)), _ArgumentName(std::move(_ArgumentName)) {}
 
 		ARTEMIS_API const std::string_view& argument() const noexcept;
 	};
@@ -428,7 +428,7 @@ namespace Artemis::API {
 		ARTEMIS_API invalid_state_exception(std::string_view&& _Message) noexcept;
 
 		template<derived_exception_type T>
-		inline invalid_state_exception(std::string_view&& _Message, T&& _InnerException) noexcept : exception(std::forward<std::string_view>(_Message), std::forward<T>(_InnerException)) {}
+		inline invalid_state_exception(std::string_view&& _Message, T&& _InnerException) noexcept : exception(std::move(_Message), std::forward<T>(_InnerException)) {}
 	};
 }
 

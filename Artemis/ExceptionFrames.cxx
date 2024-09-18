@@ -35,7 +35,7 @@ namespace Artemis::_ {
 	}
 
 	void __safe_exception_propagator::exec_l2(const std::function<void()>& _Fn) const {
-		this->exec_l1cxx([this, &_Fn]() { this->exec_l1seh(std::move(_Fn), true); });
+		this->exec_l1cxx([this, &_Fn]() { this->exec_l1seh(_Fn, true); });
 	}
 
 	void __safe_exception_net::exec_l1cxx(const std::function<void()>& _Fn) const noexcept {
