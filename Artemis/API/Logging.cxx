@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Logging.hxx"
-#include "Error.hxx"
+
+#include "Exception.hxx"
 #include "Console.hxx"
 
 namespace Artemis::API {

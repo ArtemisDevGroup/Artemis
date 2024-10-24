@@ -209,8 +209,15 @@
     <ClInclude Include="API\Color.hxx" />
     <ClInclude Include="API\Console.hxx" />
     <ClInclude Include="API\Definitions.hxx" />
-    <ClInclude Include="API\Error.hxx" />
     <ClInclude Include="API\Event.hxx" />
+    <ClInclude Include="API\Exception.hxx" />
+    <ClInclude Include="API\Exceptions\ArgumentException.hxx" />
+    <ClInclude Include="API\Exceptions\ErrnoException.hxx" />
+    <ClInclude Include="API\Exceptions\ExceptionBase.hxx" />
+    <ClInclude Include="API\Exceptions\InvalidStateException.hxx" />
+    <ClInclude Include="API\Exceptions\LockException.hxx" />
+    <ClInclude Include="API\Exceptions\SystemException.hxx" />
+    <ClInclude Include="API\Exceptions\Win32Exception.hxx" />
     <ClInclude Include="API\gcem\gcem.hpp" />
     <ClInclude Include="API\gcem\gcem_incl\abs.hpp" />
     <ClInclude Include="API\gcem\gcem_incl\acos.hpp" />
@@ -279,6 +286,7 @@
     <ClInclude Include="API\Hook.hxx" />
     <ClInclude Include="API\Logging.hxx" />
     <ClInclude Include="API\Memory.hxx" />
+    <ClInclude Include="API\Threading.hxx" />
     <ClInclude Include="Communications.hxx" />
     <ClInclude Include="Definitions.hxx" />
     <ClInclude Include="ExceptionFrames.hxx" />
@@ -307,10 +315,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="API\Console.cxx" />
-    <ClCompile Include="API\Error.cxx" />
+    <ClCompile Include="API\Exceptions\ArgumentException.cxx" />
+    <ClCompile Include="API\Exceptions\ErrnoException.cxx" />
+    <ClCompile Include="API\Exceptions\ExceptionBase.cxx" />
+    <ClCompile Include="API\Exceptions\InvalidStateException.cxx" />
+    <ClCompile Include="API\Exceptions\LockException.cxx" />
+    <ClCompile Include="API\Exceptions\SystemException.cxx" />
+    <ClCompile Include="API\Exceptions\Win32Exception.cxx" />
     <ClCompile Include="API\Hook.cxx" />
     <ClCompile Include="API\Logging.cxx" />
     <ClCompile Include="API\Memory.cxx" />
+    <ClCompile Include="API\Threading.cxx" />
     <ClCompile Include="Communications.cxx" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="ExceptionFrames.cxx" />

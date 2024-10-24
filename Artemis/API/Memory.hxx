@@ -10,7 +10,7 @@
 
 #include "Definitions.hxx"
 
-#include "Error.hxx"
+#include "Exception.hxx"
 
 namespace Artemis::API {
 #pragma region Concepts.
@@ -183,7 +183,7 @@ namespace Artemis::API {
 	/// <summary>
 	/// An exception type for memory access violations.
 	/// </summary>
-	class access_violation_exception : public exception {
+	class access_violation_exception : public system_exception {
 		address_t _Address;
 		size_t _Size;
 		memory_operation _Operation;
@@ -210,7 +210,7 @@ namespace Artemis::API {
 		/// <param name="_Operation">- The memory operation that took place.</param>
 		/// <param name="_InnerException">- The inner exception of the instance.</param>
 		template<derived_exception_type T>
-		inline access_violation_exception(address_t _Address, size_t _Size, memory_operation _Operation, const T& _InnerException) : exception(format_message(_Address, _Size, _Operation).c_str()), _Address(_Address), _Size(_Size), _Operation(_Operation) {
+		inline access_violation_exception(address_t _Address, size_t _Size, memory_operation _Operation, T&& _InnerException) : system_exception(format_message(_Address, _Size, _Operation), std::forward<T>(_InnerException)), _Address(_Address), _Size(_Size), _Operation(_Operation) {
 			VirtualQuery(_Address, &this->_MBI, sizeof(this->_MBI));
 		}
 
@@ -236,115 +236,72 @@ namespace Artemis::API {
 		/// Gets information about the memory region at the time of the exception.
 		/// </summary>
 		/// <returns>The memory region information.</returns>
-		ARTEMIS_API const MEMORY_BASIC_INFORMATION& mbi() const noexcept;
+		ARTEMIS_API const MEMORY_BASIC_INFORMATION* mbi() const noexcept;
 	};
 
 #pragma endregion
 
 #pragma region Overloads of read with return by pointer.
 
-	/// <summary>
-	/// Reads a value from an address.
-	/// </summary>
-	/// <typeparam name="T">The datatype to read.</typeparam>
-	/// <param name="_Address">- The address to read from.</param>
-	/// <param name="_Return">- A pointer to a variable receiving the read value.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T>
-	inline void read(address_t _Address, T* _Return) {
+	template<any_type _Ty>
+	inline void read(address_t _Address, _Ty* _Return) {
 		__stack_record();
 
-		if (!_Address)
-			throw argument_exception("Argument cannot be null.", "_Address");
-		if (!_Return)
-			throw argument_exception("Pointer cannot be null", "_Return");
+		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
+		argument_exception::throw_if_null(AE_ARGUMENT(_Return));
 
 		__try {
-			*_Return = *_Address.ptr<T>();
+			*_Return = *_Address.ptr<_Ty>();
 		}
-		__except (GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH) {
-			throw access_violation_exception(_Address, sizeof(T), memory_operation::read);
+		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
+			throw access_violation_exception(_Address, sizeof(_Ty), memory_operation::read);
 		}
 
 		__stack_escape();
 	}
 
-	/// <summary>
-	/// Reads an array of values from an address.
-	/// </summary>
-	/// <typeparam name="T">The datatype to read.</typeparam>
-	/// <param name="_Address">- The address to read from.</param>
-	/// <param name="_Return">- A pointer to a buffer to receive the read values.</param>
-	/// <param name="_Count">- The number of values to read.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T>
-	inline void read(address_t _Address, T* _Return, int _Count) {
+	template<any_type _Ty>
+	inline void read(address_t _Address, _Ty* _Return, int _Count) {
 		__stack_record();
 
-		if (!_Address)
-			throw argument_exception("Argument cannot be null.", "_Address");
-		if (!_Return)
-			throw argument_exception("Pointer cannot be null", "_Return");
-		if (_Count <= 0)
-			throw argument_exception("Argument cannot be less than or equal to zero.", "_Count");
+		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
+		argument_exception::throw_if_null(AE_ARGUMENT(_Return));
+		argument_exception::throw_if_less_than_or_equal(AE_ARGUMENT(_Count), 0);
 			
 		__try {
 			for (int i = 0; i < _Count; i++)
-				_Return[i] = _Address.ptr<T>()[i];
+				_Return[i] = _Address.ptr<_Ty>()[i];
 		}
-		__except (GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH) {
-			throw access_violation_exception(_Address, sizeof(T) * _Count, memory_operation::read);
+		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
+			throw access_violation_exception(_Address, sizeof(_Ty) * _Count, memory_operation::read);
 		}
 
 		__stack_escape();
 	}
 
-	/// <summary>
-	/// Reads an array of values from an address.
-	/// </summary>
-	/// <typeparam name="T">The datatype to read.</typeparam>
-	/// <typeparam name="N">The number of values to read.</typeparam>
-	/// <param name="_Address">- The address to read from.</param>
-	/// <param name="_Return">- A reference to a buffer to receive the read values.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T, size_t N>
-		requires(N != 0)
-	inline void read(address_t _Address, T(&_Return)[N]) {
+	template<any_type _Ty, size_t _Size>
+		requires(_Size != 0)
+	inline void read(address_t _Address, _Ty(&_Return)[_Size]) {
 		__stack_record();
-		__stack_rethrow(read(_Address, _Return, N));
+		__stack_rethrow(read(_Address, _Return, _Size));
 		__stack_escape();
 	}
 
-	/// <summary>
-	/// Reads an array of values from an address and returns them in the form of an std::vector.
-	/// </summary>
-	/// <typeparam name="T">The datatype to read.</typeparam>
-	/// <param name="_Address">- The address to read from.</param>
-	/// <param name="_Return">- A pointer to an std::vector object to receive the read values.</param>
-	/// <param name="_Count">- The number of values to read.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T>
-	inline void read(address_t _Address, std::vector<T>* _Return, int _Count) {
+	template<any_type _Ty>
+	inline void read(address_t _Address, std::vector<_Ty>* _Return, int _Count) {
 		__stack_record();
 
-		if (!_Address)
-			throw argument_exception("Argument cannot be null.", "_Address");
-		if (!_Return)
-			throw argument_exception("Pointer cannot be null", "_Return");
-		if (_Count <= 0)
-			throw argument_exception("Argument cannot be less than or equal to zero.", "_Count");
+		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
+		argument_exception::throw_if_null(AE_ARGUMENT(_Return));
+		argument_exception::throw_if_less_than_or_equal(AE_ARGUMENT(_Count), 0);
 
-		std::vector<T> ret;
+		std::vector<_Ty> ret;
 		__try {
 			for (int i = 0; i < _Count; i++)
-				ret.push_back(_Address.ptr<T>()[i]);
+				ret.push_back(_Address.ptr<_Ty>()[i]);
 		}
-		__except (GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH) {
-			throw access_violation_exception(_Address, sizeof(T) * _Count, memory_operation::read);
+		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
+			throw access_violation_exception(_Address, sizeof(_Ty) * _Count, memory_operation::read);
 		}
 
 		_Return->swap(ret);
@@ -352,32 +309,21 @@ namespace Artemis::API {
 		__stack_escape();
 	}
 
-	/// <summary>
-	/// Reads an array of values from an address and returns them in the form of an std::array.
-	/// </summary>
-	/// <typeparam name="T">The datatype to read.</typeparam>
-	/// <typeparam name="N">The number of values to read.</typeparam>
-	/// <param name="_Address">- The address to read from.</param>
-	/// <param name="_Return">- A pointer to an std::array object to receive the read values.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T, size_t N>
-		requires(N != 0)
-	inline void read(address_t _Address, std::array<T, N>* _Return) {
+	template<any_type _Ty, size_t _Size>
+		requires(_Size != 0)
+	inline void read(address_t _Address, std::array<_Ty, _Size>* _Return) {
 		__stack_record();
 
-		if (!_Address)
-			throw argument_exception("Argument cannot be null.", "_Address");
-		if (!_Return)
-			throw argument_exception("Pointer cannot be null", "_Return");
+		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
+		argument_exception::throw_if_null(AE_ARGUMENT(_Return));
 
-		std::array<T, N> ret;
+		std::array<_Ty, _Size> ret;
 		__try {
-			for (int i = 0; i < N; i++)
-				ret[i] = _Address.ptr<T>()[i];
+			for (int i = 0; i < _Size; i++)
+				ret[i] = _Address.ptr<_Ty>()[i];
 		}
-		__except (GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH) {
-			throw access_violation_exception(_Address, sizeof(T) * N, memory_operation::read);
+		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
+			throw access_violation_exception(_Address, sizeof(_Ty) * _Size, memory_operation::read);
 		}
 
 		_Return->swap(ret);
@@ -389,71 +335,41 @@ namespace Artemis::API {
 
 #pragma region Overloads of read with return by value.
 
-	/// <summary>
-	/// Reads a value from an address.
-	/// </summary>
-	/// <typeparam name="T">The datatype to read.</typeparam>
-	/// <param name="_Address">- The address to read from.</param>
-	/// <returns>The read value.</returns>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T>
-	inline T read(address_t _Address) {
+	template<any_type _Ty>
+	inline _Ty read(address_t _Address) {
 		__stack_record();
 
-		if (!_Address)
-			throw argument_exception("Argument cannot be null.", "_Address");
+		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 
-		T ret;
+		_Ty ret;
 		__stack_rethrow(read(_Address, &ret));
 
 		__stack_escape();
 		return ret;
 	}
 
-	/// <summary>
-	/// Reads an array of values from an address and returns them in the form of an std::vector.
-	/// </summary>
-	/// <typeparam name="T">The datatype to read.</typeparam>
-	/// <param name="_Address">- The address to read from.</param>
-	/// <param name="_Count">- The number of values to read.</param>
-	/// <returns>An std::vector object containing the read values.</returns>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T>
-	inline std::vector<T> read(address_t _Address, int _Count) {
+	template<any_type _Ty>
+	inline std::vector<_Ty> read(address_t _Address, int _Count) {
 		__stack_record();
 
-		if (!_Address)
-			throw argument_exception("Argument cannot be null.", "_Address");
-		if (_Count <= 0)
-			throw argument_exception("Argument cannot be less than or equal to zero.", "_Count");
+		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
+		argument_exception::throw_if_less_than_or_equal(AE_ARGUMENT(_Count), 0);
 
-		std::vector<T> ret;
+		std::vector<_Ty> ret;
 		__stack_rethrow(read(_Address, &ret, _Count));
 
 		__stack_escape();
 		return ret;
 	}
 
-	/// <summary>
-	/// Reads an array of values from an address and returns them in the form of an std::array.
-	/// </summary>
-	/// <typeparam name="T">The datatype to read.</typeparam>
-	/// <typeparam name="N">The number of values to read.</typeparam>
-	/// <param name="_Address">- The address to read from.</param>
-	/// <returns>An std::array object containing the read values.</returns>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T, size_t N>
-		requires(N != 0)
-	inline std::array<T, N> read(address_t _Address) {
+	template<any_type _Ty, size_t _Size>
+		requires(_Size != 0)
+	inline std::array<_Ty, _Size> read(address_t _Address) {
 		__stack_record();
 
-		if (!_Address)
-			throw argument_exception("Argument cannot be null.", "_Address");
+		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 
-		std::array<T, N> ret;
+		std::array<_Ty, _Size> ret;
 		__stack_rethrow(read(_Address, &ret));
 
 		__stack_escape();
@@ -464,41 +380,16 @@ namespace Artemis::API {
 
 #pragma region Overloads of get_address.
 
-	/// <summary>
-	/// Gets the address at the end of a pointer chain.
-	/// </summary>
-	/// <param name="_Address">- The pointer base address.</param>
-	/// <param name="_Offsets">- The pointer chain offsets.</param>
-	/// <param name="_Return">- A pointer to a variable receiving the address at the end of the pointer chain.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
 	ARTEMIS_API void get_address(address_t _Address, ptrchain_t _Offsets, address_t* _Return);
 
-	/// <summary>
-	/// Gets the address at the end of a pointer chain.
-	/// </summary>
-	/// <param name="_Address">- The pointer base address.</param>
-	/// <param name="_Offsets">- The pointer chain offsets.</param>
-	/// <returns>The address at the end of the pointer chain.</returns>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
 	ARTEMIS_API address_t get_address(address_t _Address, ptrchain_t _Offsets);
 
 #pragma endregion
 
 #pragma region Overloads of read_ptr with return by pointer.
 
-	/// <summary>
-	/// Reads a value from the end of a pointer chain.
-	/// </summary>
-	/// <typeparam name="T">The datatype to read.</typeparam>
-	/// <param name="_Address">- The pointer base address.</param>
-	/// <param name="_Offsets">- The pointer chain offsets.</param>
-	/// <param name="_Return">A pointer to a variable receiving the read value.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T>
-	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, T* _Return) {
+	template<any_type _Ty>
+	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, _Ty* _Return) {
 		__stack_record();
 
 		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
@@ -507,18 +398,8 @@ namespace Artemis::API {
 		__stack_escape();
 	}
 
-	/// <summary>
-	/// Reads an array of values from the end of a pointer chain.
-	/// </summary>
-	/// <typeparam name="T">The datatype to read.</typeparam>
-	/// <param name="_Address">- The pointer base address.</param>
-	/// <param name="_Offsets">- The pointer chain offsets.</param>
-	/// <param name="_Return">- A pointer to a buffer to receive the read values.</param>
-	/// <param name="_Count">- The number of values to read.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T>
-	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, T* _Return, int _Count) {
+	template<any_type _Ty>
+	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, _Ty* _Return, int _Count) {
 		__stack_record();
 
 		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
@@ -527,36 +408,16 @@ namespace Artemis::API {
 		__stack_escape();
 	}
 
-	/// <summary>
-	/// Reads an array of values from the end of a pointer chain.
-	/// </summary>
-	/// <typeparam name="T">The datatype to read.</typeparam>
-	/// <typeparam name="N">The number of values to read.</typeparam>
-	/// <param name="_Address">- The pointer base address.</param>
-	/// <param name="_Offsets">- The pointer chain offsets.</param>
-	/// <param name="_Return">- A reference to a buffer to receive the read values.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T, size_t N>
-		requires(N != 0)
-	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, T(&_Return)[N]) {
+	template<any_type _Ty, size_t _Size>
+		requires(_Size != 0)
+	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, _Ty(&_Return)[_Size]) {
 		__stack_record();
-		__stack_rethrow(read_ptr(_Address, _Offsets, _Return, N));
+		__stack_rethrow(read_ptr(_Address, _Offsets, _Return, _Size));
 		__stack_escape();
 	}
 
-	/// <summary>
-	/// Reads an array of values from the end of a pointer chain and returns them in the form of an std::vector.
-	/// </summary>
-	/// <typeparam name="T">The datatype to read.</typeparam>
-	/// <param name="_Address">- The pointer base address.</param>
-	/// <param name="_Offsets">- The pointer chain offsets.</param>
-	/// <param name="_Return">- A pointer to an std::vector object to receive the read values.</param>
-	/// <param name="_Count">- The number of values to read.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T>
-	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, std::vector<T>* _Return, int _Count) {
+	template<any_type _Ty>
+	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, std::vector<_Ty>* _Return, int _Count) {
 		__stack_record();
 
 		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
@@ -565,19 +426,9 @@ namespace Artemis::API {
 		__stack_escape();
 	}
 
-	/// <summary>
-	/// Reads an array of values from the end of a pointer chain and returns them in the form of an std::vector.
-	/// </summary>
-	/// <typeparam name="T">The datatype to read.</typeparam>
-	/// <typeparam name="N">The number of values to read.</typeparam>
-	/// <param name="_Address">- The pointer base address.</param>
-	/// <param name="_Offsets">- The pointer chain offsets.</param>
-	/// <param name="_Return">- A pointer to an std::array object to receive the read values.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T, size_t N>
-		requires(N != 0)
-	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, std::array<T, N>* _Return) {
+	template<any_type _Ty, size_t _Size>
+		requires(_Size != 0)
+	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, std::array<_Ty, _Size>* _Return) {
 		__stack_record();
 
 		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
@@ -590,69 +441,40 @@ namespace Artemis::API {
 
 #pragma region Overloads of read_ptr with return by value.
 
-	/// <summary>
-	/// Reads a value from the end of a pointer chain.
-	/// </summary>
-	/// <typeparam name="T">The datatype to read.</typeparam>
-	/// <param name="_Address">- The pointer base address.</param>
-	/// <param name="_Offsets">- The pointer chain offsets.</param>
-	/// <returns>The read value.</returns>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T>
-	inline T read_ptr(address_t _Address, ptrchain_t _Offsets) {
+	template<any_type _Ty>
+	inline _Ty read_ptr(address_t _Address, ptrchain_t _Offsets) {
 		__stack_record();
 
 		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
 
-		T ret;
+		_Ty ret;
 		__stack_rethrow(read(_Address, &ret));
 
 		__stack_escape();
 		return ret;
 	}
 
-	/// <summary>
-	/// Reads an array of values from the end of a pointer chain and returns them in the form of an std::vector.
-	/// </summary>
-	/// <typeparam name="T">The datatype to read.</typeparam>
-	/// <param name="_Address">- The pointer base address.</param>
-	/// <param name="_Offsets">- The pointer chain offsets.</param>
-	/// <param name="_Count">- The number of values to read.</param>
-	/// <returns>An std::vector object containing the read values.</returns>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T>
-	inline std::vector<T> read_ptr(address_t _Address, ptrchain_t _Offsets, int _Count) {
+	template<any_type _Ty>
+	inline std::vector<_Ty> read_ptr(address_t _Address, ptrchain_t _Offsets, int _Count) {
 		__stack_record();
 
 		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
 
-		std::vector<T> ret;
+		std::vector<_Ty> ret;
 		__stack_rethrow(read(_Address, &ret, _Count));
 
 		__stack_escape();
 		return ret;
 	}
 
-	/// <summary>
-	/// Reads an array of values from the end of a pointer chain and returns them in the form of an std::vector.
-	/// </summary>
-	/// <typeparam name="T">The datatype to read.</typeparam>
-	/// <typeparam name="N">The number of values to read.</typeparam>
-	/// <param name="_Address">- The pointer base address.</param>
-	/// <param name="_Offsets">- The pointer chain offsets.</param>
-	/// <returns>An std::array object containing the read values.</returns>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T, size_t N>
-		requires(N != 0)
-	inline std::array<T, N> read_ptr(address_t _Address, ptrchain_t _Offsets) {
+	template<any_type _Ty, size_t _Size>
+		requires(_Size != 0)
+	inline std::array<_Ty, _Size> read_ptr(address_t _Address, ptrchain_t _Offsets) {
 		__stack_record();
 
 		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
 
-		std::array<T, N> ret;
+		std::array<_Ty, _Size> ret;
 		__stack_rethrow(read(_Address, &ret));
 
 		__stack_escape();
@@ -663,183 +485,114 @@ namespace Artemis::API {
 
 #pragma region Overloads of write.
 
-	/// <summary>
-	/// Writes a value to an address.
-	/// </summary>
-	/// <typeparam name="T">The datatype to write.</typeparam>
-	/// <param name="_Address">- The address to write to.</param>
-	/// <param name="_Value">- The value to write.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T>
-	inline void write(address_t _Address, const T& _Value) {
+	template<any_type _Ty>
+	inline void write(address_t _Address, const _Ty& _Value) {
 		__stack_record();
 
-		if (!_Address)
-			throw argument_exception("Argument cannot be null.", "_Address");
+		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 
 		__try {
-			*_Address.ptr<T>() = _Value;
+			*_Address.ptr<_Ty>() = _Value;
 		}
-		__except (GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH) {
-			throw access_violation_exception(_Address, sizeof(T), memory_operation::write);
+		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
+			throw access_violation_exception(_Address, sizeof(_Ty), memory_operation::write);
 		}
 
 		__stack_escape();
 	}
 
-	/// <summary>
-	/// Writes a value to an address.
-	/// </summary>
-	/// <typeparam name="T">The datatype to write.</typeparam>
-	/// <param name="_Address">- The address to write to.</param>
-	/// <param name="_Value">- The value to write.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T>
-	inline void write(address_t _Address, T&& _Value) {
+	template<any_type _Ty>
+	inline void write(address_t _Address, _Ty&& _Value) {
 		__stack_record();
 
-		if (!_Address)
-			throw argument_exception("Argument cannot be null.", "_Address");
+		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 
 		__try {
-			*_Address.ptr<T>() = std::move(_Value);
+			*_Address.ptr<_Ty>() = std::move(_Value);
 		}
-		__except (GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH) {
-			throw access_violation_exception(_Address, sizeof(T), memory_operation::write);
+		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
+			throw access_violation_exception(_Address, sizeof(_Ty), memory_operation::write);
 		}
 
 		__stack_escape();
 	}
 
-	/// <summary>
-	/// Writes an array of values to an address.
-	/// </summary>
-	/// <typeparam name="T">The datatype to write.</typeparam>
-	/// <param name="_Address">- The address to write to.</param>
-	/// <param name="_Values">- A pointer to a buffer containing the values to write.</param>
-	/// <param name="_Count">- The number of values to write.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T>
-	inline void write(address_t _Address, const T* const _Values, int _Count) {
+	template<any_type _Ty>
+	inline void write(address_t _Address, const _Ty* const _Values, int _Count) {
 		__stack_record();
 
-		if (!_Address)
-			throw argument_exception("Argument cannot be null.", "_Address");
-		if (!_Values)
-			throw argument_exception("Pointer cannot be null", "_Return");
-		if (_Count <= 0)
-			throw argument_exception("Argument cannot be less than or equal to zero.", "_Count");
+		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
+		argument_exception::throw_if_null(AE_ARGUMENT(_Values));
+		argument_exception::throw_if_less_than_or_equal(AE_ARGUMENT(_Count), 0);
 
 		__try {
 			for (int i = 0; i < _Count; i++)
-				_Address.ptr<T>()[i] = _Values[0];
+				_Address.ptr<_Ty>()[i] = _Values[0];
 		}
-		__except (GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH) {
-			throw access_violation_exception(_Address, sizeof(T) * _Count, memory_operation::write);
+		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
+			throw access_violation_exception(_Address, sizeof(_Ty) * _Count, memory_operation::write);
 		}
 
 		__stack_escape();
 	}
 
-	/// <summary>
-	/// Writes an array of values to an address.
-	/// </summary>
-	/// <typeparam name="T">The datatype to write.</typeparam>
-	/// <typeparam name="N">The number of values to write.</typeparam>
-	/// <param name="_Address">- The address to write to.</param>
-	/// <param name="_Values">- A reference to an array containing the values to write.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T, size_t N>
-		requires(N != 0)
-	inline void write(address_t _Address, const T(&_Values)[N]) {
+	template<any_type _Ty, size_t _Size>
+		requires(_Size != 0)
+	inline void write(address_t _Address, const _Ty(&_Values)[_Size]) {
 		__stack_record();
-		__stack_rethrow(write(_Address, _Values, N));
+		__stack_rethrow(write(_Address, _Values, _Size));
 		__stack_escape();
 	}
 
-	/// <summary>
-	/// Writes an array of values to an address.
-	/// </summary>
-	/// <typeparam name="T">The datatype to write.</typeparam>
-	/// <param name="_Address">- The address to write to.</param>
-	/// <param name="_Values">- An std::vector containing the values to write.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T>
-	inline void write(address_t _Address, const std::vector<T>& _Values) {
+	template<any_type _Ty>
+	inline void write(address_t _Address, const std::vector<_Ty>& _Values) {
 		__stack_record();
 
-		if (!_Address)
-			throw argument_exception("Argument cannot be null.", "_Address");
-		if (_Values.size() == 0)
-			throw argument_exception("Collection cannot be empty.", "_Values");
+		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
+		argument_exception::throw_if_null(AE_ARGUMENT(_Values.size()));
 
 		__try {
 			for (int i = 0; i < _Values.size(); i++)
-				_Address.ptr<T>()[i] = _Values[i];
+				_Address.ptr<_Ty>()[i] = _Values[i];
 		}
-		__except (GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH) {
-			throw access_violation_exception(_Address, sizeof(T) * _Values.size(), memory_operation::write);
-		}
-
-		__stack_escape();
-	}
-
-	/// <summary>
-	/// Writes an array of values to an address.
-	/// </summary>
-	/// <typeparam name="T">The datatype to write.</typeparam>
-	/// <param name="_Address">- The address to write to.</param>
-	/// <param name="_Values">- An std::vector containing the values to write.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T>
-	inline void write(address_t _Address, std::vector<T>&& _Values) {
-		__stack_record();
-
-		if (!_Address)
-			throw argument_exception("Argument cannot be null.", "_Address");
-		if (_Values.size() == 0)
-			throw argument_exception("Collection cannot be empty.", "_Values");
-
-		__try {
-			for (int i = 0; i < _Values.size(); i++)
-				_Address.ptr<T>()[i] = std::move(_Values[i]);
-		}
-		__except (GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH) {
-			throw access_violation_exception(_Address, sizeof(T) * _Values.size(), memory_operation::write);
+		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
+			throw access_violation_exception(_Address, sizeof(_Ty) * _Values.size(), memory_operation::write);
 		}
 
 		__stack_escape();
 	}
 
-	/// <summary>
-	/// Writes an array of values to an address.
-	/// </summary>
-	/// <typeparam name="T">The datatype to write.</typeparam>
-	/// <typeparam name="N">The number of values to write.</typeparam>
-	/// <param name="_Address">- The address to write to.</param>
-	/// <param name="_Values">- An std::array contaning the values to write.</param>
-	/// <exception cref="argument_exception"/>
-	/// <exception cref="access_violation_exception"/>
-	template<any_type T, size_t N>
-		requires(N != 0)
-	inline void write(address_t _Address, const std::array<T, N>& _Values) {
+	template<any_type _Ty>
+	inline void write(address_t _Address, std::vector<_Ty>&& _Values) {
 		__stack_record();
 
-		if (!_Address)
-			throw argument_exception("Argument cannot be null.", "_Address");
+		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
+		argument_exception::throw_if_null(AE_ARGUMENT(_Values.size()));
 
 		__try {
 			for (int i = 0; i < _Values.size(); i++)
-				_Address.ptr<T>()[i] = _Values[i];
+				_Address.ptr<_Ty>()[i] = std::move(_Values[i]);
 		}
-		__except (GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH) {
-			throw access_violation_exception(_Address, sizeof(T) * N, memory_operation::write);
+		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
+			throw access_violation_exception(_Address, sizeof(_Ty) * _Values.size(), memory_operation::write);
+		}
+
+		__stack_escape();
+	}
+
+	template<any_type _Ty, size_t _Size>
+		requires(_Size != 0)
+	inline void write(address_t _Address, const std::array<_Ty, _Size>& _Values) {
+		__stack_record();
+
+		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
+
+		__try {
+			for (int i = 0; i < _Values.size(); i++)
+				_Address.ptr<_Ty>()[i] = _Values[i];
+		}
+		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
+			throw access_violation_exception(_Address, sizeof(_Ty) * _Size, memory_operation::write);
 		}
 
 		__stack_escape();
@@ -849,11 +602,77 @@ namespace Artemis::API {
 
 #pragma region Overloads of write_ptr.
 
-	template<any_type T>
-	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, const T& _Value);
+	template<any_type _Ty>
+	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, const _Ty& _Value) {
+		__stack_record();
 
-	template<any_type T>
-	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, T&& _Value);
+		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
+		__stack_rethrow(write(_Address, _Value));
+
+		__stack_escape();
+	}
+
+	template<any_type _Ty>
+	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, _Ty&& _Value) {
+		__stack_record();
+
+		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
+		__stack_rethrow(write(_Address, std::forward<_Ty>(_Value)));
+
+		__stack_escape();
+	}
+
+	template<any_type _Ty>
+	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, const _Ty* const _Values, int _Count) {
+		__stack_record();
+
+		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
+		__stack_rethrow(write(_Address, _Values, _Count));
+
+		__stack_escape();
+	}
+
+	template<any_type _Ty, size_t _Size>
+		requires(_Size != 0)
+	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, const _Ty(&_Values)[_Size]) {
+		__stack_record();
+
+		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
+		__stack_rethrow(write(_Address, _Values, _Size));
+
+		__stack_escape();
+	}
+
+	template<any_type _Ty>
+	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, const std::vector<_Ty>& _Values) {
+		__stack_record();
+
+		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
+		__stack_rethrow(write(_Address, _Values));
+
+		__stack_escape();
+	}
+
+	template<any_type _Ty>
+	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, std::vector<_Ty>&& _Values) {
+		__stack_record();
+
+		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
+		__stack_rethrow(write(_Address, std::move(_Values)));
+
+		__stack_escape();
+	}
+
+	template<any_type _Ty, size_t _Size>
+		requires(_Size != 0)
+	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, const std::array<_Ty, _Size>& _Values) {
+		__stack_record();
+
+		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
+		__stack_rethrow(write(_Address, _Values));
+
+		__stack_escape();
+	}
 
 #pragma endregion
 }

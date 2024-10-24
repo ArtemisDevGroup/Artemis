@@ -1,5 +1,5 @@
-#ifndef ARTEMIS_API_DEFINITIONS_HXX
-#define ARTEMIS_API_DEFINITIONS_HXX
+#ifndef __ARTEMIS_API_DEFINITIONS_HXX__
+#define __ARTEMIS_API_DEFINITIONS_HXX__
 
 //*-----------------*
 // Compile-time macro definitions changing the behaviour of the application:
@@ -64,4 +64,12 @@ int bar() {
 #define ARTEMIS_API __declspec(dllimport)
 #endif // ARTEMIS_EXPORT
 
-#endif // !ARTEMIS_API_DEFINTIONS_HXX
+#ifndef NAMEOF
+#define NAMEOF(x) [](auto, auto _) consteval { return _; }(sizeof(decltype(x)), #x)
+#endif // NAMEOF
+
+#ifndef CONSTANT
+#define CONSTANT(x) const_cast<const decltype(x)&>(x)
+#endif // !CONST
+
+#endif // !__ARTEMIS_API_DEFINITIONS_HXX__

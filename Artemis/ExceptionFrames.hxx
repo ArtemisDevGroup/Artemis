@@ -4,7 +4,7 @@
 #include "Definitions.hxx"
 ARTEMIS_INTERNAL_HEADER
 
-#include "API/Error.hxx"
+#include "API/Exception.hxx"
 #include "API/Logging.hxx"
 
 #include <functional>	// std::function

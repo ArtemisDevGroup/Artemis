@@ -24,14 +24,14 @@ namespace Artemis::API {
 		return std::format("Access violation occured at {:X} (size {:X} while {} memory region.", _Address.value(), _Size, operation);
 	}
 
-	access_violation_exception::access_violation_exception(address_t _Address, size_t _Size, memory_operation _Operation) : exception(format_message(_Address, _Size, _Operation).c_str()), _Address(_Address), _Size(_Size), _Operation(_Operation) {
+	access_violation_exception::access_violation_exception(address_t _Address, size_t _Size, memory_operation _Operation) : system_exception(format_message(_Address, _Size, _Operation)), _Address(_Address), _Size(_Size), _Operation(_Operation) {
 		VirtualQuery(_Address, &this->_MBI, sizeof(this->_MBI));
 	}
 
 	address_t access_violation_exception::address() const noexcept { return this->_Address; }
 	size_t access_violation_exception::size() const noexcept { return this->_Size; }
 	memory_operation access_violation_exception::operation() const noexcept { return this->_Operation; }
-	const MEMORY_BASIC_INFORMATION& access_violation_exception::mbi() const noexcept { return this->_MBI; }
+	const MEMORY_BASIC_INFORMATION* access_violation_exception::mbi() const noexcept { return &this->_MBI; }
 
 #pragma endregion
 
@@ -40,12 +40,9 @@ namespace Artemis::API {
 	void get_address(address_t _Address, ptrchain_t _Offsets, address_t* _Return) {
 		__stack_record();
 
-		if (!_Address)
-			throw argument_exception("Argument cannot be null.", "_Address");
-		if (_Offsets.size() == 0)
-			throw argument_exception("Collection cannot be empty.", "_Offsets");
-		if (!_Return)
-			throw argument_exception("Pointer cannot be null", "_Return");
+		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
+		argument_exception::throw_if_null(AE_ARGUMENT(_Offsets.size()));
+		argument_exception::throw_if_null(AE_ARGUMENT(_Return));
 
 		__stack_rethrow_try();
 		for (ptroffset_t o : _Offsets) {

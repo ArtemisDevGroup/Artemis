@@ -224,12 +224,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Error.Tests.cxx" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Artemis\Artemis.vcxproj">
       <Project>{5765ab3c-4582-45b2-be07-87fdd7d14e87}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Threading.Tests.cxx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -13,7 +13,7 @@
 
 #include "ExecutionContext.hxx"
 
-#include "API/Error.hxx"
+#include "API/Exception.hxx"
 #include "API/Logging.hxx"
 
 namespace Artemis {
@@ -231,7 +231,7 @@ namespace Artemis {
 			__stack_record();
 
 			if (!this->_IdMap.test(_Id))
-				throw API::argument_exception("Argument contains an invalid id.", "_Id");
+				throw API::argument_exception("Argument contains an invalid id.", NAMEOF(_Id));
 
 			_Ty* ret = nullptr;
 

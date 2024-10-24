@@ -1,5 +1,4 @@
 #include "pch.h"
-
 #include "Hook.hxx"
 
 namespace Artemis::API {

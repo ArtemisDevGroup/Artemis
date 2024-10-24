@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Communications.hxx"
 
-#include "API/Error.hxx"
+#include "API/Exception.hxx"
 
 namespace Artemis {
 #pragma region Class message
@@ -94,7 +94,7 @@ namespace Artemis {
 
 	message* message_recipent::get_message_body() noexcept { return this->pMessageBody; }
 
-	void message_recipent::set_onmessage_callback(std::function<void(message*)>&& _Callback) noexcept {
+	void message_recipent::set_onmessage_callback(std::function<void(message*)>&& _Callback) {
 		__stack_record();
 
 		this->_OnMessageCallback = std::move(_Callback);
@@ -176,7 +176,7 @@ namespace Artemis {
 
 		_Message->set_message_dispatcher_name(this->_DispatcherName);
 
-		if (!WriteFile(this->hPipeOutbound, _Message, _Size, nullptr, nullptr))
+		if (!WriteFile(this->hPipeOutbound, _Message, (DWORD)_Size, nullptr, nullptr))
 			throw API::win32_exception("WriteFile");
 
 		__stack_escape();

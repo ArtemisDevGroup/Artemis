@@ -92,7 +92,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	
 	athis->KeyActions->invoke(uMsg, (Artemis::key)wParam);
 
-	return CallWindowProcW(athis->_PresentHook.oWndProc, hWnd, uMsg, wParam, lParam);
+	return CallWindowProcW(athis->_DirectXPresentHookData.oWndProc, hWnd, uMsg, wParam, lParam);
 }
 
 #pragma endregion
@@ -112,16 +112,16 @@ static HRESULT APIENTRY hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval,
 
 			DXGI_SWAP_CHAIN_DESC sd;
 			pSwapChain->GetDesc(&sd);
-			athis->_PresentHook.hWnd = sd.OutputWindow;
+			athis->_DirectXPresentHookData.hWnd = sd.OutputWindow;
 
 			ID3D11Texture2D* pBackBuffer;
 			pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
 			if (!pBackBuffer)
-				return athis->_PresentHook.oPresent(pSwapChain, SyncInterval, Flags);
+				return athis->_DirectXPresentHookData.oPresent(pSwapChain, SyncInterval, Flags);
 			pDevice->CreateRenderTargetView(pBackBuffer, NULL, &pRenderTargetView);
 			pBackBuffer->Release();
 
-			athis->_PresentHook.oWndProc = (WNDPROC)SetWindowLongPtrW(athis->_PresentHook.hWnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
+			athis->_DirectXPresentHookData.oWndProc = (WNDPROC)SetWindowLongPtrW(athis->_DirectXPresentHookData.hWnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
 
 			ImGui::CreateContext();
 			ImGuiIO& io = ImGui::GetIO();
@@ -129,12 +129,12 @@ static HRESULT APIENTRY hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval,
 			io.WantCaptureMouse = true;
 			io.WantCaptureKeyboard = true;
 
-			ImGui_ImplWin32_Init(athis->_PresentHook.hWnd);
+			ImGui_ImplWin32_Init(athis->_DirectXPresentHookData.hWnd);
 			ImGui_ImplDX11_Init(pDevice, pDeviceContext);
 
 			bInitialized = true;
 		}
-		else return athis->_PresentHook.oPresent(pSwapChain, SyncInterval, Flags);
+		else return athis->_DirectXPresentHookData.oPresent(pSwapChain, SyncInterval, Flags);
 	}
 
 	ImGui_ImplDX11_NewFrame();
@@ -155,7 +155,7 @@ static HRESULT APIENTRY hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval,
 	pDeviceContext->OMSetRenderTargets(1, &pRenderTargetView, nullptr);
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-	return athis->_PresentHook.oPresent(pSwapChain, SyncInterval, Flags);
+	return athis->_DirectXPresentHookData.oPresent(pSwapChain, SyncInterval, Flags);
 }
 
 #pragma endregion
@@ -209,16 +209,16 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 
 	athis->Logger->success("Initialized hooking library.");
 
-	auto presentHook = &athis->_PresentHook;
+	auto pDirectXHookData = &athis->_DirectXPresentHookData;
 
 	HWND hWnd = FindWindowA("R6Game", nullptr);
 	LPVOID lpPresentFunction = GetPresentFunctionPtr(hWnd);
 
 	athis->Logger->success(std::format("Fetched function pointer: {}", lpPresentFunction));
 
-	presentHook->hkInstance = new Artemis::API::hook<Artemis::TPRESENT>(lpPresentFunction, hkPresent);
-	presentHook->oPresent = presentHook->hkInstance->original();
-	presentHook->hkInstance->enable();
+	pDirectXHookData->hkInstance = new Artemis::API::hook<Artemis::TPRESENT>(lpPresentFunction, hkPresent);
+	pDirectXHookData->oPresent = pDirectXHookData->hkInstance->original();
+	pDirectXHookData->hkInstance->enable();
 
 	athis->Logger->success("Hooked present.");
 
@@ -257,9 +257,9 @@ DWORD APIENTRY ArtemisMain(_In_ HMODULE hModule) {
 
 	delete athis->Windows;
 
-	SetWindowLongPtrW(presentHook->hWnd, GWLP_WNDPROC, (LONG_PTR)presentHook->oWndProc); // Swap WndProc for original.
+	SetWindowLongPtrW(pDirectXHookData->hWnd, GWLP_WNDPROC, (LONG_PTR)pDirectXHookData->oWndProc); // Swap WndProc for original.
 
-	delete presentHook->hkInstance;
+	delete pDirectXHookData->hkInstance;
 
 	Artemis::API::global_hook_release();
 

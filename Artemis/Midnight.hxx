@@ -1,5 +1,5 @@
-#ifndef ARTEMIS_MIDNIGHT_HXX
-#define ARTEMIS_MIDNIGHT_HXX
+#ifndef __ARTEMIS_MIDNIGHT_HXX__
+#define __ARTEMIS_MIDNIGHT_HXX__
 
 #include <Windows.h>	// HRESULT, APIENTRY, UINT, HWND, WNDPROC
 #include <dxgi.h>		// IDXGISwapChain
@@ -18,7 +18,7 @@ namespace Artemis {
 	
 	struct midnight {
 		/// <summary>
-		/// <para>Contains all persistent data for the DX hook.</para>
+		/// <para>Contains all persistent data for the DirectX hook.</para>
 		/// <para>Do not mess with this unless you absolutely need to.</para>
 		/// </summary>
 		struct {
@@ -26,7 +26,7 @@ namespace Artemis {
 			HWND hWnd;
 			WNDPROC oWndProc;
 			TPRESENT oPresent;
-		} _PresentHook;
+		} _DirectXPresentHookData;
 
 		/// <summary>
 		/// The logger instance used by Artemis.
@@ -76,4 +76,4 @@ namespace Artemis {
 /// </summary>
 ARTEMIS_FRAMEWORK extern ::Artemis::midnight* const athis;
 
-#endif // !ARTEMIS_MIDNIGHT_HXX
+#endif // !__ARTEMIS_MIDNIGHT_HXX__

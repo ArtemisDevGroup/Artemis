@@ -1,5 +1,5 @@
-#ifndef ARTEMIS_API_EVENT_HXX
-#define ARTEMIS_API_EVENT_HXX
+#ifndef __ARTEMIS_API_EVENT_HXX__
+#define __ARTEMIS_API_EVENT_HXX__
 
 #include "Definitions.hxx"
 
@@ -60,4 +60,4 @@ namespace Artemis::API {
 	};
 }
 
-#endif // !ARTEMIS_API_EVENT_HXX
+#endif // !__ARTEMIS_API_EVENT_HXX__

@@ -1,10 +1,10 @@
-#ifndef ARTEMIS_API_HOOK_HXX
-#define ARTEMIS_API_HOOK_HXX
+#ifndef __ARTEMIS_API_HOOK_HXX__
+#define __ARTEMIS_API_HOOK_HXX__
 
 #include <utility>	// std::forward
 
 #include "Definitions.hxx"
-#include "Error.hxx"
+#include "Exception.hxx"
 
 #include "MinHook/MinHook.h"
 
@@ -95,4 +95,4 @@ namespace Artemis::API {
 	};
 }
 
-#endif // !__ARTEMIS_HOOK_HXX__
+#endif // !__ARTEMIS_API_HOOK_HXX__

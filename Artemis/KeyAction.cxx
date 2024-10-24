@@ -20,7 +20,7 @@ namespace Artemis {
 		__stack_record();
 
 		if (!this->_IdMap.test(_Id))
-			throw API::argument_exception("Argument contains an invalid id.", "_Id");
+			throw API::argument_exception("Argument contains an invalid id.", NAMEOF(_Id));
 
 		__stack_escape();
 

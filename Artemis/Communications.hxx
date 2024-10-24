@@ -1,4 +1,5 @@
-#ifndef ARTEMIS_COMMUNICATIONS_HXX
+#ifndef __ARTEMIS_COMMUNICATIONS_HXX__
+#define __ARTEMIS_COMMUNICATIONS_HXX__
 
 #include "Definitions.hxx"
 
@@ -65,7 +66,7 @@ namespace Artemis {
 		template<derived_message_type T>
 		inline T* get_message_body() noexcept { return (T*)this->get_message_body(); }
 
-		ARTEMIS_FRAMEWORK void set_onmessage_callback(std::function<void(message*)>&& _Callback) noexcept;
+		ARTEMIS_FRAMEWORK void set_onmessage_callback(std::function<void(message*)>&& _Callback);
 
 		message_recipent& operator=(const message_recipent&) = delete;
 		ARTEMIS_FRAMEWORK message_recipent& operator=(message_recipent&&) noexcept;
@@ -100,7 +101,7 @@ namespace Artemis {
 		ARTEMIS_FRAMEWORK void relay_messages_from_recipent(message_recipent* _Recipent);
 
 		message_dispatcher& operator=(const message_dispatcher&) = delete;
-		message_dispatcher& operator=(message_dispatcher&&) noexcept;
+		ARTEMIS_FRAMEWORK message_dispatcher& operator=(message_dispatcher&&) noexcept;
 
 		ARTEMIS_FRAMEWORK friend std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view&& _DispatcherName);
 	};
@@ -108,4 +109,4 @@ namespace Artemis {
 	ARTEMIS_FRAMEWORK std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view&& _DispatcherName);
 }
 
-#endif // !ARTEMIS_COMMUNICATIONS_HXX
+#endif // !__ARTEMIS_COMMUNICATIONS_HXX__

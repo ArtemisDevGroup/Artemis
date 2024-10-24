@@ -1,8 +1,7 @@
 #include "pch.h"
-
 #include "Console.hxx"
 
-#include "Error.hxx"
+#include "Exception.hxx"
 
 namespace Artemis::API {
 	bool	g_ConsoleIsOpen	= false;

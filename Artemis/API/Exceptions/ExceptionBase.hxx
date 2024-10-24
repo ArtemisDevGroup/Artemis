@@ -1,8 +1,7 @@
-#ifndef ARTEMIS_API_ERROR_HXX
-#define ARTEMIS_API_ERROR_HXX
+#ifndef __ARTEMIS_API_EXCEPTIONS_EXCEPTION_BASE_HXX__
+#define __ARTEMIS_API_EXCEPTIONS_EXCEPTION_BASE_HXX__
 
-#include "Definitions.hxx"
-#include "Event.hxx"
+#include "..\Definitions.hxx"
 
 #include <exception>	// std::exception
 #include <string_view>	// std::string_view
@@ -227,16 +226,16 @@ namespace Artemis::API {
 
 		ARTEMIS_API exception(std::string_view&& _Message) noexcept;
 
-		template<class T>
-			requires(std::is_base_of_v<exception, std::remove_reference_t<T>>)
-		inline exception(std::string_view&& _Message, T&& _InnerException) noexcept : std::exception(_Message.data()), _CallStackSnapshot(nullptr, 0) {
+		template<class _Ty>
+			requires(std::is_base_of_v<exception, std::remove_reference_t<_Ty>>)
+		inline exception(std::string_view&& _Message, _Ty&& _InnerException) noexcept : std::exception(_Message.data()), _CallStackSnapshot(nullptr, 0) {
 			this->_CallStackSnapshot = _InnerException._CallStackSnapshot;
-			this->_InnerException = new T(std::forward<T>(_InnerException));
+			this->_InnerException = new std::remove_reference_t<_Ty>(std::forward<_Ty>(_InnerException));
 		}
 
-		template<class T>
-			requires(std::is_base_of_v<exception, std::remove_reference_t<T>>)
-		inline exception(T&& _InnerException) noexcept : exception("An unknown Artemis exception has occured.", std::forward<T>(_InnerException)) {}
+		template<class _Ty>
+			requires(std::is_base_of_v<exception, std::remove_reference_t<_Ty>>)
+		inline exception(_Ty&& _InnerException) noexcept : exception("An unknown Artemis exception has occured.", std::forward<_Ty>(_InnerException)) {}
 
 		exception(const exception&) = delete;
 
@@ -246,9 +245,9 @@ namespace Artemis::API {
 
 		ARTEMIS_API const exception* inner() const noexcept;
 
-		template<class T>
-			requires(std::is_base_of_v<exception, T>)
-		inline const T* inner() const noexcept { return (T*)this->inner(); }
+		template<class _Ty>
+			requires(std::is_base_of_v<exception, _Ty>)
+		inline const _Ty* inner() const noexcept { return (_Ty*)this->inner(); }
 
 		ARTEMIS_API const call_stack* calls() const noexcept;
 
@@ -261,175 +260,6 @@ namespace Artemis::API {
 	/// </summary>
 	template<typename T>
 	concept derived_exception_type = std::is_base_of_v<exception, std::remove_reference_t<T>>;
-
-	class win32_exception : public exception {
-		std::string_view _Win32Function;
-		DWORD _Win32ErrorCode;
-
-		ARTEMIS_API static std::string_view win32_message(DWORD _Win32ErrorCode) noexcept;
-
-	public:
-		ARTEMIS_API win32_exception(std::string_view&& _FunctionName) noexcept;
-
-		ARTEMIS_API win32_exception(DWORD _Win32ErrorCode, std::string_view&& _FunctionName) noexcept;
-
-		template<derived_exception_type T>
-		inline win32_exception(DWORD _Win32ErrorCode, std::string_view&& _FunctionName, T&& _InnerException) noexcept : exception(win32_message(_Win32ErrorCode), _InnerException), _Win32Function(std::move(_FunctionName)), _Win32ErrorCode(_Win32ErrorCode) {}
-
-		template<derived_exception_type T>
-		inline win32_exception(std::string_view&& _FunctionName, T&& _InnerException) noexcept : win32_exception(GetLastError(), std::move(_FunctionName), std::forward<T>(_InnerException)) {}
-
-		ARTEMIS_API const std::string_view& win32_function() const noexcept;
-
-		ARTEMIS_API DWORD win32_error_code() const noexcept;
-	};
-
-	class errno_exception : public exception {
-		std::string_view _CStdFunction;
-		errno_t _ErrnoCode;
-
-		ARTEMIS_API static std::string_view errno_message(errno_t _ErrnoCode);
-
-	public:
-		ARTEMIS_API errno_exception(std::string_view&& _FunctionName) noexcept;
-
-		ARTEMIS_API errno_exception(errno_t _ErrnoCode, std::string_view&& _FunctionName) noexcept;
-
-		template<derived_exception_type T>
-		inline errno_exception(std::string_view&& _FunctionName, T&& _InnerException) : exception(errno_message(errno), std::forward<T>(_InnerException)), _ErrnoCode(errno), _CStdFunction(std::move(_FunctionName)) {}
-
-		template<derived_exception_type T>
-		inline errno_exception(errno_t _ErrnoCode, std::string_view&& _FunctionName, T&& _InnerException) : exception(errno_message(_ErrnoCode), std::forward<T>(_InnerException)), _ErrnoCode(_ErrnoCode), _CStdFunction(_FunctionName) {}
-
-		ARTEMIS_API const std::string_view& cstd_function() const noexcept;
-
-		ARTEMIS_API errno_t errno_code() const noexcept;
-	};
-
-#pragma warning(push)
-#pragma warning(disable:26495)	// Variable 'Artemis::API::seh_data::_Context' is uninitialized. Always initialize a member variable. (type.6)
-								// Variable 'Artemis::API::seh_data::_Record' is uninitialized. Always initialize a member variable. (type.6)
-
-	/// <summary>
-	/// Data from an SEH exception throw.
-	/// </summary>
-	struct seh_data {
-		/// <summary>
-		/// The exception record. This contains all information about the exception itself.
-		/// </summary>
-		EXCEPTION_RECORD _Record;
-
-		/// <summary>
-		/// The exception context. This contains the values of all registers at the time of the exception.
-		/// </summary>
-		CONTEXT _Context;
-
-		/// <summary>
-		/// A vector containing all inner exception records.
-		/// </summary>
-		std::vector<EXCEPTION_RECORD> _InnerRecords;
-	};
-
-#pragma warning(pop)
-
-	/// <summary>
-	/// Gets the specified thread's last reported SEH data instance.
-	/// </summary>
-	/// <param name="_ThreadId">- The ID of the thread to obtain data from.</param>
-	/// <returns>A pointer to the last recorded SEH data instance. If none exists for the specified thread, nullptr is returned..</returns>
-	ARTEMIS_API seh_data* get_thread_seh_data(DWORD _ThreadId) noexcept;
-
-	/// <summary>
-	/// Gets the current thread's last reported SEH data instance.
-	/// </summary>
-	/// <returns>A pointer to the last recorded SEH data instance. If none exists for the current thread, nullptr is returned.</returns>
-	ARTEMIS_API seh_data* get_thread_seh_data() noexcept;
-
-	/// <summary>
-	/// A class to be used in the __except filter statement.
-	/// </summary>
-	class seh_filter {
-		seh_data* _Data;
-
-	public:
-		/// <summary>
-		/// Constructs an SEH filter.
-		/// </summary>
-		/// <param name="_ExceptionPointers">- The pointer obtained from a call to GetExceptionInformation().</param>
-		ARTEMIS_API seh_filter(LPEXCEPTION_POINTERS _ExceptionPointers);
-
-		/// <summary>
-		/// <para>Executues the exception handler, unless the exception code matches the provided exception code.</para>
-		/// <para>If the exception handler is not executed, the exception will be propagated.</para>
-		/// </summary>
-		/// <param name="_ExceptionCode">- The exception code to pass.</param>
-		/// <returns>The appropriate exception filter value to achieve the desired result.</returns>
-		ARTEMIS_API int continue_on(DWORD _ExceptionCode) noexcept;
-
-		/// <summary>
-		/// <para>Executes the exception handler, only if the exception code matches the provided exception code.</para>
-		/// <para>If the exception handler is not executed, the exception will be propagated.</para>
-		/// </summary>
-		/// <param name="_ExceptionCode">- The exception code to handle.</param>
-		/// <returns>The appropriate exception filter value to achieve the desired result.</returns>
-		ARTEMIS_API int handle_on(DWORD _ExceptionCode) noexcept;
-
-		/// <summary>
-		/// Returns the EXCEPTION_EXECUTE_HANDLER filter value, meaning the exception handler will always be ran, regardless what the exception code may be.
-		/// </summary>
-		/// <returns>The appropriate exception filter value to achieve the desired result.</returns>
-		ARTEMIS_API int handle_always() noexcept;
-	};
-
-	class system_exception : public exception {
-		EXCEPTION_RECORD _Record;
-		CONTEXT _Context;
-		std::vector<EXCEPTION_RECORD> _InnerRecords;
-
-	public:
-		ARTEMIS_API system_exception() noexcept;
-
-		ARTEMIS_API system_exception(std::string_view&& _Message) noexcept;
-
-		template<derived_exception_type T>
-		inline system_exception(std::string_view&& _Message, T&& _InnerException) noexcept : exception(std::move(_Message), std::forward<T>(_InnerException)) {
-			seh_data* data = get_thread_seh_data();
-			this->_Record = data->_Record;
-			this->_Context = data->_Context;
-			this->_InnerRecords = data->_InnerRecords;
-		}
-
-		template<derived_exception_type T>
-		inline system_exception(T&& _InnerException) noexcept : system_exception("A system exception has occured.", std::forward<T>(_InnerException)) {}
-
-		ARTEMIS_API const EXCEPTION_RECORD* record() const noexcept;
-
-		ARTEMIS_API const CONTEXT* context() const noexcept;
-
-		ARTEMIS_API const std::vector<EXCEPTION_RECORD>& inner_records() const noexcept;
-	};
-
-	class argument_exception : public exception {
-		std::string_view _ArgumentName;
-
-	public:
-		ARTEMIS_API argument_exception(std::string_view&& _Message, std::string_view&& _ArgumentName) noexcept;
-
-		template<derived_exception_type T>
-		inline argument_exception(std::string_view&& _Message, std::string_view&& _ArgumentName, T&& _InnerException) noexcept : exception(std::move(_Message), std::forward<T>(_InnerException)), _ArgumentName(std::move(_ArgumentName)) {}
-
-		ARTEMIS_API const std::string_view& argument() const noexcept;
-	};
-
-	class invalid_state_exception : public exception {
-	public:
-		ARTEMIS_API invalid_state_exception() noexcept;
-
-		ARTEMIS_API invalid_state_exception(std::string_view&& _Message) noexcept;
-
-		template<derived_exception_type T>
-		inline invalid_state_exception(std::string_view&& _Message, T&& _InnerException) noexcept : exception(std::move(_Message), std::forward<T>(_InnerException)) {}
-	};
 }
 
-#endif // !ARTEMIS_API_ERROR_HXX
+#endif // !__ARTEMIS_API_EXCEPTIONS_EXCEPTION_BASE_HXX__

@@ -1,7 +1,5 @@
 #include "pch.h"
 
-#include "API/Error.hxx"
-
 DWORD APIENTRY ArtemisMain(HMODULE hModule);
 
 #ifndef ARTEMIS_TEST

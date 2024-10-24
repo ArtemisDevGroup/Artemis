@@ -1,5 +1,5 @@
-#ifndef ARTEMIS_API_LOGGING_HXX
-#define ARTEMIS_API_LOGGING_HXX
+#ifndef __ARTEMIS_API_LOGGING_HXX__
+#define __ARTEMIS_API_LOGGING_HXX__
 
 #include <memory>		// std::unique_ptr
 #include <iostream>		// std::ostream
@@ -105,4 +105,4 @@ namespace Artemis::API {
 	};
 }
 
-#endif // !ARTEMIS_API_LOGGING_HXX
+#endif // !__ARTEMIS_API_LOGGING_HXX__

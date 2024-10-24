@@ -1,5 +1,5 @@
-#ifndef ARTEMIS_API_CONSOLE_HXX
-#define ARTEMIS_API_CONSOLE_HXX
+#ifndef __ARTEMIS_API_CONSOLE_HXX__
+#define __ARTEMIS_API_CONSOLE_HXX__
 
 #include "Definitions.hxx"
 
@@ -163,4 +163,4 @@ namespace Artemis::API {
 	ARTEMIS_API void set_console_background_color(console_color _Color);
 }
 
-#endif // !ARTEMIS_API_CONSOLE_HXX
+#endif // !__ARTEMIS_API_CONSOLE_HXX__

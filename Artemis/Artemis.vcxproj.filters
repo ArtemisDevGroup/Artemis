@@ -72,13 +72,16 @@
     <Filter Include="Framework\Source Files\Internal">
       <UniqueIdentifier>{0182d3f5-c9bb-45e0-a2e4-eb22c573a7e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="API\Header Files\Exceptions">
+      <UniqueIdentifier>{591b2a74-3250-4606-b638-46a3598966ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="API\Source Files\Exceptions">
+      <UniqueIdentifier>{444e083a-208c-487c-8014-8b9291fbe401}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="API\Error.hxx">
-      <Filter>API\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="API\Definitions.hxx">
       <Filter>API\Header Files</Filter>
@@ -368,6 +371,33 @@
     <ClInclude Include="ExecutionContext.hxx">
       <Filter>Framework\Header Files\Internal</Filter>
     </ClInclude>
+    <ClInclude Include="API\Exception.hxx">
+      <Filter>API\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Exceptions\ExceptionBase.hxx">
+      <Filter>API\Header Files\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Exceptions\Win32Exception.hxx">
+      <Filter>API\Header Files\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Exceptions\ErrnoException.hxx">
+      <Filter>API\Header Files\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Exceptions\SystemException.hxx">
+      <Filter>API\Header Files\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Exceptions\ArgumentException.hxx">
+      <Filter>API\Header Files\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Exceptions\InvalidStateException.hxx">
+      <Filter>API\Header Files\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Threading.hxx">
+      <Filter>API\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Exceptions\LockException.hxx">
+      <Filter>API\Header Files\Exceptions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -375,9 +405,6 @@
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="API\Error.cxx">
-      <Filter>API\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Main.cxx">
       <Filter>Source Files</Filter>
@@ -450,6 +477,30 @@
     </ClCompile>
     <ClCompile Include="ExecutionContext.cxx">
       <Filter>Framework\Source Files\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Exceptions\ExceptionBase.cxx">
+      <Filter>API\Source Files\Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Exceptions\Win32Exception.cxx">
+      <Filter>API\Source Files\Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Exceptions\ErrnoException.cxx">
+      <Filter>API\Source Files\Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Exceptions\SystemException.cxx">
+      <Filter>API\Source Files\Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Exceptions\ArgumentException.cxx">
+      <Filter>API\Source Files\Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Exceptions\InvalidStateException.cxx">
+      <Filter>API\Source Files\Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Threading.cxx">
+      <Filter>API\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Exceptions\LockException.cxx">
+      <Filter>API\Source Files\Exceptions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,7 @@
 
 #include "Definitions.hxx"
 
-#include "API/Error.hxx"
+#include "API/Exception.hxx"
 #include "API/Logging.hxx"
 
 #include <string_view>		// std::string_view
