@@ -245,8 +245,6 @@ namespace Artemis::API {
 
 	template<any_type _Ty>
 	inline void read(address_t _Address, _Ty* _Return) {
-		__stack_record();
-
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 		argument_exception::throw_if_null(AE_ARGUMENT(_Return));
 
@@ -256,14 +254,10 @@ namespace Artemis::API {
 		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
 			throw access_violation_exception(_Address, sizeof(_Ty), memory_operation::read);
 		}
-
-		__stack_escape();
 	}
 
 	template<any_type _Ty>
 	inline void read(address_t _Address, _Ty* _Return, int _Count) {
-		__stack_record();
-
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 		argument_exception::throw_if_null(AE_ARGUMENT(_Return));
 		argument_exception::throw_if_less_than_or_equal(AE_ARGUMENT(_Count), 0);
@@ -275,22 +269,16 @@ namespace Artemis::API {
 		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
 			throw access_violation_exception(_Address, sizeof(_Ty) * _Count, memory_operation::read);
 		}
-
-		__stack_escape();
 	}
 
 	template<any_type _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline void read(address_t _Address, _Ty(&_Return)[_Size]) {
-		__stack_record();
-		__stack_rethrow(read(_Address, _Return, _Size));
-		__stack_escape();
+		read(_Address, _Return, _Size);
 	}
 
 	template<any_type _Ty>
 	inline void read(address_t _Address, std::vector<_Ty>* _Return, int _Count) {
-		__stack_record();
-
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 		argument_exception::throw_if_null(AE_ARGUMENT(_Return));
 		argument_exception::throw_if_less_than_or_equal(AE_ARGUMENT(_Count), 0);
@@ -305,15 +293,11 @@ namespace Artemis::API {
 		}
 
 		_Return->swap(ret);
-
-		__stack_escape();
 	}
 
 	template<any_type _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline void read(address_t _Address, std::array<_Ty, _Size>* _Return) {
-		__stack_record();
-
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 		argument_exception::throw_if_null(AE_ARGUMENT(_Return));
 
@@ -327,8 +311,6 @@ namespace Artemis::API {
 		}
 
 		_Return->swap(ret);
-
-		__stack_escape();
 	}
 
 #pragma endregion
@@ -337,42 +319,33 @@ namespace Artemis::API {
 
 	template<any_type _Ty>
 	inline _Ty read(address_t _Address) {
-		__stack_record();
-
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 
 		_Ty ret;
-		__stack_rethrow(read(_Address, &ret));
+		read(_Address, &ret);
 
-		__stack_escape();
 		return ret;
 	}
 
 	template<any_type _Ty>
 	inline std::vector<_Ty> read(address_t _Address, int _Count) {
-		__stack_record();
-
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 		argument_exception::throw_if_less_than_or_equal(AE_ARGUMENT(_Count), 0);
 
 		std::vector<_Ty> ret;
-		__stack_rethrow(read(_Address, &ret, _Count));
+		read(_Address, &ret, _Count);
 
-		__stack_escape();
 		return ret;
 	}
 
 	template<any_type _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline std::array<_Ty, _Size> read(address_t _Address) {
-		__stack_record();
-
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 
 		std::array<_Ty, _Size> ret;
-		__stack_rethrow(read(_Address, &ret));
+		read(_Address, &ret);
 
-		__stack_escape();
 		return ret;
 	}
 
@@ -390,51 +363,33 @@ namespace Artemis::API {
 
 	template<any_type _Ty>
 	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, _Ty* _Return) {
-		__stack_record();
-
-		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
-		__stack_rethrow(read(_Address, _Return));
-
-		__stack_escape();
+		get_address(_Address, _Offsets, &_Address);
+		read(_Address, _Return);
 	}
 
 	template<any_type _Ty>
 	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, _Ty* _Return, int _Count) {
-		__stack_record();
-
-		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
-		__stack_rethrow(read(_Address, _Return, _Count));
-
-		__stack_escape();
+		get_address(_Address, _Offsets, &_Address);
+		read(_Address, _Return, _Count);
 	}
 
 	template<any_type _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, _Ty(&_Return)[_Size]) {
-		__stack_record();
-		__stack_rethrow(read_ptr(_Address, _Offsets, _Return, _Size));
-		__stack_escape();
+		read_ptr(_Address, _Offsets, _Return, _Size);
 	}
 
 	template<any_type _Ty>
 	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, std::vector<_Ty>* _Return, int _Count) {
-		__stack_record();
-
-		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
-		__stack_rethrow(read(_Address, _Return, _Count));
-
-		__stack_escape();
+		get_address(_Address, _Offsets, &_Address);
+		read(_Address, _Return, _Count);
 	}
 
 	template<any_type _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, std::array<_Ty, _Size>* _Return) {
-		__stack_record();
-
-		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
-		__stack_rethrow(read(_Address, _Return));
-
-		__stack_escape();
+		get_address(_Address, _Offsets, &_Address);
+		read(_Address, _Return);
 	}
 
 #pragma endregion
@@ -443,41 +398,33 @@ namespace Artemis::API {
 
 	template<any_type _Ty>
 	inline _Ty read_ptr(address_t _Address, ptrchain_t _Offsets) {
-		__stack_record();
-
-		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
+		get_address(_Address, _Offsets, &_Address);
 
 		_Ty ret;
-		__stack_rethrow(read(_Address, &ret));
+		read(_Address, &ret);
 
-		__stack_escape();
 		return ret;
 	}
 
 	template<any_type _Ty>
 	inline std::vector<_Ty> read_ptr(address_t _Address, ptrchain_t _Offsets, int _Count) {
-		__stack_record();
 
-		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
+		get_address(_Address, _Offsets, &_Address);
 
 		std::vector<_Ty> ret;
-		__stack_rethrow(read(_Address, &ret, _Count));
+		read(_Address, &ret, _Count);
 
-		__stack_escape();
 		return ret;
 	}
 
 	template<any_type _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline std::array<_Ty, _Size> read_ptr(address_t _Address, ptrchain_t _Offsets) {
-		__stack_record();
-
-		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
+		get_address(_Address, _Offsets, &_Address);
 
 		std::array<_Ty, _Size> ret;
-		__stack_rethrow(read(_Address, &ret));
+		read(_Address, &ret);
 
-		__stack_escape();
 		return ret;
 	}
 
@@ -487,8 +434,6 @@ namespace Artemis::API {
 
 	template<any_type _Ty>
 	inline void write(address_t _Address, const _Ty& _Value) {
-		__stack_record();
-
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 
 		__try {
@@ -497,14 +442,10 @@ namespace Artemis::API {
 		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
 			throw access_violation_exception(_Address, sizeof(_Ty), memory_operation::write);
 		}
-
-		__stack_escape();
 	}
 
 	template<any_type _Ty>
 	inline void write(address_t _Address, _Ty&& _Value) {
-		__stack_record();
-
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 
 		__try {
@@ -513,14 +454,10 @@ namespace Artemis::API {
 		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
 			throw access_violation_exception(_Address, sizeof(_Ty), memory_operation::write);
 		}
-
-		__stack_escape();
 	}
 
 	template<any_type _Ty>
 	inline void write(address_t _Address, const _Ty* const _Values, int _Count) {
-		__stack_record();
-
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 		argument_exception::throw_if_null(AE_ARGUMENT(_Values));
 		argument_exception::throw_if_less_than_or_equal(AE_ARGUMENT(_Count), 0);
@@ -532,22 +469,16 @@ namespace Artemis::API {
 		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
 			throw access_violation_exception(_Address, sizeof(_Ty) * _Count, memory_operation::write);
 		}
-
-		__stack_escape();
 	}
 
 	template<any_type _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline void write(address_t _Address, const _Ty(&_Values)[_Size]) {
-		__stack_record();
-		__stack_rethrow(write(_Address, _Values, _Size));
-		__stack_escape();
+		write(_Address, _Values, _Size);
 	}
 
 	template<any_type _Ty>
 	inline void write(address_t _Address, const std::vector<_Ty>& _Values) {
-		__stack_record();
-
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 		argument_exception::throw_if_null(AE_ARGUMENT(_Values.size()));
 
@@ -558,14 +489,10 @@ namespace Artemis::API {
 		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
 			throw access_violation_exception(_Address, sizeof(_Ty) * _Values.size(), memory_operation::write);
 		}
-
-		__stack_escape();
 	}
 
 	template<any_type _Ty>
 	inline void write(address_t _Address, std::vector<_Ty>&& _Values) {
-		__stack_record();
-
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 		argument_exception::throw_if_null(AE_ARGUMENT(_Values.size()));
 
@@ -576,15 +503,11 @@ namespace Artemis::API {
 		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
 			throw access_violation_exception(_Address, sizeof(_Ty) * _Values.size(), memory_operation::write);
 		}
-
-		__stack_escape();
 	}
 
 	template<any_type _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline void write(address_t _Address, const std::array<_Ty, _Size>& _Values) {
-		__stack_record();
-
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 
 		__try {
@@ -594,8 +517,6 @@ namespace Artemis::API {
 		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
 			throw access_violation_exception(_Address, sizeof(_Ty) * _Size, memory_operation::write);
 		}
-
-		__stack_escape();
 	}
 
 #pragma endregion
@@ -604,74 +525,46 @@ namespace Artemis::API {
 
 	template<any_type _Ty>
 	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, const _Ty& _Value) {
-		__stack_record();
-
-		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
-		__stack_rethrow(write(_Address, _Value));
-
-		__stack_escape();
+		get_address(_Address, _Offsets, &_Address);
+		write(_Address, _Value);
 	}
 
 	template<any_type _Ty>
 	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, _Ty&& _Value) {
-		__stack_record();
-
-		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
-		__stack_rethrow(write(_Address, std::forward<_Ty>(_Value)));
-
-		__stack_escape();
+		get_address(_Address, _Offsets, &_Address);
+		write(_Address, std::forward<_Ty>(_Value));
 	}
 
 	template<any_type _Ty>
 	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, const _Ty* const _Values, int _Count) {
-		__stack_record();
-
-		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
-		__stack_rethrow(write(_Address, _Values, _Count));
-
-		__stack_escape();
+		get_address(_Address, _Offsets, &_Address);
+		write(_Address, _Values, _Count);
 	}
 
 	template<any_type _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, const _Ty(&_Values)[_Size]) {
-		__stack_record();
-
-		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
-		__stack_rethrow(write(_Address, _Values, _Size));
-
-		__stack_escape();
+		get_address(_Address, _Offsets, &_Address);
+		write(_Address, _Values, _Size);
 	}
 
 	template<any_type _Ty>
 	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, const std::vector<_Ty>& _Values) {
-		__stack_record();
-
-		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
-		__stack_rethrow(write(_Address, _Values));
-
-		__stack_escape();
+		get_address(_Address, _Offsets, &_Address);
+		write(_Address, _Values);
 	}
 
 	template<any_type _Ty>
 	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, std::vector<_Ty>&& _Values) {
-		__stack_record();
-
-		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
-		__stack_rethrow(write(_Address, std::move(_Values)));
-
-		__stack_escape();
+		get_address(_Address, _Offsets, &_Address);
+		write(_Address, std::move(_Values));
 	}
 
 	template<any_type _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, const std::array<_Ty, _Size>& _Values) {
-		__stack_record();
-
-		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
-		__stack_rethrow(write(_Address, _Values));
-
-		__stack_escape();
+		get_address(_Address, _Offsets, &_Address);
+		write(_Address, _Values);
 	}
 
 #pragma endregion

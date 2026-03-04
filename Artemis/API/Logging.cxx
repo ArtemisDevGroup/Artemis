@@ -56,8 +56,6 @@ namespace Artemis::API {
 		std::optional<console_color>&& _SeverityColor,
 		const std::string_view& _Message
 	) const {
-		__stack_record();
-
 		if (_Time.has_value())
 			print(std::format("[{:%T}] ", _Time.value()));
 
@@ -67,17 +65,15 @@ namespace Artemis::API {
 			print("[");
 
 		if (_SeverityColor.has_value()) {
-			__stack_rethrow(set_console_foreground_color(_SeverityColor.value()));
+			set_console_foreground_color(_SeverityColor.value());
 			print(_LogSeverity);
-			__stack_rethrow(set_console_foreground_color(console_color::gray));
+			set_console_foreground_color(console_color::gray);
 			print("] ");
 		}
 		else
 			print(std::format("{}] ", _LogSeverity));
 
 		print(std::format("{}\n", _Message));
-
-		__stack_escape();
 	}
 
 	logger::logger(nullptr_t) noexcept : _ConsoleStream(nullptr), _FileStream(nullptr), _WithTime(false), _WithColor(false) {}
@@ -116,8 +112,6 @@ namespace Artemis::API {
 	void logger::set_sender(std::string_view&& _Sender) noexcept { this->_Sender = std::move(_Sender); }
 
 	void logger::operator()(log_severity _Severity, const std::string_view& _Message) const {
-		__stack_record();
-
 		std::optional<std::chrono::system_clock::time_point> time = std::nullopt;
 		if (_WithTime)
 			time = std::chrono::system_clock::now();
@@ -134,15 +128,13 @@ namespace Artemis::API {
 		else
 			sender = std::nullopt;
 
-		__stack_rethrow(this->log(
+		this->log(
 			std::move(time),
 			std::move(sender),
 			_Severity.str(),
 			std::move(color),
 			_Message
-		));
-
-		__stack_escape();
+		);
 	}
 
 	logger_factory::logger_factory() :

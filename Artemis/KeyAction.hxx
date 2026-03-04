@@ -228,8 +228,6 @@ namespace Artemis {
 
 		template<typename _Ty>
 		inline _Ty* get(short _Id) const {
-			__stack_record();
-
 			if (!this->_IdMap.test(_Id))
 				throw API::argument_exception("Argument contains an invalid id.", NAMEOF(_Id));
 
@@ -260,7 +258,6 @@ namespace Artemis {
 				}
 			}
 
-			__stack_escape();
 			return ret;
 		}
 

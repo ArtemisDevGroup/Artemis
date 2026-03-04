@@ -38,28 +38,20 @@ namespace Artemis::API {
 #pragma region Implementations of get_address.
 	
 	void get_address(address_t _Address, ptrchain_t _Offsets, address_t* _Return) {
-		__stack_record();
-
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 		argument_exception::throw_if_null(AE_ARGUMENT(_Offsets.size()));
 		argument_exception::throw_if_null(AE_ARGUMENT(_Return));
 
-		__stack_rethrow_try();
 		for (ptroffset_t o : _Offsets) {
 			read(_Address, _Address.buffer());
 			_Address += o;
 		}
-		__stack_rethrow_catch();
 
 		*_Return = _Address;
-
-		__stack_escape();
 	}
 
 	address_t get_address(address_t _Address, ptrchain_t _Offsets) {
-		__stack_record();
-		__stack_rethrow(get_address(_Address, _Offsets, &_Address));
-		__stack_escape();
+		get_address(_Address, _Offsets, &_Address);
 		return _Address;
 	}
 

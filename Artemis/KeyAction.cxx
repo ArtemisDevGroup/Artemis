@@ -17,12 +17,8 @@ namespace Artemis {
 	}
 
 	void key_action_manager::remove(short _Id) {
-		__stack_record();
-
 		if (!this->_IdMap.test(_Id))
 			throw API::argument_exception("Argument contains an invalid id.", NAMEOF(_Id));
-
-		__stack_escape();
 
 		this->_IdMap.reset(_Id);
 

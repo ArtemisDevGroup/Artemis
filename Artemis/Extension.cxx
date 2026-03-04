@@ -23,8 +23,6 @@ namespace Artemis {
 	}
 
 	void extension::load() {
-		__stack_record();
-
 		_::__execution_context::set(this);
 
 		this->hModule = LoadLibraryA(this->_Name.data());
@@ -47,13 +45,9 @@ namespace Artemis {
 			throw API::load_exception("Function 'aext_initialize' failed.");
 
 		_::__execution_context::set(nullptr);
-
-		__stack_escape();
 	}
 
 	void extension::eject() {
-		__stack_record();
-
 		if (!this->hModule)
 			throw API::exception("No module is currently loaded for this instance.");
 
@@ -71,8 +65,6 @@ namespace Artemis {
 			throw API::load_exception("Failed to eject extension dll.", API::win32_exception("FreeLibrary"));
 
 		this->hModule = nullptr;
-
-		__stack_escape();
 	}
 
 	void extension::force_eject() noexcept {
@@ -91,25 +83,17 @@ namespace Artemis {
 	}
 
 	extension* extension_manager::get(std::string_view&& _Name) {
-		__stack_record();
-
 		for (extension* e : this->_Loaded)
 			if (e->name() == _Name)
 				return e;
 		throw API::argument_exception("No extension with provided name is loaded.", "_Name");
-
-		__stack_escape();
 	}
 
 	extension* extension_manager::get(HMODULE _ModuleHandle) {
-		__stack_record();
-
 		for (extension* e : this->_Loaded)
 			if (e->handle() == _ModuleHandle)
 				return e;
 		throw API::argument_exception("No extension with provided handle is loaded.", "_ModuleHandle");
-
-		__stack_escape();
 	}
 
 	void extension_manager::load(const std::string_view& _Name) noexcept {

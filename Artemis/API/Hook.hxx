@@ -36,13 +36,9 @@ namespace Artemis::API {
 
 	public:
 		inline hook(void* _Target, _Fn _Detour) : _Target((_Fn)_Target), _Detour(_Detour), _RemoveHook(true) {
-			__stack_record();
-
 			MH_STATUS status = MH_CreateHook(_Target, _Detour, (LPVOID*)&this->_Original);
 			if (status != MH_OK)
 				throw minhook_exception(status);
-
-			__stack_escape();
 		}
 
 		hook(const hook&) = delete;
@@ -67,23 +63,15 @@ namespace Artemis::API {
 		}
 
 		inline void enable() {
-			__stack_record();
-
 			MH_STATUS status = MH_EnableHook(this->_Target);
 			if (status != MH_OK)
 				throw minhook_exception(status);
-
-			__stack_escape();
 		}
 
 		inline void disable() {
-			__stack_record();
-
 			MH_STATUS status = MH_DisableHook(this->_Target);
 			if (status != MH_OK)
 				throw minhook_exception(status);
-
-			__stack_escape();
 		}
 
 		inline _Fn original() const noexcept { return this->_Original; }

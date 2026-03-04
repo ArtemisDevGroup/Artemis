@@ -24,8 +24,6 @@ namespace Artemis {
 	message_recipent::message_recipent() noexcept : hPipeInbound(nullptr), pMessageBody(nullptr) {}
 
 	message_recipent::message_recipent(const char* const _MessagePipeName) : pMessageBody(nullptr) {
-		__stack_record();
-
 		this->hPipeInbound = CreateFileA(
 			_MessagePipeName,
 			GENERIC_READ,
@@ -38,8 +36,6 @@ namespace Artemis {
 
 		if (this->hPipeInbound == INVALID_HANDLE_VALUE)
 			throw API::win32_exception("CreateFileA");
-
-		__stack_escape();
 	}
 
 	message_recipent::message_recipent(message_recipent&& _Other) noexcept : pMessageBody(nullptr) {
@@ -63,8 +59,6 @@ namespace Artemis {
 	}
 
 	bool message_recipent::await_message(nullptr_t) {
-		__stack_record();
-
 		if (this->pMessageBody) {
 			delete[](char*)this->pMessageBody;
 			this->pMessageBody = nullptr;
@@ -75,28 +69,19 @@ namespace Artemis {
 		if (!ReadFile(this->hPipeInbound, this->pMessageBody, MaximumMessageSize, nullptr, nullptr))
 			throw API::win32_exception("ReadFile");
 
-		__stack_escape();
 		return (bool)this->pMessageBody->type();
 	}
 
 	bool message_recipent::await_message() {
-		__stack_record();
-
 		if (this->_OnMessageCallback)
 			throw API::invalid_state_exception("Cannot await message due to an on message callback already awaiting a message for this instance.");
 
-		bool result;
-		__stack_rethrow(result = this->await_message(nullptr));
-
-		__stack_escape();
-		return result;
+		return this->await_message(nullptr);
 	}
 
 	message* message_recipent::get_message_body() noexcept { return this->pMessageBody; }
 
 	void message_recipent::set_onmessage_callback(std::function<void(message*)>&& _Callback) {
-		__stack_record();
-
 		this->_OnMessageCallback = std::move(_Callback);
 
 		try {
@@ -113,8 +98,6 @@ namespace Artemis {
 		catch (const std::exception& e) {
 			throw API::exception(e.what());
 		}
-
-		__stack_escape();
 	}
 
 	message_recipent& message_recipent::operator=(message_recipent&& _Other) noexcept {
@@ -135,8 +118,6 @@ namespace Artemis {
 	// !! ^^ DOES NOT MAKE SURE LEN OF _DispatcherName <= 128
 
 	message_dispatcher::message_dispatcher(std::string_view&& _DispatcherName, const char* const _MessagePipeName) : _DispatcherName(std::move(_DispatcherName)) {
-		__stack_record();
-
 		if (_DispatcherName.size() >= 128)
 			throw API::argument_exception("String is longer than the maximum number of allowed characters (128).", "_DispatcherName");
 
@@ -152,8 +133,6 @@ namespace Artemis {
 
 		if (this->hPipeOutbound == INVALID_HANDLE_VALUE)
 			throw API::win32_exception("CreateFileA");
-
-		__stack_escape();
 	}
 
 	message_dispatcher::message_dispatcher(message_dispatcher&& _Other) noexcept : _DispatcherName(std::move(_Other._DispatcherName)) {
@@ -172,20 +151,14 @@ namespace Artemis {
 	}
 
 	void message_dispatcher::dispatch_message(message* _Message, size_t _Size) {
-		__stack_record();
-
 		_Message->set_message_dispatcher_name(this->_DispatcherName);
 
 		if (!WriteFile(this->hPipeOutbound, _Message, (DWORD)_Size, nullptr, nullptr))
 			throw API::win32_exception("WriteFile");
-
-		__stack_escape();
 	}
 
 	void message_dispatcher::relay_messages_from_recipent(message_recipent* _Recipent) {
-		__stack_record();
-		__stack_rethrow(_Recipent->set_onmessage_callback([this](message* _Msg) { this->dispatch_message(_Msg); }));
-		__stack_escape();
+		_Recipent->set_onmessage_callback([this](message* _Msg) { this->dispatch_message(_Msg); });
 	}
 
 	message_dispatcher& message_dispatcher::operator=(message_dispatcher&& _Other) noexcept {
@@ -203,8 +176,6 @@ namespace Artemis {
 #pragma endregion
 
 	std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view&& _DispatcherName) {
-		__stack_record();
-
 		message_dispatcher* dispatcher = new message_dispatcher(std::move(_DispatcherName));
 		message_recipent* recipent = new message_recipent();
 
@@ -220,7 +191,6 @@ namespace Artemis {
 			throw API::win32_exception(dwLastError, "CreatePipe");
 		}
 
-		__stack_escape();
 		return std::make_pair(dispatcher, recipent);
 	}
 }

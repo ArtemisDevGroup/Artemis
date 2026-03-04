@@ -42,8 +42,6 @@ namespace Artemis {
 	} 
 
 	iwindow* window_manager::register_window(iwindow* _WindowInstance) {
-		__stack_record();
-
 		for (auto p : this->_WindowInstances)
 			if (p._Object->name() == _WindowInstance->name()) {
 				delete _WindowInstance;
@@ -53,13 +51,10 @@ namespace Artemis {
 		_WindowInstance->set_instance_logger(this->Log);
 		this->_WindowInstances.push_back({ _::__execution_context::get(), _WindowInstance });
 
-		__stack_escape();
 		return _WindowInstance;
 	}
 	
 	iwindow* window_manager::get_window(std::string_view&& _WindowName) {
-		__stack_record();
-
 		iwindow* ret = nullptr;
 
 		for (auto p : this->_WindowInstances)
@@ -71,18 +66,14 @@ namespace Artemis {
 		if (!ret)
 			throw API::argument_exception("No window with specified name found.", "_WindowName");
 
-		__stack_escape();
 		return ret;
 	}
 
 	void window_manager::remove_window(iwindow* _WindowInstance) {
-		__stack_record();
-
 		for (auto it = this->_WindowInstances.begin(); it != this->_WindowInstances.end(); ++it)
 			if (it->_Object == _WindowInstance) {
 				delete _WindowInstance;
 				this->_WindowInstances.erase(it);
-				__stack_escape();
 				return;
 			}
 
@@ -90,9 +81,7 @@ namespace Artemis {
 	}
 
 	void window_manager::remove_window(std::string_view&& _WindowName) {
-		__stack_record();
-		__stack_rethrow(this->remove_window(this->get_window(std::move(_WindowName))));
-		__stack_escape();
+		this->remove_window(this->get_window(std::move(_WindowName)));
 	}
 
 	void window_manager::present_all() noexcept {

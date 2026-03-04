@@ -3,10 +3,6 @@
 
 namespace Artemis::_ {
 	void __safe_exception_propagator::exec_l1cxx(const std::function<void()>& _Fn) const {
-		API::call_stack* p = API::call_stack_manager::global()->fetch();
-		assert(p != nullptr);
-		assert(!p->is_empty());
-
 		try {
 			_Fn();
 		}
@@ -22,10 +18,6 @@ namespace Artemis::_ {
 	}
 
 	void __safe_exception_propagator::exec_l1seh(const std::function<void()>& _Fn, bool _LetThroughCxxExceptions) const {
-		API::call_stack* p = API::call_stack_manager::global()->fetch();
-		assert(p != nullptr);
-		assert(!p->is_empty());
-
 		__try {
 			_Fn();
 		}
@@ -49,13 +41,13 @@ namespace Artemis::_ {
 				e.record()->ExceptionCode,
 				e.record()->ExceptionAddress,
 				e.what(),
-				e.calls()->to_string()
+				e.trace()
 			));
 		}
 		catch (const API::exception& e) {
 			Log->error(std::format("Artemis exception caught: {}\n{}",
 				e.what(),
-				e.calls()->to_string()
+				e.trace()
 			));
 		}
 		catch (const std::exception& e) {
@@ -84,8 +76,6 @@ namespace Artemis::_ {
 	}
 
 	void __safe_exception_net::exec_l2(const std::function<void()>& _Fn) const noexcept {
-		__stack_record();
-
 		this->exec_l1cxx([_Fn]() {
 			__try {
 				_Fn();
@@ -94,7 +84,5 @@ namespace Artemis::_ {
 				throw API::system_exception();
 			}
 		});
-
-		__stack_escape();
 	}
 }
