@@ -3,10 +3,10 @@
 
 #include "Definitions.hxx"
 
-#include "gcem/gcem.hpp"
+#include "gcem/gcem.hpp"	// gcem::abs, gcem::fmod, gcem::round, gcem::max, gcem::min, gcem::acos, gcem::sqrt, GCEM_PI
 
-#include <string>
-#include <format>
+#include <string>			// std::string
+#include <format>			// std::format
 
 namespace Artemis::API {
 	struct rgba;

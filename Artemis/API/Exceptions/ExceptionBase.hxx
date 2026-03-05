@@ -5,10 +5,7 @@
 
 #include <exception>	// std::exception
 #include <string_view>	// std::string_view
-#include <vector>		// std::vector
 #include <type_traits>	// std::is_base_of_v
-#include <memory>		// std::shared_ptr, std::make_shared
-#include <functional>	// std::function
 #include <stacktrace>	// std::stacktrace
 
 #include <Windows.h>	// DWORD, GetLastError()

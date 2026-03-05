@@ -3,7 +3,7 @@
 
 #include "Definitions.hxx"
 
-#include <Windows.h>	// HWND, DWORD, FOREGROUND_*
+#include <Windows.h>	// HWND, WORD, FOREGROUND_*
 
 namespace Artemis::API {
 	/// <summary>
