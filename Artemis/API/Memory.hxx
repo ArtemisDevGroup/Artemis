@@ -2,9 +2,11 @@
 #define __ARTEMIS_API_MEMORY_HXX__
 
 #include <type_traits>	// std::is_pointer_v, std::is_integral_v, std::is_same_v
+#include <concepts>
 #include <vector>		// std::vector
 #include <array>		// std::array
 #include <utility>		// std::move
+#include <ranges>		// std::ranges::range, std::ranges::iterator_t
 
 #include <Windows.h>	// VirtualQuery, MEMORY_BASIC_INFORMATION
 
@@ -13,19 +15,6 @@
 #include "Exception.hxx"
 
 namespace Artemis::API {
-#pragma region Concepts.
-	
-	template<typename T>
-	concept pointer_type = std::is_pointer_v<T>;
-
-	template<typename T>
-	concept integral_type = std::is_integral_v<T>;
-
-	template<typename T>
-	concept any_type = !std::is_same_v<T, void>;
-
-#pragma endregion
-
 #pragma region address_t, ptroffset_t, ptrchain_t
 
 	/// <summary>
@@ -63,8 +52,9 @@ namespace Artemis::API {
 		/// </summary>
 		/// <typeparam name="T">The pointer type.</typeparam>
 		/// <param name="_Value">- The instance value.</param>
-		template<pointer_type T>
-		inline address_t(T _Value) : _Value(reinterpret_cast<value_type>(_Value)) {}
+		template<typename _Ty>
+			requires (std::is_pointer_v<_Ty>)
+		inline address_t(_Ty _Value) : _Value(reinterpret_cast<value_type>(_Value)) {}
 
 		/// <summary>
 		/// Gets the current instance value.
@@ -77,8 +67,8 @@ namespace Artemis::API {
 		/// </summary>
 		/// <typeparam name="T">The pointer type.</typeparam>
 		/// <returns>A pointer of type T.</returns>
-		template<typename T>
-		inline T* ptr() const noexcept { return reinterpret_cast<T*>(this->_Value); }
+		template<typename _Ty>
+		inline _Ty* ptr() const noexcept { return reinterpret_cast<_Ty*>(this->_Value); }
 
 		/// <summary>
 		/// Gets a pointer to the current value buffer.
@@ -95,8 +85,9 @@ namespace Artemis::API {
 		/// Implicit conversion from instance value to pointer of type T.
 		/// </summary>
 		/// <typeparam name="T">The pointer type.</typeparam>
-		template<pointer_type T>
-		inline operator T () const noexcept { return reinterpret_cast<T>(this->_Value); }
+		template<typename _Ty>
+			requires (std::is_pointer_v<_Ty>)
+		inline operator _Ty () const noexcept { return reinterpret_cast<T>(this->_Value); }
 
 		/// <summary>
 		/// Implicit conversion from instance value to bool. Returns true if the instance value is not null, otherwise false.
@@ -109,8 +100,8 @@ namespace Artemis::API {
 		/// <typeparam name="T">Integral type.</typeparam>
 		/// <param name="_Right">- The value to add.</param>
 		/// <returns>A new object as the result of the operation.</returns>
-		template<integral_type T>
-		constexpr address_t operator+(T _Right) const noexcept { return address_t(this->_Value + _Right); }
+		template<std::integral _Ty>
+		constexpr address_t operator+(_Ty _Right) const noexcept { return address_t(this->_Value + _Right); }
 
 		/// <summary>
 		/// Overload of the += operator.
@@ -118,8 +109,8 @@ namespace Artemis::API {
 		/// <typeparam name="T">Integral type.</typeparam>
 		/// <param name="_Right">- The value to add to the current instance.</param>
 		/// <returns>A reference to the current instance.</returns>
-		template<integral_type T>
-		constexpr address_t& operator+=(T _Right) noexcept {
+		template<std::integral _Ty>
+		constexpr address_t& operator+=(_Ty _Right) noexcept {
 			this->_Value += _Right;
 			return *this;
 		}
@@ -130,8 +121,8 @@ namespace Artemis::API {
 		/// <typeparam name="T">Integral type.</typeparam>
 		/// <param name="_Right">- The value to subtract.</param>
 		/// <returns>A new object as the result of the operation.</returns>
-		template<integral_type T>
-		constexpr address_t operator-(T _Right) const noexcept { return address_t(this->_Value - _Right); }
+		template<std::integral _Ty>
+		constexpr address_t operator-(_Ty _Right) const noexcept { return address_t(this->_Value - _Right); }
 
 		/// <summary>
 		/// Overload of the -= operator.
@@ -139,8 +130,8 @@ namespace Artemis::API {
 		/// <typeparam name="T">Integral type.</typeparam>
 		/// <param name="_Right">- The value to subtract from the current instance.</param>
 		/// <returns>A reference to the current instance.</returns>
-		template<integral_type T>
-		constexpr address_t& operator-=(T _Right) noexcept {
+		template<std::integral _Ty>
+		constexpr address_t& operator-=(_Ty _Right) noexcept {
 			this->_Value -= _Right;
 			return *this;
 		}
@@ -243,7 +234,7 @@ namespace Artemis::API {
 
 #pragma region Overloads of read with return by pointer.
 
-	template<any_type _Ty>
+	template<typename _Ty>
 	inline void read(address_t _Address, _Ty* _Return) {
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 		argument_exception::throw_if_null(AE_ARGUMENT(_Return));
@@ -256,7 +247,7 @@ namespace Artemis::API {
 		}
 	}
 
-	template<any_type _Ty>
+	template<typename _Ty>
 	inline void read(address_t _Address, _Ty* _Return, int _Count) {
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 		argument_exception::throw_if_null(AE_ARGUMENT(_Return));
@@ -271,19 +262,19 @@ namespace Artemis::API {
 		}
 	}
 
-	template<any_type _Ty, size_t _Size>
+	template<typename _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline void read(address_t _Address, _Ty(&_Return)[_Size]) {
 		read(_Address, _Return, _Size);
 	}
 
-	template<any_type _Ty>
+	template<typename _Ty>
 	inline void read(address_t _Address, std::vector<_Ty>* _Return, int _Count) {
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 		argument_exception::throw_if_null(AE_ARGUMENT(_Return));
 		argument_exception::throw_if_less_than_or_equal(AE_ARGUMENT(_Count), 0);
 
-		std::vector<_Ty> ret;
+		std::vector<_Ty> ret(_Count);
 		__try {
 			for (int i = 0; i < _Count; i++)
 				ret.push_back(_Address.ptr<_Ty>()[i]);
@@ -295,7 +286,7 @@ namespace Artemis::API {
 		_Return->swap(ret);
 	}
 
-	template<any_type _Ty, size_t _Size>
+	template<typename _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline void read(address_t _Address, std::array<_Ty, _Size>* _Return) {
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
@@ -317,7 +308,7 @@ namespace Artemis::API {
 
 #pragma region Overloads of read with return by value.
 
-	template<any_type _Ty>
+	template<typename _Ty>
 	inline _Ty read(address_t _Address) {
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 
@@ -327,7 +318,7 @@ namespace Artemis::API {
 		return ret;
 	}
 
-	template<any_type _Ty>
+	template<typename _Ty>
 	inline std::vector<_Ty> read(address_t _Address, int _Count) {
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 		argument_exception::throw_if_less_than_or_equal(AE_ARGUMENT(_Count), 0);
@@ -338,7 +329,7 @@ namespace Artemis::API {
 		return ret;
 	}
 
-	template<any_type _Ty, size_t _Size>
+	template<typename _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline std::array<_Ty, _Size> read(address_t _Address) {
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
@@ -361,31 +352,31 @@ namespace Artemis::API {
 
 #pragma region Overloads of read_ptr with return by pointer.
 
-	template<any_type _Ty>
+	template<typename _Ty>
 	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, _Ty* _Return) {
 		get_address(_Address, _Offsets, &_Address);
 		read(_Address, _Return);
 	}
 
-	template<any_type _Ty>
+	template<typename _Ty>
 	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, _Ty* _Return, int _Count) {
 		get_address(_Address, _Offsets, &_Address);
 		read(_Address, _Return, _Count);
 	}
 
-	template<any_type _Ty, size_t _Size>
+	template<typename _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, _Ty(&_Return)[_Size]) {
 		read_ptr(_Address, _Offsets, _Return, _Size);
 	}
 
-	template<any_type _Ty>
+	template<typename _Ty>
 	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, std::vector<_Ty>* _Return, int _Count) {
 		get_address(_Address, _Offsets, &_Address);
 		read(_Address, _Return, _Count);
 	}
 
-	template<any_type _Ty, size_t _Size>
+	template<typename _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline void read_ptr(address_t _Address, ptrchain_t _Offsets, std::array<_Ty, _Size>* _Return) {
 		get_address(_Address, _Offsets, &_Address);
@@ -396,7 +387,7 @@ namespace Artemis::API {
 
 #pragma region Overloads of read_ptr with return by value.
 
-	template<any_type _Ty>
+	template<typename _Ty>
 	inline _Ty read_ptr(address_t _Address, ptrchain_t _Offsets) {
 		get_address(_Address, _Offsets, &_Address);
 
@@ -406,9 +397,8 @@ namespace Artemis::API {
 		return ret;
 	}
 
-	template<any_type _Ty>
+	template<typename _Ty>
 	inline std::vector<_Ty> read_ptr(address_t _Address, ptrchain_t _Offsets, int _Count) {
-
 		get_address(_Address, _Offsets, &_Address);
 
 		std::vector<_Ty> ret;
@@ -417,7 +407,7 @@ namespace Artemis::API {
 		return ret;
 	}
 
-	template<any_type _Ty, size_t _Size>
+	template<typename _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline std::array<_Ty, _Size> read_ptr(address_t _Address, ptrchain_t _Offsets) {
 		get_address(_Address, _Offsets, &_Address);
@@ -432,31 +422,19 @@ namespace Artemis::API {
 
 #pragma region Overloads of write.
 
-	template<any_type _Ty>
-	inline void write(address_t _Address, const _Ty& _Value) {
-		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
-
-		__try {
-			*_Address.ptr<_Ty>() = _Value;
-		}
-		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
-			throw access_violation_exception(_Address, sizeof(_Ty), memory_operation::write);
-		}
-	}
-
-	template<any_type _Ty>
+	template<typename _Ty>
 	inline void write(address_t _Address, _Ty&& _Value) {
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 
 		__try {
-			*_Address.ptr<_Ty>() = std::move(_Value);
+			*_Address.ptr<_Ty>() = std::forward<_Ty>(_Value);
 		}
 		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
 			throw access_violation_exception(_Address, sizeof(_Ty), memory_operation::write);
 		}
 	}
 
-	template<any_type _Ty>
+	template<typename _Ty>
 	inline void write(address_t _Address, const _Ty* const _Values, int _Count) {
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 		argument_exception::throw_if_null(AE_ARGUMENT(_Values));
@@ -471,51 +449,37 @@ namespace Artemis::API {
 		}
 	}
 
-	template<any_type _Ty, size_t _Size>
+	template<typename _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline void write(address_t _Address, const _Ty(&_Values)[_Size]) {
 		write(_Address, _Values, _Size);
 	}
 
-	template<any_type _Ty>
-	inline void write(address_t _Address, const std::vector<_Ty>& _Values) {
-		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
-		argument_exception::throw_if_null(AE_ARGUMENT(_Values.size()));
 
-		__try {
-			for (int i = 0; i < _Values.size(); i++)
-				_Address.ptr<_Ty>()[i] = _Values[i];
-		}
-		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
-			throw access_violation_exception(_Address, sizeof(_Ty) * _Values.size(), memory_operation::write);
-		}
+	namespace _ {
+		template<typename _Ty>
+		constexpr bool is_sized = requires (_Ty _X) {
+			{ _X.size() } -> std::integral;
+		};
 	}
 
-	template<any_type _Ty>
-	inline void write(address_t _Address, std::vector<_Ty>&& _Values) {
-		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
-		argument_exception::throw_if_null(AE_ARGUMENT(_Values.size()));
-
-		__try {
-			for (int i = 0; i < _Values.size(); i++)
-				_Address.ptr<_Ty>()[i] = std::move(_Values[i]);
-		}
-		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
-			throw access_violation_exception(_Address, sizeof(_Ty) * _Values.size(), memory_operation::write);
-		}
-	}
-
-	template<any_type _Ty, size_t _Size>
-		requires(_Size != 0)
-	inline void write(address_t _Address, const std::array<_Ty, _Size>& _Values) {
+	template<std::ranges::range _Ty>
+	inline void write(address_t _Address, _Ty&& _Range) {
 		argument_exception::throw_if_null(AE_ARGUMENT(_Address));
 
+		address_t original = _Address;
+
 		__try {
-			for (int i = 0; i < _Values.size(); i++)
-				_Address.ptr<_Ty>()[i] = _Values[i];
+			for (auto&& value : _Range) {
+				*_Address.ptr<std::remove_reference_t<decltype(value)>>() = std::forward<decltype(value)>(value);
+				_Address += sizeof(value);
+			}
 		}
 		__except (seh_filter(GetExceptionInformation()).handle_on(EXCEPTION_ACCESS_VIOLATION)) {
-			throw access_violation_exception(_Address, sizeof(_Ty) * _Size, memory_operation::write);
+			if constexpr (_::is_sized<_Ty>)
+				throw access_violation_exception(original, sizeof(_Ty) * _Range.size(), memory_operation::write);
+			else
+				throw access_violation_exception(_Address, sizeof(_Ty), memory_operation::write);
 		}
 	}
 
@@ -523,48 +487,29 @@ namespace Artemis::API {
 
 #pragma region Overloads of write_ptr.
 
-	template<any_type _Ty>
-	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, const _Ty& _Value) {
-		get_address(_Address, _Offsets, &_Address);
-		write(_Address, _Value);
-	}
-
-	template<any_type _Ty>
+	template<typename _Ty>
 	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, _Ty&& _Value) {
 		get_address(_Address, _Offsets, &_Address);
 		write(_Address, std::forward<_Ty>(_Value));
 	}
 
-	template<any_type _Ty>
+	template<typename _Ty>
 	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, const _Ty* const _Values, int _Count) {
 		get_address(_Address, _Offsets, &_Address);
 		write(_Address, _Values, _Count);
 	}
 
-	template<any_type _Ty, size_t _Size>
+	template<typename _Ty, size_t _Size>
 		requires(_Size != 0)
 	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, const _Ty(&_Values)[_Size]) {
 		get_address(_Address, _Offsets, &_Address);
 		write(_Address, _Values, _Size);
 	}
 
-	template<any_type _Ty>
-	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, const std::vector<_Ty>& _Values) {
+	template<std::ranges::range _Ty>
+	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, _Ty&& _Range) {
 		get_address(_Address, _Offsets, &_Address);
-		write(_Address, _Values);
-	}
-
-	template<any_type _Ty>
-	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, std::vector<_Ty>&& _Values) {
-		get_address(_Address, _Offsets, &_Address);
-		write(_Address, std::move(_Values));
-	}
-
-	template<any_type _Ty, size_t _Size>
-		requires(_Size != 0)
-	inline void write_ptr(address_t _Address, ptrchain_t _Offsets, const std::array<_Ty, _Size>& _Values) {
-		get_address(_Address, _Offsets, &_Address);
-		write(_Address, _Values);
+		write(_Address, std::forward<_Ty>(_Range));
 	}
 
 #pragma endregion
