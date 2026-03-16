@@ -23,6 +23,9 @@ namespace Artemis::_ {
 	struct __contextualized_object {
 		extension* _LoadedObjectOwner;
 		_Ty _Object;
+
+		inline operator _Ty& () noexcept { return this->_Object; }
+		inline operator const _Ty& () const noexcept { return this->_Object; }
 	};
 }
 

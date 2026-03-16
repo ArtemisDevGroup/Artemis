@@ -92,9 +92,6 @@ namespace Artemis::API {
 		_FileStream = make_filestream(path);
 	}
 
-	// These four functions do not follow the rule of stack record and rethrow,
-	// but this is for performance reasons.
-
 	void logger::info(std::string_view _Message) const { this->operator()(log_severity::info, _Message); }
 
 	void logger::success(std::string_view _Message) const { this->operator()(log_severity::success, _Message); }

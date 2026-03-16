@@ -58,8 +58,8 @@ namespace Artemis::API {
 	/// <summary>
 	/// A class type that implements the Artemis exception base class.
 	/// </summary>
-	template<typename T>
-	concept derived_exception_type = std::is_base_of_v<exception, std::remove_reference_t<T>>;
+	template<typename _Ty>
+	concept derived_exception_type = std::is_base_of_v<exception, std::remove_reference_t<_Ty>>;
 }
 
 #endif // !__ARTEMIS_API_EXCEPTIONS_EXCEPTION_BASE_HXX__

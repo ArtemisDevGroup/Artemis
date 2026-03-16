@@ -5,13 +5,13 @@
 
 #include <Windows.h>	// HANDLE
 
-#include <type_traits>	// std::is_base_of_v
+#include <concepts>		// std::derived_from
 #include <string_view>  // std::string_view
 #include <thread>		// std::thread
 
 namespace Artemis {
-	constexpr const char* ClientInboundPipeName = "\\\\.\\pipe\\ArtemisClientInboundMessagePipe";
-	constexpr const char* ClientOutboundPipeName = "\\\\.\\pipe\\ArtemisClientOutboundMessagePipe";
+	constexpr std::string_view ClientInboundPipeName = "\\\\.\\pipe\\ArtemisClientInboundMessagePipe";
+	constexpr std::string_view ClientOutboundPipeName = "\\\\.\\pipe\\ArtemisClientOutboundMessagePipe";
 
 	constexpr int MaximumMessageSize = 1024;
 	
@@ -34,9 +34,6 @@ namespace Artemis {
 	};
 
 	static_assert(sizeof(message) <= MaximumMessageSize, "Message struct is too large.");
-
-	template<typename T>
-	concept derived_message_type = std::is_base_of_v<message, T>;
 
 	class message_dispatcher;
 
@@ -63,8 +60,8 @@ namespace Artemis {
 
 		ARTEMIS_FRAMEWORK message* get_message_body() noexcept;
 
-		template<derived_message_type T>
-		inline T* get_message_body() noexcept { return (T*)this->get_message_body(); }
+		template<std::derived_from<message> _Ty>
+		inline _Ty* get_message_body() noexcept { return (_Ty*)this->get_message_body(); }
 
 		ARTEMIS_FRAMEWORK void set_onmessage_callback(std::function<void(message*)>&& _Callback);
 
@@ -92,10 +89,10 @@ namespace Artemis {
 
 		inline void dispatch_message(message* _Message) { this->dispatch_message(_Message, sizeof(message)); }
 
-		template<derived_message_type T>
-		inline void dispatch_message(T* _Message) {
-			static_assert(sizeof(T) <= MaximumMessageSize);
-			this->dispatch_message((message*)_Message, sizeof(T));
+		template<std::derived_from<message> _Ty>
+		inline void dispatch_message(_Ty* _Message) {
+			static_assert(sizeof(_Ty) <= MaximumMessageSize);
+			this->dispatch_message((message*)_Message, sizeof(_Ty));
 		}
 
 		ARTEMIS_FRAMEWORK void relay_messages_from_recipent(message_recipent* _Recipent);

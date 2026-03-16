@@ -9,8 +9,8 @@ namespace Artemis::API {
 	public:
 		ARTEMIS_API argument_exception(std::string_view _Message, std::string_view _ArgumentName) noexcept;
 
-		template<derived_exception_type T>
-		inline argument_exception(std::string_view _Message, std::string_view _ArgumentName, T&& _InnerException) noexcept : exception(_Message, std::forward<T>(_InnerException)), _ArgumentName(_ArgumentName) {}
+		template<derived_exception_type _Ty>
+		inline argument_exception(std::string_view _Message, std::string_view _ArgumentName, _Ty&& _InnerException) noexcept : exception(_Message, std::forward<T>(_InnerException)), _ArgumentName(_ArgumentName) {}
 
 		ARTEMIS_API std::string_view argument() const noexcept;
 

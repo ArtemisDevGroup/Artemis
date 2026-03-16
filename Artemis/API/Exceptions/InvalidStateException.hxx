@@ -9,8 +9,8 @@ namespace Artemis::API {
 
 		ARTEMIS_API invalid_state_exception(std::string_view _Message) noexcept;
 
-		template<derived_exception_type T>
-		inline invalid_state_exception(std::string_view _Message, T&& _InnerException) noexcept : exception(_Message, std::forward<T>(_InnerException)) {}
+		template<derived_exception_type _Ty>
+		inline invalid_state_exception(std::string_view _Message, _Ty&& _InnerException) noexcept : exception(_Message, std::forward<T>(_InnerException)) {}
 
 		ARTEMIS_API static void throw_on_condition_not_met(bool _Condition, std::string_view _ConditionString);
 	};

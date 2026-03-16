@@ -61,6 +61,8 @@ namespace Artemis::_ {
 	}
 
 	void __safe_exception_net::exec_l1seh(const std::function<void()>& _Fn) const noexcept {
+		assert(this->Log != nullptr);
+		
 		__try {
 			_Fn();
 		}

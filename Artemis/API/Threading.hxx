@@ -31,7 +31,7 @@ namespace Artemis::API {
         ARTEMIS_API bool is_awaiting() const noexcept;
         ARTEMIS_API void cancel_await() noexcept;
 
-        friend ARTEMIS_API resource_awaiter* make_awaiter() noexcept;
+        friend resource_awaiter* make_awaiter() noexcept;
     };
 
     ARTEMIS_API resource_awaiter* make_awaiter() noexcept;

@@ -32,7 +32,7 @@ namespace Artemis::API {
 		std::unique_ptr<std::ofstream> _FileStream;
 
 		std::function<std::optional<std::string_view>()> _FetchSenderCallback;
-		std::string_view _Sender;
+		std::string _Sender;
 
 		bool _WithTime;
 		bool _WithColor;

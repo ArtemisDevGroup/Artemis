@@ -12,11 +12,11 @@ namespace Artemis::API {
 
 		ARTEMIS_API errno_exception(errno_t _ErrnoCode, std::string_view _FunctionName) noexcept;
 
-		template<derived_exception_type T>
-		inline errno_exception(std::string_view _FunctionName, T&& _InnerException) : exception(errno_message(errno), std::forward<T>(_InnerException)), _ErrnoCode(errno), _CStdFunction(_FunctionName) {}
+		template<derived_exception_type _Ty>
+		inline errno_exception(std::string_view _FunctionName, _Ty&& _InnerException) : exception(errno_message(errno), std::forward<T>(_InnerException)), _ErrnoCode(errno), _CStdFunction(_FunctionName) {}
 
-		template<derived_exception_type T>
-		inline errno_exception(errno_t _ErrnoCode, std::string_view _FunctionName, T&& _InnerException) : exception(errno_message(_ErrnoCode), std::forward<T>(_InnerException)), _ErrnoCode(_ErrnoCode), _CStdFunction(_FunctionName) {}
+		template<derived_exception_type _Ty>
+		inline errno_exception(errno_t _ErrnoCode, std::string_view _FunctionName, _Ty&& _InnerException) : exception(errno_message(_ErrnoCode), std::forward<T>(_InnerException)), _ErrnoCode(_ErrnoCode), _CStdFunction(_FunctionName) {}
 
 		ARTEMIS_API std::string_view cstd_function() const noexcept;
 
