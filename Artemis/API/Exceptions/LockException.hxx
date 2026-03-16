@@ -5,7 +5,8 @@ namespace Artemis::API {
 	public:
 		ARTEMIS_API lock_exception(std::string_view _Message) noexcept;
 
-		template<derived_exception_type _Ty>
+		template<typename _Ty>
+			requires std::derived_from<std::remove_reference_t<_Ty>, exception>
 		lock_exception(std::string_view _Message, _Ty&& _InnerException) noexcept : exception(_Message, std::forward<_Ty>(_InnerException)) {}
 	};
 
@@ -15,7 +16,8 @@ namespace Artemis::API {
 	public:
 		ARTEMIS_API lock_access_exception() noexcept;
 
-		template<derived_exception_type _Ty>
+		template<typename _Ty>
+			requires std::derived_from<std::remove_reference_t<_Ty>, exception>
 		lock_access_exception(_Ty&& _InnerException) noexcept : lock_exception(_ExceptionMessage, std::forward<_Ty>(_InnerException)) {}
 	};
 }

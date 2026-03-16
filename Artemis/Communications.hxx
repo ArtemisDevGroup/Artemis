@@ -6,8 +6,10 @@
 #include <Windows.h>	// HANDLE
 
 #include <concepts>		// std::derived_from
+#include <string>		// std::string
 #include <string_view>  // std::string_view
 #include <thread>		// std::thread
+#include <functional>	// std::function
 
 namespace Artemis {
 	constexpr std::string_view ClientInboundPipeName = "\\\\.\\pipe\\ArtemisClientInboundMessagePipe";
@@ -61,24 +63,24 @@ namespace Artemis {
 		ARTEMIS_FRAMEWORK message* get_message_body() noexcept;
 
 		template<std::derived_from<message> _Ty>
-		inline _Ty* get_message_body() noexcept { return (_Ty*)this->get_message_body(); }
+		inline _Ty* get_message_body() noexcept { return static_cast<_Ty*>(this->get_message_body()); }
 
 		ARTEMIS_FRAMEWORK void set_onmessage_callback(std::function<void(message*)>&& _Callback);
 
 		message_recipent& operator=(const message_recipent&) = delete;
 		ARTEMIS_FRAMEWORK message_recipent& operator=(message_recipent&&) noexcept;
 
-		ARTEMIS_FRAMEWORK friend std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view _DispatcherName);
+		friend std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view _DispatcherName);
 	};
 
 	class message_dispatcher {
 		HANDLE hPipeOutbound;
-		std::string_view _DispatcherName;
+		std::string _DispatcherName;
 
 	public:
 		ARTEMIS_FRAMEWORK message_dispatcher(std::string_view _DispatcherName) noexcept;
 
-		ARTEMIS_FRAMEWORK message_dispatcher(std::string_view _DispatcherName, const char* const _MessagePipeName);
+		ARTEMIS_FRAMEWORK message_dispatcher(std::string_view _DispatcherName, std::string_view _MessagePipeName);
 
 		message_dispatcher(const message_dispatcher&) = delete;
 		ARTEMIS_FRAMEWORK message_dispatcher(message_dispatcher&&) noexcept;
@@ -87,12 +89,10 @@ namespace Artemis {
 
 		ARTEMIS_FRAMEWORK void dispatch_message(message* _Message, size_t _Size);
 
-		inline void dispatch_message(message* _Message) { this->dispatch_message(_Message, sizeof(message)); }
-
 		template<std::derived_from<message> _Ty>
 		inline void dispatch_message(_Ty* _Message) {
 			static_assert(sizeof(_Ty) <= MaximumMessageSize);
-			this->dispatch_message((message*)_Message, sizeof(_Ty));
+			this->dispatch_message(_Message, sizeof(_Ty));
 		}
 
 		ARTEMIS_FRAMEWORK void relay_messages_from_recipent(message_recipent* _Recipent);
@@ -100,7 +100,7 @@ namespace Artemis {
 		message_dispatcher& operator=(const message_dispatcher&) = delete;
 		ARTEMIS_FRAMEWORK message_dispatcher& operator=(message_dispatcher&&) noexcept;
 
-		ARTEMIS_FRAMEWORK friend std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view _DispatcherName);
+		friend std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view _DispatcherName);
 	};
 
 	ARTEMIS_FRAMEWORK std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view _DispatcherName);

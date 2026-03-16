@@ -9,27 +9,52 @@ namespace Artemis::API {
 	public:
 		ARTEMIS_API argument_exception(std::string_view _Message, std::string_view _ArgumentName) noexcept;
 
-		template<derived_exception_type _Ty>
-		inline argument_exception(std::string_view _Message, std::string_view _ArgumentName, _Ty&& _InnerException) noexcept : exception(_Message, std::forward<T>(_InnerException)), _ArgumentName(_ArgumentName) {}
+		template<typename _Ty>
+			requires std::derived_from<std::remove_reference_t<_Ty>, exception>
+		inline argument_exception(std::string_view _Message, std::string_view _ArgumentName, _Ty&& _InnerException) noexcept : exception(_Message, std::forward<_Ty>(_InnerException)), _ArgumentName(_ArgumentName) {}
 
 		ARTEMIS_API std::string_view argument() const noexcept;
 
-		template<typename _Ty> requires requires (_Ty x) { (bool)x; }
+		template<std::convertible_to<bool> _Ty>
 		static constexpr void throw_if_null(const _Ty& _Value, std::string_view _Name) {
 			if (!_Value)
 				throw argument_exception("Argument is null.", _Name);
 		}
 
-		template<typename _Ty> requires requires (_Ty x, _Ty y) { x == y; }
-		static constexpr void throw_if_equal(const _Ty& _Value, std::string_view _Name, _Ty&& _InvalidValue) {
+		template<std::equality_comparable _Ty>
+		static constexpr void throw_if_equal(const _Ty& _Value, std::string_view _Name, const _Ty& _InvalidValue) {
 			if (_Value == _InvalidValue)
 				throw argument_exception("Argument is invalid.", _Name);
 		}
 
-		template<typename _Ty> requires requires (_Ty x, _Ty y) { x <= y; }
-		static constexpr void throw_if_less_than_or_equal(const _Ty& _Value, std::string_view _Name, _Ty&& _InvalidValue) {
-			if (_Value <= _InvalidValue)
-				throw argument_exception("Argument is invalid.", std::move(_Name));
+		template<std::equality_comparable _Ty>
+		static constexpr void throw_if_not_equal(const _Ty& _Value, std::string_view _Name, const _Ty& _ValidValue) {
+			if (_Value != _ValidValue)
+				throw argument_exception("Argument is invalid.", _Name);
+		}
+
+		template<std::totally_ordered _Ty>
+		static constexpr void throw_if_less_than(const _Ty& _Value, std::string_view _Name, const _Ty& _ComparableValue) {
+			if (_Value < _ComparableValue)
+				throw argument_exception("Argument is invalid.", _Name);
+		}
+
+		template<std::totally_ordered _Ty>
+		static constexpr void throw_if_less_than_or_equal(const _Ty& _Value, std::string_view _Name, const _Ty& _ComparableValue) {
+			if (_Value <= _ComparableValue)
+				throw argument_exception("Argument is invalid.", _Name);
+		}
+
+		template<std::totally_ordered _Ty>
+		static constexpr void throw_if_more_than(const _Ty& _Value, std::string_view _Name, const _Ty& _ComparableValue) {
+			if (_Value > _ComparableValue)
+				throw argument_exception("Argument is invalid.", _Name);
+		}
+
+		template<std::totally_ordered _Ty>
+		static constexpr void throw_if_more_than_or_equal(const _Ty& _Value, std::string_view _Name, const _Ty& _ComparableValue) {
+			if (_Value >= _ComparableValue)
+				throw argument_exception("Argument is invalid.", _Name);
 		}
 	};
 }

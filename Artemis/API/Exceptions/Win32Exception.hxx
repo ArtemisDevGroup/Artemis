@@ -12,11 +12,13 @@ namespace Artemis::API {
 
 		ARTEMIS_API win32_exception(DWORD _Win32ErrorCode, std::string_view _FunctionName) noexcept;
 
-		template<derived_exception_type _Ty>
-		inline win32_exception(DWORD _Win32ErrorCode, std::string_view _FunctionName, _Ty&& _InnerException) noexcept : exception(win32_message(_Win32ErrorCode), _InnerException), _Win32Function(_FunctionName), _Win32ErrorCode(_Win32ErrorCode) {}
+		template<typename _Ty>
+			requires std::derived_from<std::remove_reference_t<_Ty>, exception>
+		inline win32_exception(DWORD _Win32ErrorCode, std::string_view _FunctionName, _Ty&& _InnerException) noexcept : exception(win32_message(_Win32ErrorCode), std::forward<_Ty>(_InnerException)), _Win32Function(_FunctionName), _Win32ErrorCode(_Win32ErrorCode) {}
 
-		template<derived_exception_type _Ty>
-		inline win32_exception(std::string_view _FunctionName, _Ty&& _InnerException) noexcept : win32_exception(GetLastError(), _FunctionName, std::forward<T>(_InnerException)) {}
+		template<typename _Ty>
+			requires std::derived_from<std::remove_reference_t<_Ty>, exception>
+		inline win32_exception(std::string_view _FunctionName, _Ty&& _InnerException) noexcept : win32_exception(GetLastError(), _FunctionName, std::forward<_Ty>(_InnerException)) {}
 
 		ARTEMIS_API std::string_view win32_function() const noexcept;
 

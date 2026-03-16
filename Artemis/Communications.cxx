@@ -117,12 +117,12 @@ namespace Artemis {
 	message_dispatcher::message_dispatcher(std::string_view _DispatcherName) noexcept : hPipeOutbound(nullptr), _DispatcherName(_DispatcherName) {}
 	// !! ^^ DOES NOT MAKE SURE LEN OF _DispatcherName <= 128
 
-	message_dispatcher::message_dispatcher(std::string_view _DispatcherName, const char* const _MessagePipeName) : _DispatcherName(_DispatcherName) {
+	message_dispatcher::message_dispatcher(std::string_view _DispatcherName, std::string_view _MessagePipeName) : _DispatcherName(_DispatcherName) {
 		if (_DispatcherName.size() >= 128)
 			throw API::argument_exception("String is longer than the maximum number of allowed characters (128).", "_DispatcherName");
 
 		this->hPipeOutbound = CreateFileA(
-			_MessagePipeName,
+			_MessagePipeName.data(),
 			GENERIC_WRITE,
 			FILE_SHARE_READ | FILE_SHARE_WRITE,
 			nullptr,
