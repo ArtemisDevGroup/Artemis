@@ -8,7 +8,7 @@ namespace Artemis {
 
 #pragma region Class iwindow
 
-	iwindow::iwindow(std::string_view&& _WindowName) noexcept : IsWindowVisible(true), _WindowName(std::move(_WindowName)) {}
+	iwindow::iwindow(std::string_view _WindowName) noexcept : IsWindowVisible(true), _WindowName(_WindowName) {}
 
 	void iwindow::present() noexcept {
 		if (!HideAllWindows && this->IsWindowVisible) {
@@ -21,7 +21,7 @@ namespace Artemis {
 		}
 	}
 
-	const std::string_view& iwindow::name() const noexcept { return this->_WindowName; }
+	std::string_view iwindow::name() const noexcept { return this->_WindowName; }
 
 #pragma endregion
 
@@ -54,7 +54,7 @@ namespace Artemis {
 		return _WindowInstance;
 	}
 	
-	iwindow* window_manager::get_window(std::string_view&& _WindowName) {
+	iwindow* window_manager::get_window(std::string_view _WindowName) {
 		iwindow* ret = nullptr;
 
 		for (auto p : this->_WindowInstances)
@@ -80,8 +80,8 @@ namespace Artemis {
 		throw API::argument_exception("Instance does not exist as a registered window.", "_WindowInstance");
 	}
 
-	void window_manager::remove_window(std::string_view&& _WindowName) {
-		this->remove_window(this->get_window(std::move(_WindowName)));
+	void window_manager::remove_window(std::string_view _WindowName) {
+		this->remove_window(this->get_window(_WindowName));
 	}
 
 	void window_manager::present_all() noexcept {

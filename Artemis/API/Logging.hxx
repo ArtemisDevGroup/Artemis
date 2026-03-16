@@ -37,19 +37,19 @@ namespace Artemis::API {
 		bool _WithTime;
 		bool _WithColor;
 
-		ARTEMIS_API static std::unique_ptr<std::ofstream> make_filestream(const std::string_view& _FileName);
+		ARTEMIS_API static std::unique_ptr<std::ofstream> make_filestream(std::string_view _FileName);
 
 		logger(nullptr_t) noexcept;
 
 	protected:
-		ARTEMIS_API void print(const std::string_view& _Message) const noexcept;
+		ARTEMIS_API void print(std::string_view _Message) const noexcept;
 
 		ARTEMIS_API virtual void log(
 			std::optional<std::chrono::system_clock::time_point>&& _Time,
 			std::optional<std::string_view>&& _Sender,
-			std::string_view&& _LogSeverity,
+			std::string_view _LogSeverity,
 			std::optional<console_color>&& _SeverityColor,
-			const std::string_view& _Message
+			std::string_view _Message
 		) const;
 
 	public:
@@ -57,18 +57,18 @@ namespace Artemis::API {
 		logger(const logger&)				= delete;
 		logger(logger&&)					= default;
 
-		ARTEMIS_API void info(const std::string_view& _Message) const;
-		ARTEMIS_API void success(const std::string_view& _Message) const;
-		ARTEMIS_API void warning(const std::string_view& _Message) const;
-		ARTEMIS_API void error(const std::string_view& _Message) const;
+		ARTEMIS_API void info(std::string_view _Message) const;
+		ARTEMIS_API void success(std::string_view _Message) const;
+		ARTEMIS_API void warning(std::string_view _Message) const;
+		ARTEMIS_API void error(std::string_view _Message) const;
 
 		ARTEMIS_API void set_sender_fetch_callback(std::function<std::optional<std::string_view>()> _Callback) noexcept;
 		ARTEMIS_API void reset_sender_fetch_callback() noexcept;
 		ARTEMIS_API bool has_sender_fetch_callback() noexcept;
 
-		ARTEMIS_API void set_sender(std::string_view&& _Sender) noexcept;
+		ARTEMIS_API void set_sender(std::string_view _Sender) noexcept;
 
-		ARTEMIS_API void operator()(log_severity _Severity, const std::string_view& _Message) const;
+		ARTEMIS_API void operator()(log_severity _Severity, std::string_view _Message) const;
 
 		logger& operator=(const logger&)	= delete;
 		logger& operator=(logger&&)			= default;
@@ -89,7 +89,7 @@ namespace Artemis::API {
 		ARTEMIS_API logger_factory();
 
 		ARTEMIS_API logger_factory& with_console_logging();
-		ARTEMIS_API logger_factory& with_file_logging(const std::string_view& _FileName);
+		ARTEMIS_API logger_factory& with_file_logging(std::string_view _FileName);
 		ARTEMIS_API logger_factory& with_time();
 		ARTEMIS_API logger_factory& with_color();
 

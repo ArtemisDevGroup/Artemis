@@ -8,7 +8,7 @@ namespace Artemis {
 
 	message::message(message_type _MessageType) noexcept : _MessageType(_MessageType), _DispatcherName() {}
 
-	void message::set_message_dispatcher_name(const std::string_view& _DispatcherName) noexcept {
+	void message::set_message_dispatcher_name(std::string_view _DispatcherName) noexcept {
 		assert(_DispatcherName.size() < sizeof(this->_DispatcherName));
 
 		strcpy_s(this->_DispatcherName, sizeof(this->_DispatcherName), _DispatcherName.data());
@@ -114,10 +114,10 @@ namespace Artemis {
 
 #pragma region Class message_dispatcher
 	
-	message_dispatcher::message_dispatcher(std::string_view&& _DispatcherName) noexcept : hPipeOutbound(nullptr), _DispatcherName(std::move(_DispatcherName)) {}
+	message_dispatcher::message_dispatcher(std::string_view _DispatcherName) noexcept : hPipeOutbound(nullptr), _DispatcherName(_DispatcherName) {}
 	// !! ^^ DOES NOT MAKE SURE LEN OF _DispatcherName <= 128
 
-	message_dispatcher::message_dispatcher(std::string_view&& _DispatcherName, const char* const _MessagePipeName) : _DispatcherName(std::move(_DispatcherName)) {
+	message_dispatcher::message_dispatcher(std::string_view _DispatcherName, const char* const _MessagePipeName) : _DispatcherName(_DispatcherName) {
 		if (_DispatcherName.size() >= 128)
 			throw API::argument_exception("String is longer than the maximum number of allowed characters (128).", "_DispatcherName");
 
@@ -175,8 +175,8 @@ namespace Artemis {
 
 #pragma endregion
 
-	std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view&& _DispatcherName) {
-		message_dispatcher* dispatcher = new message_dispatcher(std::move(_DispatcherName));
+	std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view _DispatcherName) {
+		message_dispatcher* dispatcher = new message_dispatcher(_DispatcherName);
 		message_recipent* recipent = new message_recipent();
 
 		if (!CreatePipe(

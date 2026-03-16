@@ -55,7 +55,7 @@ namespace Artemis::API {
 		this->_InnerRecords = data->_InnerRecords;
 	}
 
-	system_exception::system_exception(std::string_view&& _Message) noexcept : exception(std::move(_Message)) {
+	system_exception::system_exception(std::string_view _Message) noexcept : exception(_Message) {
 		seh_data* data = get_thread_seh_data();
 		this->_Record = data->_Record;
 		this->_Context = data->_Context;

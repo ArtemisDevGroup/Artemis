@@ -5,24 +5,13 @@
 #include <queue>
 #include <thread>
 #include <chrono>
+#include <concepts>
 
 #include "Definitions.hxx"
 
 #include "Exception.hxx"
 
 namespace Artemis::API {
-    template<typename _Ty>
-    concept is_copyable = requires (_Ty _A, _Ty _B) {
-        _A = _B;
-        _Ty(_B);
-    };
-
-    template<typename _Ty>
-    concept is_movable = requires (_Ty _A, _Ty _B) {
-        _A = std::move(_B);
-        _Ty(std::move(_B));
-    };
-
     template<typename _Ty, typename... _Args>
     concept is_constructible_with = requires (_Args... _A) { _Ty(_A...); };
 
@@ -60,10 +49,10 @@ namespace Artemis::API {
         template<typename... _TyArgs, typename = typename std::enable_if<is_constructible_with<_Ty, _TyArgs...>>::type>
         inline thread_safe(_TyArgs... _Args) : _Data(_Ty(_Args...)), _LockHolder(), _ResourceQueue() {}
 
-        template<typename = typename std::enable_if<is_copyable<_Ty>>::type>
+        template<typename = typename std::enable_if<std::copyable<_Ty>>::type>
         inline thread_safe(const _Ty& _DataFrom) noexcept : _Data(_DataFrom), _LockHolder(), _ResourceQueue() {}
 
-        template<typename = typename std::enable_if<is_movable<_Ty>>::type>
+        template<typename = typename std::enable_if<std::movable<_Ty>>::type>
         inline thread_safe(_Ty&& _DataFrom) noexcept : _Data(std::move(_DataFrom)), _LockHolder(), _ResourceQueue() {}
 
         inline ~thread_safe() noexcept {

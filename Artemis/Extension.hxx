@@ -15,10 +15,10 @@ namespace Artemis {
 	namespace API {
 		class load_exception : public exception {
 		public:
-			ARTEMIS_API load_exception(std::string_view&& _Message) noexcept;
+			ARTEMIS_API load_exception(std::string_view _Message) noexcept;
 
 			template<derived_exception_type T>
-			inline load_exception(std::string_view&& _Message, T&& _InnerException) noexcept : exception(std::move(_Message), std::forward<T>(_InnerException)) {}
+			inline load_exception(std::string_view _Message, T&& _InnerException) noexcept : exception(_Message, std::forward<T>(_InnerException)) {}
 		};
 	}
 
@@ -30,7 +30,7 @@ namespace Artemis {
 		HMODULE hModule;
 
 	public:
-		constexpr extension(const std::string_view& _Name) : _Name(_Name), hModule(nullptr) {}
+		constexpr extension(std::string_view _Name) : _Name(_Name), hModule(nullptr) {}
 
 		extension(const extension&) = delete;
 
@@ -48,7 +48,7 @@ namespace Artemis {
 		ARTEMIS_FRAMEWORK void eject();
 		ARTEMIS_FRAMEWORK void force_eject() noexcept;
 
-		constexpr const std::string_view& name() const noexcept { return this->_Name; }
+		constexpr std::string_view name() const noexcept { return this->_Name; }
 		constexpr HMODULE handle() const noexcept { return this->hModule; }
 
 		extension& operator=(const extension&) = delete;
@@ -79,11 +79,11 @@ namespace Artemis {
 
 		ARTEMIS_FRAMEWORK ~extension_manager() noexcept;
 
-		ARTEMIS_FRAMEWORK extension* get(std::string_view&& _Name);
+		ARTEMIS_FRAMEWORK extension* get(std::string_view _Name);
 		ARTEMIS_FRAMEWORK extension* get(HMODULE _ModuleHandle);
 
-		ARTEMIS_FRAMEWORK void load(const std::string_view& _Name) noexcept;
-		ARTEMIS_FRAMEWORK void eject(const std::string_view& _Name);
+		ARTEMIS_FRAMEWORK void load(std::string_view _Name) noexcept;
+		ARTEMIS_FRAMEWORK void eject(std::string_view _Name);
 
 		ARTEMIS_FRAMEWORK void eject_all() noexcept;
 

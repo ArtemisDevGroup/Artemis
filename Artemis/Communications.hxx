@@ -27,7 +27,7 @@ namespace Artemis {
 	public:
 		ARTEMIS_FRAMEWORK message(message_type _MessageType) noexcept;
 
-		ARTEMIS_FRAMEWORK void set_message_dispatcher_name(const std::string_view& _DispatcherName) noexcept;
+		ARTEMIS_FRAMEWORK void set_message_dispatcher_name(std::string_view _DispatcherName) noexcept;
 
 		ARTEMIS_FRAMEWORK message_type type() const noexcept;
 		ARTEMIS_FRAMEWORK const char* const dispatcher_name() const noexcept;
@@ -71,7 +71,7 @@ namespace Artemis {
 		message_recipent& operator=(const message_recipent&) = delete;
 		ARTEMIS_FRAMEWORK message_recipent& operator=(message_recipent&&) noexcept;
 
-		ARTEMIS_FRAMEWORK friend std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view&& _DispatcherName);
+		ARTEMIS_FRAMEWORK friend std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view _DispatcherName);
 	};
 
 	class message_dispatcher {
@@ -79,9 +79,9 @@ namespace Artemis {
 		std::string_view _DispatcherName;
 
 	public:
-		ARTEMIS_FRAMEWORK message_dispatcher(std::string_view&& _DispatcherName) noexcept;
+		ARTEMIS_FRAMEWORK message_dispatcher(std::string_view _DispatcherName) noexcept;
 
-		ARTEMIS_FRAMEWORK message_dispatcher(std::string_view&& _DispatcherName, const char* const _MessagePipeName);
+		ARTEMIS_FRAMEWORK message_dispatcher(std::string_view _DispatcherName, const char* const _MessagePipeName);
 
 		message_dispatcher(const message_dispatcher&) = delete;
 		ARTEMIS_FRAMEWORK message_dispatcher(message_dispatcher&&) noexcept;
@@ -103,10 +103,10 @@ namespace Artemis {
 		message_dispatcher& operator=(const message_dispatcher&) = delete;
 		ARTEMIS_FRAMEWORK message_dispatcher& operator=(message_dispatcher&&) noexcept;
 
-		ARTEMIS_FRAMEWORK friend std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view&& _DispatcherName);
+		ARTEMIS_FRAMEWORK friend std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view _DispatcherName);
 	};
 
-	ARTEMIS_FRAMEWORK std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view&& _DispatcherName);
+	ARTEMIS_FRAMEWORK std::pair<message_dispatcher*, message_recipent*> create_anonymous_pipeline(std::string_view _DispatcherName);
 }
 
 #endif // !__ARTEMIS_COMMUNICATIONS_HXX__

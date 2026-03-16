@@ -6,7 +6,7 @@
 
 namespace Artemis {
 	namespace API {
-		load_exception::load_exception(std::string_view&& _Message) noexcept : exception(std::move(_Message)) {}
+		load_exception::load_exception(std::string_view _Message) noexcept : exception(_Message) {}
 	}
 
 	extension::~extension() noexcept {
@@ -82,7 +82,7 @@ namespace Artemis {
 		this->_Loaded.clear();
 	}
 
-	extension* extension_manager::get(std::string_view&& _Name) {
+	extension* extension_manager::get(std::string_view _Name) {
 		for (extension* e : this->_Loaded)
 			if (e->name() == _Name)
 				return e;
@@ -96,7 +96,7 @@ namespace Artemis {
 		throw API::argument_exception("No extension with provided handle is loaded.", "_ModuleHandle");
 	}
 
-	void extension_manager::load(const std::string_view& _Name) noexcept {
+	void extension_manager::load(std::string_view _Name) noexcept {
 		this->Log->info(std::format("Attempting to load extension '{}'", _Name));
 
 		extension* ex = new extension(_Name);
@@ -141,7 +141,7 @@ namespace Artemis {
 		this->_Loaded.erase(_Iterator);
 	}
 
-	void extension_manager::eject(const std::string_view& _Name) {
+	void extension_manager::eject(std::string_view _Name) {
 		for (auto it = this->_Loaded.begin(); it != this->_Loaded.end(); ++it)
 			if ((*it)->name() == _Name) {
 				this->eject(it);

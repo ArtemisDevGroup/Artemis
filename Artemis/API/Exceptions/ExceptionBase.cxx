@@ -15,7 +15,7 @@ namespace Artemis::API {
 			_IsNextThrowTraceDisabled = false;
 	}
 
-	exception::exception(std::string_view&& _Message) noexcept : std::exception(_Message.data()), _Trace(), _InnerException(nullptr) {
+	exception::exception(std::string_view _Message) noexcept : std::exception(_Message.data()), _Trace(), _InnerException(nullptr) {
 		if (!_IsNextThrowTraceDisabled)
 			_Trace = std::stacktrace::current();
 		else

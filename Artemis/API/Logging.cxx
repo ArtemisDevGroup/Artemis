@@ -35,14 +35,14 @@ namespace Artemis::API {
 		}
 	}
 
-	std::unique_ptr<std::ofstream> logger::make_filestream(const std::string_view& _FileName) {
+	std::unique_ptr<std::ofstream> logger::make_filestream(std::string_view _FileName) {
 		std::unique_ptr<std::ofstream> file = std::make_unique<std::ofstream>();
 		file->rdbuf()->pubsetbuf(nullptr, 0); // Disable buffering to not lose log data in case of game crash.
 		file->open(_FileName.data(), std::ios::out | std::ios::trunc);
 		return file;
 	}
 
-	void logger::print(const std::string_view& _Message) const noexcept {
+	void logger::print(std::string_view _Message) const noexcept {
 		if (_ConsoleStream)
 			(*_ConsoleStream) << _Message;
 		if (_FileStream)
@@ -52,9 +52,9 @@ namespace Artemis::API {
 	void logger::log(
 		std::optional<std::chrono::system_clock::time_point>&& _Time,
 		std::optional<std::string_view>&& _Sender,
-		std::string_view&& _LogSeverity,
+		std::string_view _LogSeverity,
 		std::optional<console_color>&& _SeverityColor,
-		const std::string_view& _Message
+		std::string_view _Message
 	) const {
 		if (_Time.has_value())
 			print(std::format("[{:%T}] ", _Time.value()));
@@ -95,13 +95,13 @@ namespace Artemis::API {
 	// These four functions do not follow the rule of stack record and rethrow,
 	// but this is for performance reasons.
 
-	void logger::info(const std::string_view& _Message) const { this->operator()(log_severity::info, _Message); }
+	void logger::info(std::string_view _Message) const { this->operator()(log_severity::info, _Message); }
 
-	void logger::success(const std::string_view& _Message) const { this->operator()(log_severity::success, _Message); }
+	void logger::success(std::string_view _Message) const { this->operator()(log_severity::success, _Message); }
 
-	void logger::warning(const std::string_view& _Message) const { this->operator()(log_severity::warning, _Message); }
+	void logger::warning(std::string_view _Message) const { this->operator()(log_severity::warning, _Message); }
 
-	void logger::error(const std::string_view& _Message) const { this->operator()(log_severity::error, _Message); }
+	void logger::error(std::string_view _Message) const { this->operator()(log_severity::error, _Message); }
 
 	void logger::set_sender_fetch_callback(std::function<std::optional<std::string_view>()> _Callback) noexcept { this->_FetchSenderCallback = _Callback; }
 
@@ -109,9 +109,9 @@ namespace Artemis::API {
 
 	bool logger::has_sender_fetch_callback() noexcept { return this->_FetchSenderCallback.operator bool(); }
 
-	void logger::set_sender(std::string_view&& _Sender) noexcept { this->_Sender = std::move(_Sender); }
+	void logger::set_sender(std::string_view _Sender) noexcept { this->_Sender = _Sender; }
 
-	void logger::operator()(log_severity _Severity, const std::string_view& _Message) const {
+	void logger::operator()(log_severity _Severity, std::string_view _Message) const {
 		std::optional<std::chrono::system_clock::time_point> time = std::nullopt;
 		if (_WithTime)
 			time = std::chrono::system_clock::now();
@@ -145,7 +145,7 @@ namespace Artemis::API {
 		_WithTime(false) {}
 
 	logger_factory& logger_factory::with_console_logging() { this->_LogToConsole = true; return *this; }
-	logger_factory& logger_factory::with_file_logging(const std::string_view& _FileName) { this->_LogToFile = true; this->_FileName = _FileName; return *this; }
+	logger_factory& logger_factory::with_file_logging(std::string_view _FileName) { this->_LogToFile = true; this->_FileName = _FileName; return *this; }
 	logger_factory& logger_factory::with_time() { this->_WithTime = true; return *this; }
 	logger_factory& logger_factory::with_color() { this->_WithColor = true; return *this; }
 

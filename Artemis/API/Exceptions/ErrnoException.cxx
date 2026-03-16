@@ -14,11 +14,11 @@ namespace Artemis::API {
 #pragma warning(pop)
 	}
 
-	errno_exception::errno_exception(std::string_view&& _FunctionName) noexcept : exception(errno_message(errno)), _ErrnoCode(errno), _CStdFunction(std::move(_FunctionName)) {}
+	errno_exception::errno_exception(std::string_view _FunctionName) noexcept : exception(errno_message(errno)), _ErrnoCode(errno), _CStdFunction(_FunctionName) {}
 
-	errno_exception::errno_exception(errno_t _ErrnoCode, std::string_view&& _FunctionName) noexcept : exception(errno_message(_ErrnoCode)), _ErrnoCode(_ErrnoCode), _CStdFunction(std::move(_FunctionName)) {}
+	errno_exception::errno_exception(errno_t _ErrnoCode, std::string_view _FunctionName) noexcept : exception(errno_message(_ErrnoCode)), _ErrnoCode(_ErrnoCode), _CStdFunction(_FunctionName) {}
 
-	const std::string_view& errno_exception::cstd_function() const noexcept { return this->_CStdFunction; }
+	std::string_view errno_exception::cstd_function() const noexcept { return this->_CStdFunction; }
 
 	errno_t errno_exception::errno_code() const noexcept { return this->_ErrnoCode; }
 }

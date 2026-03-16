@@ -39,7 +39,7 @@ namespace Artemis {
 		/// Initializes a new window instance.
 		/// </summary>
 		/// <param name="_WindowName">- The name of the window.</param>
-		ARTEMIS_FRAMEWORK iwindow(std::string_view&& _WindowName) noexcept;
+		ARTEMIS_FRAMEWORK iwindow(std::string_view _WindowName) noexcept;
 
 		/// <summary>
 		/// Presents the window. Is only intended to be called by the DirectX hook.
@@ -50,7 +50,7 @@ namespace Artemis {
 		/// Gets the name of the window.
 		/// </summary>
 		/// <returns>The window name.</returns>
-		ARTEMIS_FRAMEWORK const std::string_view& name() const noexcept;
+		ARTEMIS_FRAMEWORK std::string_view name() const noexcept;
 	};
 
 	/// <summary>
@@ -100,7 +100,7 @@ namespace Artemis {
 		/// <param name="_WindowName">The window name. Note that the window name is case sensitive.</param>
 		/// <returns>The found window instance pointer.</returns>
 		/// <exception cref="argument_exception"/>
-		ARTEMIS_FRAMEWORK iwindow* get_window(std::string_view&& _WindowName);
+		ARTEMIS_FRAMEWORK iwindow* get_window(std::string_view _WindowName);
 		
 		/// <summary>
 		/// Gets a pointer from a window instance from the window name.
@@ -110,8 +110,8 @@ namespace Artemis {
 		/// <returns>The found window instance pointer.</returns>
 		/// <exception cref="argument_exception"/>
 		template<derived_window_type _WndTy>
-		inline _WndTy* get_window(std::string_view&& _WindowName) {
-			return (_WndTy*)this->get_window(std::move(_WindowName));
+		inline _WndTy* get_window(std::string_view _WindowName) {
+			return (_WndTy*)this->get_window(_WindowName);
 		}
 
 		/// <summary>
@@ -126,7 +126,7 @@ namespace Artemis {
 		/// </summary>
 		/// <param name="_WindowName">- The name of the window to remove.</param>
 		/// <exception cref="argument_exception"/>
-		ARTEMIS_FRAMEWORK void remove_window(std::string_view&& _WindowName);
+		ARTEMIS_FRAMEWORK void remove_window(std::string_view _WindowName);
 
 		/// <summary>
 		/// Presents all registered windows. Is only intended to be called by the DirectX hook.

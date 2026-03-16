@@ -3,10 +3,10 @@
 namespace Artemis::API {
 	class lock_exception : public exception {
 	public:
-		ARTEMIS_API lock_exception(std::string_view&& _Message) noexcept;
+		ARTEMIS_API lock_exception(std::string_view _Message) noexcept;
 
 		template<derived_exception_type _Ty>
-		lock_exception(std::string_view&& _Message, _Ty&& _InnerException) noexcept : exception(std::move(_Message), std::forward<_Ty>(_InnerException)) {}
+		lock_exception(std::string_view _Message, _Ty&& _InnerException) noexcept : exception(_Message, std::forward<_Ty>(_InnerException)) {}
 	};
 
 	class lock_access_exception : public lock_exception {

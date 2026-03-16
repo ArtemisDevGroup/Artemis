@@ -24,11 +24,11 @@ namespace Artemis::API {
 
 		ARTEMIS_API exception() noexcept;
 
-		ARTEMIS_API exception(std::string_view&& _Message) noexcept;
+		ARTEMIS_API exception(std::string_view _Message) noexcept;
 
 		template<class _Ty>
 			requires(std::is_base_of_v<exception, std::remove_reference_t<_Ty>>)
-		inline exception(std::string_view&& _Message, _Ty&& _InnerException) noexcept : std::exception(_Message.data()), _Trace() {
+		inline exception(std::string_view _Message, _Ty&& _InnerException) noexcept : std::exception(_Message.data()), _Trace() {
 			this->_Trace = _InnerException._Trace;
 			this->_InnerException = new std::remove_reference_t<_Ty>(std::forward<_Ty>(_InnerException));
 		}

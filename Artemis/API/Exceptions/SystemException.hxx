@@ -84,10 +84,10 @@ namespace Artemis::API {
 	public:
 		ARTEMIS_API system_exception() noexcept;
 
-		ARTEMIS_API system_exception(std::string_view&& _Message) noexcept;
+		ARTEMIS_API system_exception(std::string_view _Message) noexcept;
 
 		template<derived_exception_type T>
-		inline system_exception(std::string_view&& _Message, T&& _InnerException) noexcept : exception(std::move(_Message), std::forward<T>(_InnerException)) {
+		inline system_exception(std::string_view _Message, T&& _InnerException) noexcept : exception(_Message, std::forward<T>(_InnerException)) {
 			seh_data* data = get_thread_seh_data();
 			this->_Record = data->_Record;
 			this->_Context = data->_Context;
