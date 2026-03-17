@@ -21,7 +21,7 @@ namespace Artemis {
 		}
 	}
 
-	std::string_view iwindow::name() const noexcept { return this->_WindowName; }
+	const std::string& iwindow::name() const noexcept { return this->_WindowName; }
 
 #pragma endregion
 

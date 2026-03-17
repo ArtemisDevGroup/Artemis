@@ -8,7 +8,7 @@
 #include "API/Logging.hxx"
 
 #include <string_view>	// std::string_view
-#include <type_traits>	// std::is_base_of_v
+#include <concepts>		// std::derived_from, std::constructible_from
 
 namespace Artemis {
 	/// <summary>
@@ -21,7 +21,7 @@ namespace Artemis {
 	/// The base class of all ImGui windows created via Artemis.
 	/// </summary>
 	class iwindow : public API::loggable {
-		std::string_view _WindowName;
+		std::string _WindowName;
 
 	protected:
 		/// <summary>
@@ -50,14 +50,8 @@ namespace Artemis {
 		/// Gets the name of the window.
 		/// </summary>
 		/// <returns>The window name.</returns>
-		ARTEMIS_FRAMEWORK std::string_view name() const noexcept;
+		ARTEMIS_FRAMEWORK const std::string& name() const noexcept;
 	};
-
-	/// <summary>
-	/// A type derived from the iwindow interface.
-	/// </summary>
-	template<class _Ty>
-	concept derived_window_type = std::is_base_of_v<iwindow, _Ty>;
 
 	/// <summary>
 	/// Manages ImGui windows.
@@ -89,7 +83,8 @@ namespace Artemis {
 		/// <param name="_Args">- Arguments to be passed to the derived window type's constructor.</param>
 		/// <returns>The registered window instance pointer.</returns>
 		/// <exception cref="argument_exception"/>
-		template<derived_window_type _WndTy, typename... _Types>
+		template<std::derived_from<iwindow> _WndTy, typename... _Types>
+			requires std::constructible_from<_WndTy, _Types...>
 		inline iwindow* register_window(_Types&&... _Args) {
 			return this->register_window(new _WndTy(std::forward<_Types>(_Args)...));
 		}
@@ -109,9 +104,9 @@ namespace Artemis {
 		/// <param name="_WindowName">The window name. Note that the window name is case sensitive.</param>
 		/// <returns>The found window instance pointer.</returns>
 		/// <exception cref="argument_exception"/>
-		template<derived_window_type _WndTy>
+		template<std::derived_from<iwindow> _WndTy>
 		inline _WndTy* get_window(std::string_view _WindowName) {
-			return (_WndTy*)this->get_window(_WindowName);
+			return static_cast<_WndTy*>(this->get_window(_WindowName));
 		}
 
 		/// <summary>

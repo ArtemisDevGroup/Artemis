@@ -9,6 +9,16 @@ namespace Artemis {
 		load_exception::load_exception(std::string_view _Message) noexcept : exception(_Message) {}
 	}
 
+	extension::extension(std::string_view _Name) : _Name(_Name), hModule(nullptr) {}
+
+	extension::extension(extension&& _Other) : _Name(std::move(_Other._Name)) {
+		if (_Other.hModule) {
+			this->hModule = _Other.hModule;
+			_Other.hModule = nullptr;
+		}
+		else this->hModule = nullptr;
+	}
+
 	extension::~extension() noexcept {
 		if (this->hModule) {
 			try {
@@ -72,6 +82,21 @@ namespace Artemis {
 			FreeLibrary(this->hModule);
 			this->hModule = nullptr;
 		}
+	}
+
+	const std::string& extension::name() const noexcept { return this->_Name; }
+	HMODULE extension::handle() const noexcept { return this->hModule; }
+
+	extension& extension::operator=(extension&& _Other) noexcept {
+		this->_Name = std::move(_Other._Name);
+
+		if (_Other.hModule) {
+			this->hModule = _Other.hModule;
+			_Other.hModule = nullptr;
+		}
+		else this->hModule = nullptr;
+
+		return *this;
 	}
 
 	extension_manager::extension_manager() noexcept : _Loaded() {}

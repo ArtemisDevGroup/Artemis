@@ -4,6 +4,7 @@
 #include <Windows.h> // UINT, WORD, VK_*
 
 #include <type_traits>	// std::is_base_of_v, std::remove_reference_t
+#include <concepts>
 #include <vector>		// std::vector
 #include <functional>	// std::function
 #include <utility>		// std::pair, std::forward
@@ -143,7 +144,7 @@ namespace Artemis {
 		public:
 			constexpr __key_container(key _Key) : _Key(_Key) {}
 
-			constexpr key key() const noexcept { return this->_Key; }
+			constexpr key contained_key() const noexcept { return this->_Key; }
 		};
 
 		class __key_down_action {
@@ -159,66 +160,65 @@ namespace Artemis {
 
 	class key_down_action : public _::__key_container, public _::__key_down_action {
 	public:
-		using _::__key_container::__key_container;
+		key_down_action(Artemis::key _Key) : _::__key_container(_Key) {}
 	};
 
 	class key_up_action : public _::__key_container, public _::__key_up_action {
 	public:
-		using _::__key_container::__key_container;
+		key_up_action(Artemis::key _Key) : _::__key_container(_Key) {}
 	};
 
 	class key_action : public _::__key_container, public _::__key_down_action, public _::__key_up_action {
 	public:
-		using _::__key_container::__key_container;
+		key_action(Artemis::key _Key) : _::__key_container(_Key) {}
 	};
 
 	class key_action_manager : public API::loggable {
 		std::bitset<2048> _IdMap;
 
 		template<typename _Ty>
-		struct _identifiable_object {
+		struct _identifiable_object : public _::__contextualized_object<_Ty> {
 			short _Id;
-			_Ty _Object;
 		};
 
-		std::vector<_identifiable_object<_::__contextualized_object<key_down_action*>>> _KeyDownActions;
-		std::vector<_identifiable_object<_::__contextualized_object<key_up_action*>>> _KeyUpActions;
-		std::vector<_identifiable_object<_::__contextualized_object<key_action*>>> _KeyActions;
+		std::vector<_identifiable_object<key_down_action*>> _KeyDownActions;
+		std::vector<_identifiable_object<key_up_action*>> _KeyUpActions;
+		std::vector<_identifiable_object<key_action*>> _KeyActions;
 
-		std::vector<_identifiable_object<_::__contextualized_object<std::pair<key, std::function<void()>>>>> _DirectKeyActions;
+		std::vector<_identifiable_object<std::pair<key, std::function<void()>>>> _DirectKeyActions;
 
 	public:
-		template<class _Ty>
-			requires(std::is_base_of_v<key_down_action, std::remove_reference_t<_Ty>>)
+		template<typename _Ty>
+			requires std::derived_from<std::remove_reference_t<_Ty>, key_down_action>
 		inline short register_action(_Ty&& _KeyDownAction) noexcept {
 			for (short i = 0; i < this->_IdMap.size(); i++)
 				if (!this->_IdMap.test(i)) {
 					this->_IdMap.set(i);
-					this->_KeyDownActions.push_back({ i, { _::__execution_context::get(), new _Ty(std::forward<_Ty>(_KeyDownAction)) }});
+					this->_KeyDownActions.push_back({ _::__execution_context::get(), new _Ty(std::forward<_Ty>(_KeyDownAction)), i });
 					return i;
 				}
 			return -1;
 		}
 
 		template<typename _Ty>
-			requires(std::is_base_of_v<key_up_action, std::remove_reference_t<_Ty>>)
+			requires std::derived_from<std::remove_reference_t<_Ty>, key_up_action>
 		inline short register_action(_Ty&& _KeyUpAction) noexcept {
 			for (short i = 0; i < this->_IdMap.size(); i++)
 				if (!this->_IdMap.test(i)) {
 					this->_IdMap.set(i);
-					this->_KeyUpActions.push_back({ i, { _::__execution_context::get(), new _Ty(std::forward<_Ty>(_KeyUpAction)) }});
+					this->_KeyUpActions.push_back({ _::__execution_context::get(), new _Ty(std::forward<_Ty>(_KeyUpAction)), i });
 					return i;
 				}
 			return -1;
 		}
 
 		template<typename _Ty>
-			requires(std::is_base_of_v<key_action, std::remove_reference_t<_Ty>>)
+			requires std::derived_from<std::remove_reference_t<_Ty>, key_action>
 		inline short register_action(_Ty&& _KeyAction) noexcept {
 			for (short i = 0; i < this->_IdMap.size(); i++)
 				if (!this->_IdMap.test(i)) {
 					this->_IdMap.set(i);
-					this->_KeyActions.push_back({ i, { _::__execution_context::get(), new _Ty(std::forward<_Ty>(_KeyAction)) }});
+					this->_KeyActions.push_back({ _::__execution_context::get(), new _Ty(std::forward<_Ty>(_KeyAction)), i });
 					return i;
 				}
 			return -1;
@@ -227,38 +227,24 @@ namespace Artemis {
 		ARTEMIS_FRAMEWORK short register_action(key _Key, std::function<void()>&& _Action) noexcept;
 
 		template<typename _Ty>
+			requires std::derived_from<std::remove_reference_t<_Ty>, _::__key_container>
 		inline _Ty* get(short _Id) const {
 			if (!this->_IdMap.test(_Id))
 				throw API::argument_exception("Argument contains an invalid id.", NAMEOF(_Id));
 
-			_Ty* ret = nullptr;
-
 			for (const auto& o : this->_KeyDownActions)
-				if (o._Id == _Id) {
-					ret = (_Ty*)o._Object._Object;
-					break;
-				}
+				if (o._Id == _Id)
+					return static_cast<_Ty*>(o._Object);
 
-			if (!ret) {
-				for (const auto& o : this->_KeyUpActions)
-					if (o._Id == _Id) {
-						ret = (_Ty*)o._Object._Object;
-						break;
-					}
+			for (const auto& o : this->_KeyUpActions)
+				if (o._Id == _Id)
+					return static_cast<_Ty*>(o._Object);
 
-				if (!ret) {
-					for (const auto& o : this->_KeyActions)
-						if (o._Id == _Id) {
-							ret = (_Ty*)o._Object._Object;
-							break;
-						}
+			for (const auto& o : this->_KeyActions)
+				if (o._Id == _Id)
+					return static_cast<_Ty*>(o._Object);
 
-					if (!ret)
-						throw API::invalid_state_exception("_Id identifies a purely functional action with no object.");
-				}
-			}
-
-			return ret;
+			throw API::invalid_state_exception("_Id identifies a purely functional action with no object.");
 		}
 
 		ARTEMIS_FRAMEWORK void remove(short _Id);

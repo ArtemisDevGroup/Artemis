@@ -6,8 +6,11 @@
 #include "API/Exception.hxx"
 #include "API/Logging.hxx"
 
+#include <string>			// std::string
 #include <string_view>		// std::string_view
 #include <unordered_map>	// std::unordered_map
+#include <concepts>			// std::derived_from
+#include <type_traits>		// std::remove_reference_t
 
 #include <Windows.h>		// HMODULE, DWORD
 
@@ -17,8 +20,9 @@ namespace Artemis {
 		public:
 			ARTEMIS_API load_exception(std::string_view _Message) noexcept;
 
-			template<derived_exception_type T>
-			inline load_exception(std::string_view _Message, T&& _InnerException) noexcept : exception(_Message, std::forward<T>(_InnerException)) {}
+			template<typename _Ty>
+				requires std::derived_from<std::remove_reference_t<_Ty>, exception>
+			inline load_exception(std::string_view _Message, _Ty&& _InnerException) noexcept : exception(_Message, std::forward<_Ty>(_InnerException)) {}
 		};
 	}
 
@@ -26,21 +30,14 @@ namespace Artemis {
 	using aext_uninitialize_t = void(__stdcall*)(void);	// extern "C" __declspec(dllexport) void __stdcall aext_uninitialize(void);
 
 	class extension {
-		std::string_view _Name;
+		std::string _Name;
 		HMODULE hModule;
 
 	public:
-		constexpr extension(std::string_view _Name) : _Name(_Name), hModule(nullptr) {}
+		ARTEMIS_FRAMEWORK extension(std::string_view _Name);
 
 		extension(const extension&) = delete;
-
-		constexpr extension(extension&& _Other) noexcept : _Name(std::move(_Other._Name)) {
-			if (_Other.hModule) {
-				this->hModule = _Other.hModule;
-				_Other.hModule = nullptr;
-			}
-			else this->hModule = nullptr;
-		}
+		ARTEMIS_FRAMEWORK extension(extension&& _Other) noexcept;
 
 		ARTEMIS_FRAMEWORK ~extension() noexcept;
 
@@ -48,22 +45,12 @@ namespace Artemis {
 		ARTEMIS_FRAMEWORK void eject();
 		ARTEMIS_FRAMEWORK void force_eject() noexcept;
 
-		constexpr std::string_view name() const noexcept { return this->_Name; }
-		constexpr HMODULE handle() const noexcept { return this->hModule; }
+		ARTEMIS_FRAMEWORK const std::string& name() const noexcept;
+		ARTEMIS_FRAMEWORK HMODULE handle() const noexcept;
 
 		extension& operator=(const extension&) = delete;
 
-		constexpr extension& operator=(extension&& _Other) noexcept {
-			this->_Name = std::move(_Other._Name);
-
-			if (_Other.hModule) {
-				this->hModule = _Other.hModule;
-				_Other.hModule = nullptr;
-			}
-			else this->hModule = nullptr;
-
-			return *this;
-		}
+		ARTEMIS_FRAMEWORK extension& operator=(extension&&) noexcept;
 	};
 
 	class extension_manager : public API::loggable {
