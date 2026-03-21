@@ -1,5 +1,7 @@
 #ifdef __ARTEMIS_API_EXCEPTIONS_EXCEPTION_BASE_HXX__
 
+// A macro to pass both a reference to the argument as well as a string representation of it
+// to a static argument exception throw helper.
 #define AE_ARGUMENT(x) x, NAMEOF(x)
 
 namespace Artemis::API {

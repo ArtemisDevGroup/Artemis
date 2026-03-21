@@ -26,7 +26,7 @@ namespace Artemis::API {
 
 	win32_exception::win32_exception(DWORD _Win32ErrorCode, std::string_view _FunctionName) noexcept : exception(win32_message(_Win32ErrorCode)), _Win32Function(_FunctionName), _Win32ErrorCode(_Win32ErrorCode) {}
 
-	std::string_view win32_exception::win32_function() const noexcept { return this->_Win32Function; }
+	const std::string& win32_exception::win32_function() const noexcept { return this->_Win32Function; }
 
 	DWORD win32_exception::win32_error_code() const noexcept { return this->_Win32ErrorCode; }
 }
