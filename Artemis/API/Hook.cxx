@@ -2,7 +2,7 @@
 #include "Hook.hxx"
 
 namespace Artemis::API {
-	const char* const minhook_exception::message(MH_STATUS _StatusCode) noexcept {
+	std::string_view minhook_exception::message(MH_STATUS _StatusCode) noexcept {
 		switch (_StatusCode) {
 		case MH_UNKNOWN:
 		default:
