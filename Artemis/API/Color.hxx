@@ -12,63 +12,60 @@ namespace Artemis::API {
 	struct rgba;
 	struct hsl;
 
-	/// <summary>
-	/// Represents a color composed of an amount of red, green and blue.
-	/// </summary>
+	/**
+	 * @brief Represents a color composed of an amount of red, green and blue.
+	 */
 	struct rgb {
-		/// <summary>
-		/// <para>The color's red component.</para>
-		/// <para>0 &#x2264; R &#x2264; 255</para>
-		/// </summary>
+		/**
+		 * @brief The color's red component. 0 -> 255
+		 */
 		float R;
 
-		/// <summary>
-		/// <para>The color's green component.</para>
-		/// <para>0 &#x2264; G &#x2264; 255</para>
-		/// </summary>
+		/**
+		 * @brief The color's green component. 0 -> 255
+		 */
 		float G;
 
-		/// <summary>
-		/// <para>The color's blue component.</para>
-		/// <para>0 &#x2264; B &#x2264; 255</para>
-		/// </summary>
+		/**
+		 * @brief The color's blue component. 0 -> 255
+		 */
 		float B;
 
-		/// <summary>
-		/// Initializes all amounts to zero. This will equal the color black.
-		/// </summary>
+		/**
+		 * @brief Initializes all amounts to zero. This will equal the color black.
+		 */
 		constexpr rgb() noexcept : R(0), G(0), B(0) {}
 
-		/// <summary>
-		/// Initializes all color amounts to the provided value.
-		/// </summary>
-		/// <param name="_X">- The value to set all color amounts to.</param>
+		/**
+		 * @brief Initializes all color amounts to the provided value.
+		 * @param[in] _X The value to set all color amounts to.
+		 */
 		constexpr rgb(float _X) noexcept : R(_X), G(_X), B(_X) {}
 
-		/// <summary>
-		/// Initializes the respective color amounts.
-		/// </summary>
-		/// <param name="_R">- The amount of red.</param>
-		/// <param name="_G">- The amount of green.</param>
-		/// <param name="_B">- The amount of blue.</param>
+		/**
+		 * @brief Initializes the respective color amounts.
+		 * @param[in] _R The amount of red.
+		 * @param[in] _G The amount of green.
+		 * @param[in] _B The amount of blue.
+		 */
 		constexpr rgb(float _R, float _G, float _B) noexcept : R(_R), G(_G), B(_B) {}
 
-		/// <summary>
-		/// Converts the represented color into an equivalent in the RGBA format.
-		/// </summary>
-		/// <returns>The converted color.</returns>
+		/**
+		 * @brief Converts the represented color into an equivalent in the RGBA format.
+		 * @return The converted color.
+		 */
 		constexpr rgba to_rgba() const noexcept;
 
-		/// <summary>
-		/// Converts the represented color into an equivalent in the HSL (HSLA) format.
-		/// </summary>
-		/// <returns>The converted color.</returns>
+		/**
+		 * @brief Converts the represented color into an equivalent in the HSL (HSLA) format.
+		 * @return The converted color.
+		 */
 		constexpr hsl to_hsl() const noexcept;
 
-		/// <summary>
-		/// Converts the represented color into an equivalent hex string.
-		/// </summary>
-		/// <returns>The converted hex string.</returns>
+		/**
+		 * @brief Converts the represented color into an equivalent hex string.
+		 * @return The converted hex string.
+		 */
 		inline std::string to_hex_string() const {
 			int iR = static_cast<int>(this->R);
 			int iG = static_cast<int>(this->G);
@@ -79,80 +76,74 @@ namespace Artemis::API {
 			return std::format("#{:02X}{:02X}{:02X}", iR, iG, iB);
 		}
 
-		/// <summary>
-		/// Converts the represented color into a string representation.
-		/// </summary>
-		/// <returns>The converted string.</returns>
+		/**
+		 * @brief Converts the represented color into a string representation.
+		 * @return The converted string.
+		 */
 		inline std::string to_string() const { return std::format("rgb({:.2}, {:.2}, {:.2})", this->R, this->G, this->B); }
 	};
 
-	/// <summary>
-	/// Represents a color composed of an amount of red, green and blue including an alpha channel.
-	/// </summary>
+	/**
+	 * @brief Represents a color composed of an amount of red, green and blue including an alpha channel.
+	 */
 	struct rgba {
-		// <summary>
-		/// <para>The color's red component.</para>
-		/// <para>0 &#x2264; R &#x2264; 255</para>
-		/// </summary>
+		/**
+		 * @brief The color's red component. 0 -> 255
+		 */
 		float R;
 
-		/// <summary>
-		/// <para>The color's green component.</para>
-		/// <para>0 &#x2264; G &#x2264; 255</para>
-		/// </summary>
+		/**
+		 * @brief The color's green component. 0 -> 255
+		 */
 		float G;
 
-		/// <summary>
-		/// <para>The color's blue component.</para>
-		/// <para>0 &#x2264; B &#x2264; 255</para>
-		/// </summary>
+		/**
+		 * @brief The color's blue component. 0 -> 255
+		 */
 		float B;
 
-		/// <summary>
-		/// <para>The color's alpha component.</para>
-		/// <para>The alpha component controls the opacity of the color. The lower the value, the more opaque the color.</para>
-		/// <para>0 &#x2264; A &#x2264; 1</para>
-		/// </summary>
+		/**
+		 * @brief The color's alpha component. The alpha component controls the opacity of the color. The lower the value, the less opaque the color. 0 -> 1
+		 */
 		float A;
 
-		/// <summary>
-		/// Initializes all amounts to zero. This will equal complete transparency.
-		/// </summary>
+		/**
+		 * @brief Initializes all amounts to zero. This will equal complete transparency.
+		 */
 		constexpr rgba() noexcept : R(0), G(0), B(0), A(0) {}
 
-		/// <summary>
-		/// Initializes all color amounts to the provided value. Additionally initializes the alpha channel.
-		/// </summary>
-		/// <param name="_X">- The value to set all color amounts to.</param>
-		/// <param name="_A">- The value to set the alpha channel to.</param>
+		/**
+		 * @brief Initializes all color amounts to the provided value. Additionally initializes the alpha channel.
+		 * @param[in] _X The value to set all color amounts to.
+		 * @param[in] _A The value to set the alpha channel to.
+		 */
 		constexpr rgba(float _X, float _A) noexcept : R(_X), G(_X), B(_X), A(_A) {}
 
-		/// <summary>
-		/// Initializes the respective color and alpha amounts.
-		/// </summary>
-		/// <param name="_R">- The amount of red.</param>
-		/// <param name="_G">- The amount of green.</param>
-		/// <param name="_B">- The amount of blue.</param>
-		/// <param name="_A">- The amount of alpha.</param>
+		/**
+		 * @brief Initializes the respective color and alpha amounts.
+		 * @param[in] _R The amount of red.
+		 * @param[in] _G The amount of green.
+		 * @param[in] _B The amount of blue.
+		 * @param[in] _A The amount of alpha.
+		 */
 		constexpr rgba(float _R, float _G, float _B, float _A) noexcept : R(_R), G(_G), B(_B), A(_A) {}
 
-		/// <summary>
-		/// <para>Converts the represented color into an equivalent in the RGB format.</para>
-		/// <para>Essentially preserves the red, green and blue amounts but strips the alpha from the color.</para>
-		/// </summary>
-		/// <returns>The converted color.</returns>
+		/**
+		 * @brief Converts the represented color into an equivalent in the RGB format. Essentially preserves the red, green and blue amounts but strips the alpha from the color.
+		 * @return The converted color.
+		 */
 		constexpr rgb to_rgb() const noexcept {	return rgb(this->R, this->G, this->B); }
 
-		/// <summary>
-		/// Converts the represented color into an equivalent in the HSL (HSLA) format.
-		/// </summary>
-		/// <returns>The converted color.</returns>
+		/**
+		 * @brief Converts the represented color into an equivalent in the HSL (HSLA) format.
+		 * @return The converted color.
+		 */
 		constexpr hsl to_hsl() const noexcept;
 
-		/// <summary>
-		/// Converts the represented color into an equivalent hex string.
-		/// </summary>
-		/// <returns>The converted hex string.</returns>
+		/**
+		 * @brief Converts the represented color into an equivalent hex string.
+		 * @return The converted hex string.
+		 */
 		inline std::string to_hex_string() const {
 			int iR = static_cast<int>(this->R);
 			int iG = static_cast<int>(this->G);
@@ -164,62 +155,55 @@ namespace Artemis::API {
 			return std::format("#{:02X}{:02X}{:02X}{:02X}", iR, iG, iB, iA);
 		}
 
-		/// <summary>
-		/// Converts the represented color into a string representation.
-		/// </summary>
-		/// <returns>The converted string.</returns>
+		/**
+		 * @brief Converts the represented color into a string representation.
+		 * @return The converted string.
+		 */
 		inline std::string to_string() const { return std::format("rgba({:.2}{:.2}{:.2}{:.2}", this->R, this->G, this->B, this->A); }
 	};
 
-	/// <summary>
-	/// Represents a color composed of a hue shift, a saturation percentage, a lightness percentage and an alpha percentage.
-	/// </summary>
+	/**
+	 * @brief Represents a color composed of a hue shift, a saturation percentage, a lightness percentage and an alpha percentage.
+	 */
 	struct hsl {
-		/// <summary>
-		/// <para>The color's hue component</para>
-		/// <para>The hue component controls how many degrees the color shall be shifted on the color spectrum.</para>
-		/// <para>0 &#x2264; Hue &lt; 360</para>
-		/// </summary>
+		/**
+		 * @brief The color's hue component. The hue component controls how many degrees the color shall be shifted on the color spectrum. 0 -> 360
+		 */
 		float Hue;
 
-		/// <summary>
-		/// <para>The color's saturation component.</para>
-		/// <para>0 &#x2264; Saturation &#x2264; 1</para>
-		/// </summary>
+		/**
+		 * @brief The color's saturation component. 0 -> 1
+		 */
 		float Saturation;
 
-		/// <summary>
-		/// <para>The color's lightness component.</para>
-		/// <para>0 &#x2264; Lightness &#x2264; 1</para>
-		/// </summary>
+		/**
+		 * @brief The color's lightness component. 0 -> 1
+		 */
 		float Lightness;
 
-		/// <summary>
-		/// <para>The color's alpha component.</para>
-		/// <para>The alpha component controls the opacity of the color. The lower the value, the more opaque the color.</para>
-		/// <para>0 &#x2264; Alpha &#x2264; 1</para>
-		/// </summary>
+		/**
+		 * @brief The color's alpha component. The alpha component controls the opacity of the color. The lower the value, the more opaque the color. 0 -> 1
+		 */
 		float Alpha;
 
-		/// <summary>
-		/// Initializes all amount to zero. This will equal complete transparency.
-		/// </summary>
+		/**
+		 * @brief Initializes all amount to zero. This will equal complete transparency.
+		 */
 		constexpr hsl() noexcept : Hue(0), Saturation(0), Lightness(0), Alpha(0) {}
 
-		/// <summary>
-		/// Initializes all fields to the provided values.
-		/// </summary>
-		/// <param name="_Hue">- The hue-shift in degrees.</param>
-		/// <param name="_Saturation">- The saturation amount.</param>
-		/// <param name="_Lightness">- The lightness amount.</param>
-		/// <param name="_Alpha">- The alpha amount.</param>
+		/**
+		 * @brief Initializes all fields to the provided values.
+		 * @param[in] _Hue The hue-shift in degrees.
+		 * @param[in] _Saturation The saturation amount.
+		 * @param[in] _Lightness The lightness amount.
+		 * @param[in] _Alpha The alpha amount.
+		 */
 		constexpr hsl(float _Hue, float _Saturation, float _Lightness, float _Alpha = 1.0f) noexcept : Hue(_Hue), Saturation(_Saturation), Lightness(_Lightness), Alpha(_Alpha) {}
 
-		/// <summary>
-		/// <para>Converts the represented color into an equivalent in the RGB format.</para>
-		/// <para>Essentially preserves the red, green and blue amounts but strips the alpha from the color.</para>
-		/// </summary>
-		/// <returns>The converted color.</returns>
+		/**
+		 * @brief Converts the represented color into an equivalent in the RGB format. Essentially preserves the red, green and blue amounts but strips the alpha from the color.
+		 * @return The converted color.
+		 */
 		constexpr rgb to_rgb() const noexcept {
 			float c = (1.0f - gcem::abs(2.0f * Lightness - 1.0f)) * Saturation;
 			float x = c * (1.0f - gcem::abs(gcem::fmod(Hue / 60.0f, 2.0f) - 1.0f));
@@ -242,26 +226,26 @@ namespace Artemis::API {
 			);
 		}
 
-		/// <summary>
-		/// Converts the represented color into an equivalent in the RGBA format.
-		/// </summary>
-		/// <returns>The converted color.</returns>
+		/**
+		 * @brief Converts the represented color into an equivalent in the RGBA format.
+		 * @return The converted color.
+		 */
 		constexpr rgba to_rgba() const noexcept {
 			rgba rgba = this->to_rgb().to_rgba();
 			rgba.A = Alpha;
 			return rgba;
 		}
 
-		/// <summary>
-		/// Converts the represented color into an equivalent hex string.
-		/// </summary>
-		/// <returns>The converted hex string.</returns>
+		/**
+		 * @brief Converts the represented color into an equivalent hex string.
+		 * @return The converted hex string.
+		 */
 		inline std::string to_hex_string() const { return this->to_rgba().to_hex_string(); }
 
-		/// <summary>
-		/// Converts the represented color into a string representation.
-		/// </summary>
-		/// <returns>The converted string.</returns>
+		/**
+		 * @brief Converts the represented color into a string representation.
+		 * @return The converted string.
+		 */
 		inline std::string to_string() const { return std::format("hsl({:.2}, {:.2}, {:.2}, {:.2})", this->Hue, this->Saturation, this->Lightness, this->Alpha); }
 	};
 
