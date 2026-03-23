@@ -37,11 +37,11 @@ namespace Artemis::API {
 		return GetConsoleWindow();
 	}
 
-	void set_console_window_title(const char* const _Title) {
+	void set_console_window_title(std::string_view _Title) {
 		if (!g_ConsoleIsOpen)
 			throw invalid_state_exception("Console is not open.");
 
-		if (!SetConsoleTitleA(_Title))
+		if (!SetConsoleTitleA(_Title.data()))
 			throw win32_exception("SetConsoleTitleA");
 	}
 
