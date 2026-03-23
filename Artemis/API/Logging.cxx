@@ -141,10 +141,10 @@ namespace Artemis::API {
 		_FileName(""),
 		_WithTime(false) {}
 
-	logger_factory& logger_factory::with_console_logging() { this->_LogToConsole = true; return *this; }
-	logger_factory& logger_factory::with_file_logging(std::string_view _FileName) { this->_LogToFile = true; this->_FileName = _FileName; return *this; }
-	logger_factory& logger_factory::with_time() { this->_WithTime = true; return *this; }
-	logger_factory& logger_factory::with_color() { this->_WithColor = true; return *this; }
+	logger_factory& logger_factory::with_console_logging() noexcept { this->_LogToConsole = true; return *this; }
+	logger_factory& logger_factory::with_file_logging(std::string_view _FileName) noexcept { this->_LogToFile = true; this->_FileName = _FileName; return *this; }
+	logger_factory& logger_factory::with_time() noexcept { this->_WithTime = true; return *this; }
+	logger_factory& logger_factory::with_color() noexcept { this->_WithColor = true; return *this; }
 
 	logger logger_factory::create() const {
 		logger logger(nullptr);
