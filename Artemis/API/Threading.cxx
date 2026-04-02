@@ -9,5 +9,5 @@ namespace Artemis::API {
 	bool resource_awaiter::is_awaiting() const noexcept { return this->_IsAwaiting; }
 	void resource_awaiter::cancel_await() noexcept { this->_IsAwaiting = false; }
 
-	resource_awaiter* make_awaiter() noexcept { return new resource_awaiter(std::this_thread::get_id()); }
+	std::shared_ptr<resource_awaiter> make_awaiter() noexcept { return std::make_shared<resource_awaiter>(std::this_thread::get_id()); }
 }
