@@ -90,8 +90,8 @@ namespace Artemis {
 		ARTEMIS_FRAMEWORK void dispatch_message(message* _Message, size_t _Size);
 
 		template<std::derived_from<message> _Ty>
+			requires(sizeof(_Ty) <= MaximumMessageSize)
 		inline void dispatch_message(_Ty* _Message) {
-			static_assert(sizeof(_Ty) <= MaximumMessageSize);
 			this->dispatch_message(_Message, sizeof(_Ty));
 		}
 

@@ -392,9 +392,6 @@
     <ClInclude Include="API\Exceptions\InvalidStateException.hxx">
       <Filter>API\Header Files\Exceptions</Filter>
     </ClInclude>
-    <ClInclude Include="MemTest.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
