@@ -8,6 +8,5 @@
 #include "Exceptions/SystemException.hxx"
 #include "Exceptions/ArgumentException.hxx"
 #include "Exceptions/InvalidStateException.hxx"
-#include "Exceptions/LockException.hxx"
 
 #endif // !__ARTEMIS_API_EXCEPTION_HXX__
