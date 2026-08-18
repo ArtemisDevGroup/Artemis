@@ -17,10 +17,10 @@ namespace Artemis {
 	typedef HRESULT(APIENTRY* TPRESENT)(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags);
 	
 	struct midnight {
-		/// <summary>
-		/// <para>Contains all persistent data for the DirectX hook.</para>
-		/// <para>Do not mess with this unless you absolutely need to.</para>
-		/// </summary>
+		/**
+		 * @brief Contains all persistent data for the DirectX hook.
+		 * Do not mess with this unless you absolutely need to.
+		 */
 		struct {
 			API::hook<TPRESENT>* hkInstance;
 			HWND hWnd;
@@ -28,52 +28,52 @@ namespace Artemis {
 			TPRESENT oPresent;
 		} _DirectXPresentHookData;
 
-		/// <summary>
-		/// The logger instance used by Artemis.
-		/// </summary>
+		/**
+		 * @brief The logger instance used by Artemis.
+		 */
 		API::logger* Logger;
 
-		/// <summary>
-		/// Manages loading and unloading of extensions.
-		/// </summary>
+		/**
+		 * @brief Manages loading and unloading of extensions.
+		 */
 		extension_manager* Extensions;
 
-		/// <summary>
-		/// Manages keybinds/keypress actions.
-		/// </summary>
+		/**
+		 * @brief Manages keybinds/keypress actions.
+		 */
 		key_action_manager* KeyActions;
 
-		/// <summary>
-		/// Manages ImGui windows.
-		/// </summary>
+		/**
+		 * @brief Manages ImGui windows.
+		 */
 		window_manager* Windows;
 
-		/// <summary>
-		/// A message recipent receiving all messages dispatched for the Artemis client remotely.
-		/// </summary>
+		/**
+		 * @brief A message recipent receiving all messages dispatched for the Artemis client remotely.
+		 */
 		message_recipent* ClientRemoteMessageRecipent;
 
-		/// <summary>
-		/// A message recipent receiving all messages dispatched for the Artemis client internally.
-		/// </summary>
+		/**
+		 * @brief A message recipent receiving all messages dispatched for the Artemis client internally.
+		 */
 		message_recipent* ClientInternalMessageRecipent;
 
-		/// <summary>
-		/// A message dispatcher sending messages to the Artemis Loader.
-		/// </summary>
+		/**
+		 * @brief A message dispatcher sending messages to the Artemis Loader.
+		 */
 		message_dispatcher* MainRemoteDispatcher;
 
-		/// <summary>
-		/// A message dispatcher sending messages to the Artemis client.
-		/// </summary>
+		/**
+		 * @brief A message dispatcher sending messages to the Artemis client.
+		 */
 		message_dispatcher* MainInternalDispatcher;
 	};
 }
 
-/// <summary>
-/// <para>Much like the builtin 'this' keyword for a class,</para>
-/// <para>'athis' is used to access all data fields used by the current Artemis instance.</para>
-/// </summary>
+/**
+ * @brief Much like the builtin 'this' keyword for a class,
+ * 'athis' is used to access all data fields used by the current Artemis instance.
+ */
 ARTEMIS_FRAMEWORK extern ::Artemis::midnight* const athis;
 
 #endif // !__ARTEMIS_MIDNIGHT_HXX__
